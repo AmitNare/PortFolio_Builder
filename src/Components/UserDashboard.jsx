@@ -20,7 +20,7 @@ export default function UserDashboard({userDetails}) {
   // Display the loader while loading
   if (loading || !userDetails) {
     return (
-      <div className="flex items-center justify-center h-screen text-2xl">
+      <div className="flex items-center justify-center h-full text-2xl">
         <DataLoader />
       </div>
     );

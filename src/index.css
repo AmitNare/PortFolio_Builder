@@ -1,9 +1,10 @@
+@import '/src/style.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 @layer base {
   :root {
-    --background: 231 14% 95%;
+    --background: 0, 0%, 100%;
 
     --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;

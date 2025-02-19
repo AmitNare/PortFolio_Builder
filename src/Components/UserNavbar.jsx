@@ -23,11 +23,11 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
   ];
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-full  w-full gap-2">
       {/* Sidebar */}
-      <aside className={` inset-y-0 left-0 w-64 p-6 bg-white dark:bg-gray-800 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 `}>
+      <aside className={` inset-y-0 left-0 w-64 md-max:w border-2 rounded-md h-full p-6 bg-background transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 `}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold">Portify</h2>
+          {/* <h2 className="text-3xl font-bold">Portify</h2> */}
           <button onClick={() => setIsSidebarOpen(false)} className="md:hidden">
             <X size={28} />
           </button>
@@ -53,13 +53,13 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
 
       {/* Hamburger Button */}
       <div className="fixed top-4 left-4 z-50 md:hidden">
-        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 bg-gray-200 rounded-full">
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 bg-background rounded-full">
           {isSidebarOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-4 overflow-auto">{children}</main>
+      <main className="flex-1 gap-2 rounded-md border bg-background md-max:w-full">{children}</main>
     </div>
   );
 }

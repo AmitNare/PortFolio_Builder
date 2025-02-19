@@ -1,4 +1,10 @@
-/* From Uiverse.io by Nawsome */ 
+@font-face {
+  font-family: 'Proxemic';
+  src: url('/src/Fonts/Proxemic_Font.otf');
+  /* font-weight: normal;
+  font-style: normal; */
+}
+
 .typewriter {
   --blue: #5C86FF;
   --blue-dark: #275EFE;

@@ -54,18 +54,18 @@ const [userName, setUserName] = useState('')
     <div
       className={`${
         isDarkTheme ? "dark" : "light"
-      } relative min-h-screen bg-background flex w-full`}
+      } relative min-h-screen bg-lightBg dark:bg-darkBg flex w-full`}
     >
       {user ? (
         // Authenticated user layout
-        <div className="w-full flex flex-col bg-background text-foreground">
-          {/* <UserHeader toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} /> */}
-          <div className="flex w-full  bg-background text-foreground ">
+        <div className="w-full flex flex-col  text-foreground">
+          <UserHeader toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
+          <div className="flex w-full min-h-[calc(100svh-72px)] p-2  text-foreground ">
             {/* Sidebar for larger screens */}
             {/* <div className="w-fit bg-gray-200  border-2 border-red-500 rounded-md">
             </div> */}
             {/* Main Content Area */}
-            <div className="w-full md-max:w-full flex bg-background text-foreground">
+            <div className="w-full h-full md-max:w-full  flex text-foreground">
               <UserNavbar toggleTheme={toggleTheme} isDarkTheme={isDarkTheme}  >
               <Routes>
                 <Route
@@ -89,7 +89,7 @@ const [userName, setUserName] = useState('')
         </div>
       ) : (
         // Public routes for unauthenticated users
-        <div className="w-full flex flex-col items-center mt-8">
+        <div className="w-full flex flex-col items-center bg-background  ">
           <Navbar toggleTheme={toggleTheme} isDarkTheme={isDarkTheme}  />
           <Routes>
             <Route path="/" element={<PublicLayout />} />

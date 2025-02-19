@@ -29,7 +29,11 @@ export default {
     			poppins: [
     				'Poppins',
     				'sans-serif'
-    			]
+    			],
+				proxemic: [
+					'Proxemic',
+					'sans-serif'
+				],
     		},
     		borderRadius: {
     			lg: 'var(--radius)',
@@ -39,6 +43,8 @@ export default {
     		colors: {
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
+				lightBg: 'hsl(231, 14%, 96%)',
+        		darkBg: 'hsl(231, 12%, 12%)',
     			card: {
     				DEFAULT: 'hsl(var(--card))',
     				foreground: 'hsl(var(--card-foreground))'

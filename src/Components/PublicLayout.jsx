@@ -46,7 +46,7 @@ export default function PublicLayout() {
 //   }
 
   return (
-    <div className="pt-16 w-full min-h-screen flex flex-col">
+    <div className="p-2  w-full min-h-screen flex flex-col text-foreground bg-background">
   <section id="SetHero">
     <Hero />
   </section>

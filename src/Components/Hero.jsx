@@ -3,12 +3,12 @@ import { Sparkles, Rocket } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="  text-foreground min-h-[50em] h-auto flex flex-col items-center justify-center text-center bg-background mb-12">
+    <section className=" text-foreground min-h-[50em] h-auto flex flex-col items-center justify-center text-center bg-background mb-12">
       <div className="animate-bounce ">
         <Rocket size={80} className="  drop-shadow-xl text-purple-500" />
       </div>
-      <h1 className="text-7xl font-black mb-5 tracking-tight leading-tight drop-shadow-2xl">
-        Build a Portfolio That Shines
+      <h1 className="text-6xl font-black mb-5 tracking-tight leading-tight drop-shadow-2xl">
+        Build A Portfolio That Shines
       </h1>
       <p className="text-lg mb-7 max-w-xl font-semibold opacity-95 leading-relaxed">
         Create a stunning showcase of your skills and achievements with ease.
