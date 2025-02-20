@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Stepper, Step } from "react-form-stepper";
 import * as Yup from "yup";
-import { storage } from '../../firebase'; // Adjust the import according to your setup
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { set, ref as dbRef, get, getDatabase } from 'firebase/database';
+import { storage } from "../../firebase"; // Adjust the import according to your setup
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { set, ref as dbRef, get, getDatabase } from "firebase/database";
+import {
+  Check,
+  CheckSquare,
+  Pencil,
+  X,
+} from "lucide-react";
 
 import GetUserDetailsForm, {
   AdditionalInfo,
@@ -13,755 +19,982 @@ import GetUserDetailsForm, {
   SocialLinks,
 } from "./GetUserDetailsForm";
 import useUserAuth from "./UserAuthentication";
-import { generatePortfolioLink, savePortfolioDataToFirebase } from "./PortfolioMethods";
+import {
+  generatePortfolioLink,
+  savePortfolioDataToFirebase,
+} from "./PortfolioMethods";
 import DataLoader from "./DataLoader";
 import { useNavigate } from "react-router-dom";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { TrashIcon } from "lucide-react";
 
-export default function Profile({ userId , userDetails, setUserDetails}) {
-
-  
+export default function Profile({ userId, userDetails, setUserDetails }) {
   // const { userDetails,setUserDetails } = useUserAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isCardEditing, setIsCardEditing] = useState(false);
   const [editingCardIndex, setEditingCardIndex] = useState(null);
+
   const [cardEditingStates, setCardEditingStates] = useState(
     Array(userDetails?.experience?.length || 0).fill(false)
   );
-  const [allCardsSaved, setAllCardsSaved] = useState(true); 
 
-// seperate name field into fname, lname
-const [firstname, ...rest] = userDetails?.name?.split(" ") || [""]; // Safeguard against undefined
-const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest is empty
-
-// const [formData, setFormData] = useState({
-//   name: firstname || "",
-//   surname: surname || "",
-//   email: userDetails.email || " ",
-//   phoneNo: "",
-//   gender: "",
-//   countryCode: "+1",
-//   image: null,
-//   address: "",
-//   bio: "",
-//   colleges: [],
-//   // collegeName: "",
-//   // course: "",
-//   grade: "",
-//   gradeType: "CGPA", // or "Percentage"
-//   skills: [],
-//   hobbies: [],
-
-//   companyAddress: "",
-//   experience: [],
-//   awards: [],
-//   socialLink: [
-//     {
-//       linkedIn: "",
-//       gitHub: "",
-//       instagram: "",
-//       tweeter: "",
-//     },
-//   ],
-// });
-
-const [errors, setErrors] = useState({});
-
-//  const handleInputChange = async (e, field, index) => {
-//   const { name, value } = e.target;
-//   console.log(`Changing ${name} in ${field} at index ${index} to ${value}`);
-
-//   if (field) {
-//     setUserDetails((prevDetails) => {
-//       const updatedField = [...prevDetails[field]]; // Make a copy of the experience array
-//       updatedField[index] = { ...updatedField[index], [name]: value }; // Update the specific field
-
-//       console.log("Updated userDetails:", { ...prevDetails, [field]: updatedField });
-//       return { ...prevDetails, [field]: updatedField }; // Set the updated state
-//     });
-//   } else {
-//     setUserDetails((prevDetails) => {
-//       console.log("Updated userDetails for single field:", { ...prevDetails, [name]: value });
-//       return { ...prevDetails, [name]: value };
-//     });
-//   }
-
-//   // Validation can be added here if required
-//   await validateStep(activeStep, name, value);
-// };
+  const [collegeEditingStates, setCollegeEditingStates] = useState(
+    Array(userDetails?.colleges?.length || 0).fill(false)
+  );
+  const [allCardsSaved, setAllCardsSaved] = useState(true);
+  const [allCollegeCardsSaved, setAllCollegeCardsSaved] = useState(true);
 
 
+  // seperate name field into fname, lname
+  const [firstname, ...rest] = userDetails?.name?.split(" ") || [""]; // Safeguard against undefined
+  const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest is empty
 
+  // const [formData, setFormData] = useState({
+  //   name: firstname || "",
+  //   surname: surname || "",
+  //   email: userDetails.email || " ",
+  //   phoneNo: "",
+  //   gender: "",
+  //   countryCode: "+1",
+  //   image: null,
+  //   address: "",
+  //   bio: "",
+  //   colleges: [],
+  //   // collegeName: "",
+  //   // course: "",
+  //   grade: "",
+  //   gradeType: "CGPA", // or "Percentage"
+  //   skills: [],
+  //   hobbies: [],
 
-const handleInputChange = (e, section, index, field) => {
-  const { value } = e.target;
-  setUserDetails((prevDetails) => {
-    const updatedDetails = { ...prevDetails };
-    updatedDetails[section][index][field] = value;
-    return updatedDetails;
+  //   companyAddress: "",
+  //   experience: [],
+  //   awards: [],
+  //   socialLink: [
+  //     {
+  //       linkedIn: "",
+  //       gitHub: "",
+  //       instagram: "",
+  //       tweeter: "",
+  //     },
+  //   ],
+  // });
+
+  const [errors, setErrors] = useState({});
+
+  //  const handleInputChange = async (e, field, index) => {
+  //   const { name, value } = e.target;
+  //   console.log(`Changing ${name} in ${field} at index ${index} to ${value}`);
+
+  //   if (field) {
+  //     setUserDetails((prevDetails) => {
+  //       const updatedField = [...prevDetails[field]]; // Make a copy of the experience array
+  //       updatedField[index] = { ...updatedField[index], [name]: value }; // Update the specific field
+
+  //       console.log("Updated userDetails:", { ...prevDetails, [field]: updatedField });
+  //       return { ...prevDetails, [field]: updatedField }; // Set the updated state
+  //     });
+  //   } else {
+  //     setUserDetails((prevDetails) => {
+  //       console.log("Updated userDetails for single field:", { ...prevDetails, [name]: value });
+  //       return { ...prevDetails, [name]: value };
+  //     });
+  //   }
+
+  //   // Validation can be added here if required
+  //   await validateStep(activeStep, name, value);
+  // };
+
+  const handleInputChange = (e, section, index, field) => {
+    const { value } = e.target;
+    setUserDetails((prevDetails) => {
+      const updatedDetails = { ...prevDetails };
+      updatedDetails[section][index][field] = value;
+      return updatedDetails;
+    });
+  };
+
+  const nameValidation = Yup.string()
+    .min(2, "Must be at least 3 characters")
+    .matches(/^[A-Za-z\s]+$/, "Must contain only letters and spaces")
+    .required("This field is required");
+
+  // Yup validation schema
+  const validationSchema = Yup.object().shape({
+    name: nameValidation,
+    surname: nameValidation,
+    collegeName: nameValidation,
+    course: nameValidation,
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    phoneNo: Yup.string()
+      .matches(
+        /^\+[1-9]{1}[0-9]{1,3}\s?[1-9]{1}[0-9]{9}$/,
+        "Phone number must include a valid country code and 10-digit number"
+      )
+      .required("Phone number is required"),
+    address: Yup.string().required("Address is required"),
+    gender: Yup.string().required("Gender is required"),
+    bio: Yup.string()
+      .max(300, "Bio must not exceed 250 characters")
+      .required("Bio is required"),
+    image: Yup.mixed()
+      .required("Image is required")
+      .test("fileType", "Only JPEG/PNG images are allowed", (value) => {
+        return value ? ["image/jpeg", "image/png"].includes(value.type) : false;
+      })
+      .test("fileSize", "File size must be under 2MB", (value) => {
+        return value ? value.size <= 2 * 1024 * 1024 : false;
+      }),
+
+    grade: Yup.number()
+      .typeError("Grade must be a number")
+      .required("Grade is required")
+      .when("gradeType", {
+        is: "CGPA",
+        then: Yup.number()
+          .max(10, "CGPA cannot exceed 10")
+          .min(0, "CGPA cannot be less than 0"),
+        otherwise: Yup.number()
+          .max(100, "Percentage cannot exceed 100")
+          .min(0, "Percentage cannot be less than 0"),
+      }),
+    gradeType: Yup.string().required("Grade type is required"),
+
+    jobExperience: Yup.number()
+      .required("Experience is required")
+      .positive("Experience must be a positive number")
+      .integer("Experience must be an integer")
+      .min(1, "Experience must be at least 1 year"),
+
+    companyName: Yup.string(),
+    companyAddress: Yup.string(),
+
+    jobDescription: Yup.string().max(150, "Bio must not exceed 150 characters"),
+
+    linkedIn: Yup.string(),
+    gitHub: Yup.string(),
+    instagram: Yup.string(),
+    tweeter: Yup.string(),
   });
-};
 
+  const validateStep = async (step, name, value) => {
+    try {
+      let stepValidationSchema;
 
-const nameValidation = Yup.string()
-  .min(2, "Must be at least 3 characters")
-  .matches(/^[A-Za-z\s]+$/, "Must contain only letters and spaces")
-  .required("This field is required");
-
-// Yup validation schema
- const validationSchema = Yup.object().shape({
-  name: nameValidation,
-  surname: nameValidation,
-  collegeName: nameValidation,
-  course: nameValidation,
-  email: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
-  phoneNo: Yup.string()
-    .matches(
-      /^\+[1-9]{1}[0-9]{1,3}\s?[1-9]{1}[0-9]{9}$/,
-      "Phone number must include a valid country code and 10-digit number"
-    )
-    .required("Phone number is required"),
-  address: Yup.string().required("Address is required"),
-  gender: Yup.string().required("Gender is required"),
-  bio: Yup.string()
-    .max(300, "Bio must not exceed 250 characters")
-    .required("Bio is required"),
-  image: Yup.mixed()
-    .required("Image is required")
-    .test("fileType", "Only JPEG/PNG images are allowed", (value) => {
-      return value ? ["image/jpeg", "image/png"].includes(value.type) : false;
-    })
-    .test("fileSize", "File size must be under 2MB", (value) => {
-      return value ? value.size <= 2 * 1024 * 1024 : false;
-    }),
-
-  grade: Yup.number()
-    .typeError("Grade must be a number")
-    .required("Grade is required")
-    .when("gradeType", {
-      is: "CGPA",
-      then: Yup.number()
-        .max(10, "CGPA cannot exceed 10")
-        .min(0, "CGPA cannot be less than 0"),
-      otherwise: Yup.number()
-        .max(100, "Percentage cannot exceed 100")
-        .min(0, "Percentage cannot be less than 0"),
-    }),
-  gradeType: Yup.string().required("Grade type is required"),
-
-  jobExperience: Yup.number()
-    .required("Experience is required")
-    .positive("Experience must be a positive number")
-    .integer("Experience must be an integer")
-    .min(1, "Experience must be at least 1 year"),
-
-  companyName: Yup.string(),
-  companyAddress: Yup.string(),
-
-  jobDescription: Yup.string().max(150, "Bio must not exceed 150 characters"),
-
-  linkedIn: Yup.string(),
-  gitHub: Yup.string(),
-  instagram: Yup.string(),
-  tweeter: Yup.string(),
-});
-
- const validateStep = async (step, name, value) => {
-  try {
-    let stepValidationSchema;
-
-    switch (step) {
-      case 0:
-        stepValidationSchema = validationSchema.pick([
-          "name",
-          "email",
-          "phoneNo",
-          "surname",
-          "gender",
-          "address",
-          "bio",
-        ]);
-        break;
-      case 1:
-        // stepValidationSchema = validationSchema.pick(["collegeName", "course"]);
-        break;
-      case 2:
-        // No predefined schema for this step; we handle it dynamically
-        break;
-      case 3:
-        stepValidationSchema = validationSchema.pick([
-          "linkedIn",
-          "gitHub",
-          "instagram",
-          "tweeter",
-        ]);
-        break;
-      default:
-        stepValidationSchema = validationSchema; // Full schema as fallback
-        break;
-    }
-
-    // Step 1: Validate a single field if name and value are provided
-    if (name && value !== undefined && stepValidationSchema) {
-      try {
-        await stepValidationSchema.validateAt(name, {
-          ...formData,
-          [name]: value,
-        });
-        setErrors((prevErrors) => ({ ...prevErrors, [name]: undefined })); // Clear specific field error
-      } catch (fieldError) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: fieldError.message, // Update specific field error
-        }));
-        return false; // Return failure for field validation
+      switch (step) {
+        case 0:
+          stepValidationSchema = validationSchema.pick([
+            "name",
+            "email",
+            "phoneNo",
+            "surname",
+            "gender",
+            "address",
+            "bio",
+          ]);
+          break;
+        case 1:
+          // stepValidationSchema = validationSchema.pick(["collegeName", "course"]);
+          break;
+        case 2:
+          // No predefined schema for this step; we handle it dynamically
+          break;
+        case 3:
+          stepValidationSchema = validationSchema.pick([
+            "linkedIn",
+            "gitHub",
+            "instagram",
+            "tweeter",
+          ]);
+          break;
+        default:
+          stepValidationSchema = validationSchema; // Full schema as fallback
+          break;
       }
-    }
 
-    // Step 2: Handle custom validation for the "experience" step
-    if (step === 2) {
-      const experienceErrors = [];
-      const experienceEntries = formData.experience || [];
-
-      experienceEntries.forEach((entry, index) => {
-        const { companyName, jobDescription, jobRole, jobExperience } = entry;
-
-        // Check if any field is filled
-        const isAnyFieldFilled =
-          companyName || jobDescription || jobRole || jobExperience;
-
-        if (isAnyFieldFilled) {
-          // Validate all fields for this entry
-          const entrySchema = Yup.object().shape({
-            companyName: Yup.string().required("Company name is required."),
-            jobDescription: Yup.string().required(
-              "Job description is required."
-            ),
-            jobRole: Yup.string().required("Job role is required."),
-            jobExperience: Yup.string().required("Job experience is required."),
-            // companyAddress: Yup.string().required("Company address is required."),
+      // Step 1: Validate a single field if name and value are provided
+      if (name && value !== undefined && stepValidationSchema) {
+        try {
+          await stepValidationSchema.validateAt(name, {
+            ...formData,
+            [name]: value,
           });
-
-          try {
-            entrySchema.validateSync(entry, { abortEarly: false });
-          } catch (err) {
-            // Collect errors for the current entry
-            err.inner.forEach((error) => {
-              experienceErrors.push({
-                index,
-                field: error.path,
-                message: error.message,
-              });
-            });
-          }
+          setErrors((prevErrors) => ({ ...prevErrors, [name]: undefined })); // Clear specific field error
+        } catch (fieldError) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: fieldError.message, // Update specific field error
+          }));
+          return false; // Return failure for field validation
         }
-      });
-
-      if (experienceErrors.length > 0) {
-        const newErrors = { ...errors };
-        experienceErrors.forEach(({ index, field, message }) => {
-          if (!newErrors.experience) newErrors.experience = [];
-          if (!newErrors.experience[index]) newErrors.experience[index] = {};
-          newErrors.experience[index][field] = message;
-        });
-        setErrors(newErrors);
-        return false; // Validation failed
-      } else {
-        setErrors((prevErrors) => ({ ...prevErrors, experience: undefined })); // Clear experience errors
-        return true; // Validation passed
       }
-    }
 
-    // Step 3: Validate the entire step (for other steps)
-    if (stepValidationSchema) {
-      const stepFormData = Object.keys(stepValidationSchema.fields).reduce(
-        (acc, field) => ({ ...acc, [field]: formData[field] }),
-        {}
-      );
+      // Step 2: Handle custom validation for the "experience" step
+      if (step === 2) {
+        const experienceErrors = [];
+        const experienceEntries = formData.experience || [];
 
-      try {
-        await stepValidationSchema.validate(stepFormData, {
-          abortEarly: false,
+        experienceEntries.forEach((entry, index) => {
+          const { companyName, jobDescription, jobRole, jobExperience } = entry;
+
+          // Check if any field is filled
+          const isAnyFieldFilled =
+            companyName || jobDescription || jobRole || jobExperience;
+
+          if (isAnyFieldFilled) {
+            // Validate all fields for this entry
+            const entrySchema = Yup.object().shape({
+              companyName: Yup.string().required("Company name is required."),
+              jobDescription: Yup.string().required(
+                "Job description is required."
+              ),
+              jobRole: Yup.string().required("Job role is required."),
+              jobExperience: Yup.string().required(
+                "Job experience is required."
+              ),
+              // companyAddress: Yup.string().required("Company address is required."),
+            });
+
+            try {
+              entrySchema.validateSync(entry, { abortEarly: false });
+            } catch (err) {
+              // Collect errors for the current entry
+              err.inner.forEach((error) => {
+                experienceErrors.push({
+                  index,
+                  field: error.path,
+                  message: error.message,
+                });
+              });
+            }
+          }
         });
-        setErrors({}); // Clear all errors if validation passes
-        return true; // Validation passed
-      } catch (stepError) {
+
+        if (experienceErrors.length > 0) {
+          const newErrors = { ...errors };
+          experienceErrors.forEach(({ index, field, message }) => {
+            if (!newErrors.experience) newErrors.experience = [];
+            if (!newErrors.experience[index]) newErrors.experience[index] = {};
+            newErrors.experience[index][field] = message;
+          });
+          setErrors(newErrors);
+          return false; // Validation failed
+        } else {
+          setErrors((prevErrors) => ({ ...prevErrors, experience: undefined })); // Clear experience errors
+          return true; // Validation passed
+        }
+      }
+
+      // Step 3: Validate the entire step (for other steps)
+      if (stepValidationSchema) {
+        const stepFormData = Object.keys(stepValidationSchema.fields).reduce(
+          (acc, field) => ({ ...acc, [field]: formData[field] }),
+          {}
+        );
+
+        try {
+          await stepValidationSchema.validate(stepFormData, {
+            abortEarly: false,
+          });
+          setErrors({}); // Clear all errors if validation passes
+          return true; // Validation passed
+        } catch (stepError) {
+          const newErrors = {};
+          stepError.inner.forEach((err) => {
+            newErrors[err.path] = err.message;
+          });
+          setErrors(newErrors); // Update errors for all invalid fields in the step
+          return false; // Validation failed
+        }
+      }
+
+      return true; // Default to true if no validation is required for this step
+    } catch (error) {
+      console.error("Unexpected validation error:", error);
+      return false; // Return failure for unexpected errors
+    }
+  };
+
+  const validateForm = async () => {
+    try {
+      await validationSchema.validate(formData, { abortEarly: false });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error.inner) {
         const newErrors = {};
-        stepError.inner.forEach((err) => {
+        error.inner.forEach((err) => {
           newErrors[err.path] = err.message;
         });
-        setErrors(newErrors); // Update errors for all invalid fields in the step
-        return false; // Validation failed
+        setErrors(newErrors);
       }
+      return false;
     }
+  };
 
-    return true; // Default to true if no validation is required for this step
-  } catch (error) {
-    console.error("Unexpected validation error:", error);
-    return false; // Return failure for unexpected errors
-  }
-};
+  const [image, setImage] = useState();
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [imageName, setImageName] = useState("");
 
- const validateForm = async () => {
-  try {
-    await validationSchema.validate(formData, { abortEarly: false });
-    setErrors({});
-    return true;
-  } catch (error) {
-    if (error.inner) {
-      const newErrors = {};
-      error.inner.forEach((err) => {
-        newErrors[err.path] = err.message;
-      });
-      setErrors(newErrors);
-    }
-    return false;
-  }
-};
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
 
- const handleNextStep = async () => {
-  if (activeStep < steps.length - 1) {
-    const isValid = await validateStep(activeStep);
-    if (isValid) {
-      setActiveStep(activeStep + 1);
-      console.log("Next step:", activeStep + 1);
-      console.log("activeStep : ", activeStep);
-    } else {
-      console.log("Validation failed:", errors);
-      // console.log("form Submitted: ", formData);
-    }
-  }
-};
-
-const [image, setImage] = useState();
-const [isDragOver, setIsDragOver] = useState(false);
-const [imageName, setImageName] = useState("");
-
- const handleFileChange = (event) => {
-  const file = event.target.files[0];
-
-  // Clear previous errors
-  setErrors((prev) => ({ ...prev, image: null }));
-
-  if (file) {
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
-      setErrors((prev) => ({
-        ...prev,
-        image: "Only JPEG/PNG images are allowed.",
-      }));
-      return;
-    }
-
-    if (file.size > 2 * 1024 * 1024) {
-      setErrors((prev) => ({
-        ...prev,
-        image: "File size must be under 2MB.",
-      }));
-      return;
-    }
+    // Clear previous errors
     setErrors((prev) => ({ ...prev, image: null }));
 
-    // Store the file in formData
-    setFormData((prev) => ({ ...prev, image: file }));
-    setImage(URL.createObjectURL(file)); // Set preview URL
-    setImageName(file.name); // Optional: Set file name
-  }
-};
+    if (file) {
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        setErrors((prev) => ({
+          ...prev,
+          image: "Only JPEG/PNG images are allowed.",
+        }));
+        return;
+      }
 
-// const handleDrop = (event) => {
-//   event.preventDefault();
-//   setIsDragOver(false);
-//   const file = event.dataTransfer.files[0]; // Get the dropped file
-//   handleFileChange({ target: { files: [file] } }); // Pass the file to handleFileChange
-// };
+      if (file.size > 2 * 1024 * 1024) {
+        setErrors((prev) => ({
+          ...prev,
+          image: "File size must be under 2MB.",
+        }));
+        return;
+      }
+      setErrors((prev) => ({ ...prev, image: null }));
 
-// Handle drag events
- const handleDragEnter = (event) => {
-  event.preventDefault();
-  if (!image) setIsDragOver(true); // Only show drag-over effect if no image is selected
-};
+      // Store the file in formData
+      setFormData((prev) => ({ ...prev, image: file }));
+      setImage(URL.createObjectURL(file)); // Set preview URL
+      setImageName(file.name); // Optional: Set file name
+    }
+  };
 
- const handleDragLeave = () => {
-  if (!image) setIsDragOver(false); // Hide drag-over effect if no image is selected
-};
+  // Handle drag events
+  const handleDragEnter = (event) => {
+    event.preventDefault();
+    if (!image) setIsDragOver(true); // Only show drag-over effect if no image is selected
+  };
 
- const handleDragOver = (event) => {
-  event.preventDefault(); // Prevent the default behavior to allow drop
-};
+  const handleDragLeave = () => {
+    if (!image) setIsDragOver(false); // Hide drag-over effect if no image is selected
+  };
 
-// Handle file drop
- const handleDrop = (event) => {
-  event.preventDefault();
-  const file = event.dataTransfer.files[0]; // Get the file from the drop event
+  const handleDragOver = (event) => {
+    event.preventDefault(); // Prevent the default behavior to allow drop
+  };
 
-  if (file) {
-    handleFileChange(file); // Call the image upload function
-  }
-};
+  // Handle file drop
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0]; // Get the file from the drop event
 
-// Handle removing the image
- const handleRemoveImage = () => {
-  setImage(null); // Clear the image URL
-  setImageName(""); // Clear the image name
-  // Optionally remove the image from Firebase or mark it as deleted in your database
-};
+    if (file) {
+      handleFileChange(file); // Call the image upload function
+    }
+  };
 
-// Add a new college entry
- const addCollege = () => {
-  if (formData.collegeName.trim() && formData.course.trim() && formData.grade) {
-    const newCollege = {
-      collegeName: formData.collegeName,
-      course: formData.course,
-      grade: formData.grade,
-      gradeType: formData.gradeType,
-    };
+  // Handle removing the image
+  const handleRemoveImage = () => {
+    setImage(null); // Clear the image URL
+    setImageName(""); // Clear the image name
+    // Optionally remove the image from Firebase or mark it as deleted in your database
+  };
+  
+  /** Social link methods starts */
+  const [socialData, setSocialData] = useState(userDetails?.socialLink?.[0] || {});
 
-    const isDuplicate = formData.colleges?.some(
-      (college) =>
-        college.collegeName === newCollege.collegeName &&
-        college.course === newCollege.course
-    );
+  // Handle input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSocialData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    if (!isDuplicate) {
-      // Add new college
-      setFormData((prev) => ({
-        ...prev,
-        colleges: [...(prev.colleges || []), newCollege],
+  // Toggle edit mode
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
+
+  // Save updated data
+  const handleSave = () => {
+   if (userDetails?.socialLink?.length > 0) {
+      userDetails.socialLink[0] = { ...socialData }; // Directly modify the object
+    }
+    setIsEditing(false);
+    console.log(socialData)
+    console.log(userDetails)
+  };
+  /** Social link methods end */
+
+  // Add a new college entry
+  const addCollege = () => {
+    setUserDetails((prevDetails) => {
+      const updatedColleges = [...prevDetails.colleges];
+      const lastIndex = updatedColleges.length - 1;
+
+      // Validate the last entry before adding a new one
+      if (lastIndex >= 0) {
+        const lastEntry = updatedColleges[lastIndex];
+        const errors = {};
+
+        if (!lastEntry.collegeName?.trim())
+          errors.collegeName = "College name is required.";
+        if (!lastEntry.course?.trim()) errors.course = "Course is required.";
+        if (!lastEntry.grade?.trim()) errors.grade = "Grade is required.";
+
+        if (Object.keys(errors).length > 0) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            [lastIndex]: errors,
+          }));
+          return prevDetails;
+        }
+      }
+
+      // Add a new blank entry
+      const newEntry = {
         collegeName: "",
         course: "",
         grade: "",
-        gradeType: "CGPA",
-      }));
+        gradeType: "",
+        isEditable: true,
+      };
 
-      // Clear all errors
-      setErrors({});
-    } else {
-      setErrors((prev) => ({
-        ...prev,
-        duplicate: "This college entry already exists.",
-      }));
-    }
-  } else {
-    // Set errors for empty fields
-    setErrors((prev) => ({
-      ...prev,
-      collegeName: !formData.collegeName ? "College name is required." : "",
-      course: !formData.course ? "Course is required." : "",
-      grade: !formData.grade ? "Grade is required." : "",
-    }));
-  }
-};
+      return {
+        ...prevDetails,
+        colleges: [...updatedColleges, newEntry],
+      };
+    });
 
-// Remove a college entry
- const removeCollege = (index) => {
-  setFormData((prev) => ({
-    ...prev,
-    colleges: prev.colleges.filter((_, i) => i !== index),
-  }));
-};
+    // Enable editing for the new entry
+    setCollegeEditingStates((prev) => [...prev, true]);
+  };
 
-const [skillOptions, setSkillOptions] = useState([
-  "JavaScript",
-  "React",
-  "CSS",
-  "Python",
-  "Project Management",
-]);
-const [hobbyOptions, setHobbyOptions] = useState([
-  "Reading",
-  "Traveling",
-  "Cooking",
-]);
-const [searchTerm, setSearchTerm] = useState({ skills: "", hobbies: "" });
+  // Remove a college entry
+  const removeCollege = (field, index) => {
+    setUserDetails((prevDetails) => {
+      const updatedColleges = prevDetails.colleges.filter(
+        (_, i) => i !== index
+      );
+      return { ...prevDetails, colleges: updatedColleges };
+    });
 
-// Add dynamic entries
-const addEntry = () => {
-  setUserDetails((prevDetails) => {
-    const updatedExperience = [...prevDetails.experience];
-    const lastIndex = updatedExperience.length - 1;
+    // Update cardEditingStates correctly
+    setCollegeEditingStates((prev) => prev.filter((_, i) => i !== index));
 
-    // Validate the last entry if it exists
-    if (lastIndex >= 0) {
-      const lastEntry = updatedExperience[lastIndex];
-      const errors = {};
+    // Ensure no orphaned errors remain
+    setErrors((prevErrors) => {
+      const updatedErrors = { ...prevErrors };
+      if (updatedErrors.colleges) {
+        delete updatedErrors.colleges[index];
+      }
+      return updatedErrors;
+    });
+  };
 
-      // Check required fields
-      if (!lastEntry.companyName?.trim()) errors.companyName = "Company name is required.";
-      if (!lastEntry.jobRole?.trim()) errors.jobRole = "Job role is required.";
-      if (!lastEntry.jobExperience?.trim()) errors.jobExperience = "Experience is required.";
-      if (!lastEntry.jobDescription?.trim()) errors.jobDescription = "Description is required.";
+  const handleEducationSave = (index) => {
+    const updatedStates = [...collegeEditingStates];
+    updatedStates[index] = false; // Disable editing for this card
+    setCollegeEditingStates(updatedStates);
+  };
 
-      // If validation fails, set errors and prevent new entry
-      if (Object.keys(errors).length > 0) {
+  const saveAllEducation = (index) => {
+    // const handleCardSave = (index) => {
+      setUserDetails((prevDetails) => {
+        const updatedColleges = [...prevDetails.colleges];
+        const currentEntry = updatedColleges[index];
+  
+        // Initialize an object to store errors
+        const errors = {};
+  
+        // Validate required fields
+        if (!currentEntry.collegeName?.trim())
+          errors.collegeName = "Company name is required.";
+        if (!currentEntry.course?.trim())
+          errors.course = "Address is required.";
+        if (!currentEntry.grade?.trim())
+          errors.grade = "Job role is required.";
+  
+        // If validation fails, set errors and prevent saving
+        if (Object.keys(errors).length > 0) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            colleges: { ...prevErrors.colleges, [index]: errors },
+          }));
+          return prevDetails; // Stop the update
+        }
+  
+        // Clear errors for the saved entry
         setErrors((prevErrors) => ({
           ...prevErrors,
-          experience: { ...prevErrors.experience, [lastIndex]: errors },
+          colleges: { ...prevErrors.colleges, [index]: {} },
         }));
-        return prevDetails;
+  
+        // Disable editing for the specific card after successful validation
+        const updatedStates = [...cardEditingStates];
+        updatedStates[index] = false;
+        setCollegeEditingStates(updatedStates);
+  
+        return prevDetails; // Ensure state is updated correctly
+      });
+    // };
+  };
+
+  const [skillOptions, setSkillOptions] = useState([
+    "JavaScript",
+    "React",
+    "CSS",
+    "Python",
+    "Project Management",
+  ]);
+  const [hobbyOptions, setHobbyOptions] = useState([
+    "Reading",
+    "Traveling",
+    "Cooking",
+  ]);
+  const [searchTerm, setSearchTerm] = useState({ skills: "", hobbies: "" });
+
+  // Add dynamic entries
+  const addEntry = () => {
+    setUserDetails((prevDetails) => {
+      const updatedExperience = [...prevDetails.experience];
+      const lastIndex = updatedExperience.length - 1;
+
+      // Initialize an object to store errors
+      const errors = {};
+
+      // Validate the last entry if it exists
+      if (lastIndex >= 0) {
+        const lastEntry = updatedExperience[lastIndex];
+
+        if (!lastEntry.companyName?.trim())
+          errors.companyName = "Company name is required.";
+        // if (!lastEntry.companyAddress?.trim()) errors.companyAddress = "Address is required.";
+        if (!lastEntry.jobRole?.trim())
+          errors.jobRole = "Job role is required.";
+        if (!lastEntry.jobExperience?.trim())
+          errors.jobExperience = "Experience is required.";
+        if (!lastEntry.jobDescription?.trim())
+          errors.jobDescription = "Description is required.";
+
+        // If validation fails, set errors and prevent a new entry
+        if (Object.keys(errors).length > 0) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            experience: { ...prevErrors.experience, [lastIndex]: errors },
+          }));
+          return prevDetails; // Stop the update
+        }
+
+        // Clear errors for the last entry if all fields are valid
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          experience: { ...prevErrors.experience, [lastIndex]: {} },
+        }));
       }
+
+      // Add a new blank experience entry
+      const newEntry = {
+        companyName: "",
+        companyAddress: "",
+        jobRole: "",
+        jobExperience: "",
+        jobDuration: "",
+        jobDescription: "",
+        isEditable: true,
+      };
+
+      return {
+        ...prevDetails,
+        experience: [...updatedExperience, newEntry],
+      };
+    });
+  };
+
+  useEffect(() => {
+    setAllCardsSaved(cardEditingStates.every((state) => !state));
+  }, [cardEditingStates]);
+
+  useEffect(() => {
+    setAllCollegeCardsSaved(collegeEditingStates.every((state) => !state));
+  }, [collegeEditingStates]);
+
+  const saveCollegeChanges = () => {
+    let hasErrors = false;
+    const newErrors = {};
+
+    // Validate each experience entry
+    userDetails.colleges.forEach((entry, index) => {
+      const errors = {};
+
+      if (!entry.collegeName?.trim())
+        errors.collegeName = "Name is required.";
+      if (!entry.course?.trim()) 
+        errors.course = "course is required.";
+      if (!entry.grade?.trim())
+        errors.grade = "Grade is required.";
+      // if (!entry.gradeType?.trim())
+      //   errors.gradeType = "Grade Type is required.";
+
+      if (Object.keys(errors).length > 0) {
+        newErrors[index] = errors; // Store errors for the specific card
+        hasErrors = true;
+      }
+    });
+
+    // If there are validation errors, prevent saving and show errors
+    if (hasErrors) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        colleges: newErrors, // Store errors at the correct experience index
+      }));
+      alert("Please fill in all required fields before saving.");
+      return;
     }
 
-    // Clear errors for the last entry
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      experience: { ...prevErrors.experience, [lastIndex]: {} },
-    }));
+    // Ensure all cards are saved
+    const allSaved = userDetails.colleges.every(
+      (_, index) => !collegeEditingStates[index]
+    );
 
-    // Add a new blank entry
-    const newEntry = {
-      companyName: "",
-      companyAddress: "",
-      jobRole: "",
-      jobExperience: "",
-      jobDuration: "",
-      jobDescription: "",
-      isEditable: true, // Allow editing for the new entry
-    };
+    if (!allSaved) {
+      alert("Please save all individual cards before saving parent changes.");
+      return;
+    }
 
-    return {
+    // If validation passes, save all changes
+    setUserDetails((prevDetails) => ({
       ...prevDetails,
-      experience: [...updatedExperience, newEntry],
-    };
-  });
-};
-
-useEffect(() => {
-  setAllCardsSaved(cardEditingStates.every((state) => !state));
-}, [cardEditingStates]);
-
-const saveChanges = () => {
-  if (!allCardsSaved) {
-    alert("Please save all individual cards before saving parent changes.");
-    return;
-  }
-  // Save all changes for the parent container
-  setUserDetails((prevDetails) => {
-    const updatedExperience = prevDetails.experience.map((entry) => ({
-      ...entry,
-      setIsEditing: false, // Disable editing for all entries
+      colleges: prevDetails.colleges.map((entry) => ({
+        ...entry,
+        isEditable: false, // Disable editing for all entries
+      })),
     }));
 
     console.log("All changes saved");
-    return { ...prevDetails, experience: updatedExperience };
-  });
 
-  setIsEditing(false);
-  setCardEditingStates((prev) => prev.map(() => false)); // Reset all cards to non-editing state
-  // setEditingCardIndex(null); // Reset card editing state
-};
+    setIsCardEditing(false);
+    setCollegeEditingStates((prev) => prev.map(() => false)); // Reset all cards to non-editing state
+    setErrors({}); // Clear errors after successful save
+  };
 
-// Function to handle editing a specific card
-const handleCardEdit = (index) => {
-  const updatedStates = [...cardEditingStates];
-  updatedStates[index] = true; // Enable editing for the specific card
-  setCardEditingStates(updatedStates);
-};
+  // save and check experience changes
+  const saveChanges = () => {
+    let hasErrors = false;
+    const newErrors = {};
 
-// Function to handle saving a specific card
-const handleCardSave = (index) => {
-  const updatedStates = [...cardEditingStates];
-  updatedStates[index] = false; // Disable editing for the specific card
-  setCardEditingStates(updatedStates);
-};
+    // Validate each experience entry
+    userDetails.experience.forEach((entry, index) => {
+      const errors = {};
 
-const saveCardChanges = (index) => {
-  // Save changes for a specific card
-  setUserDetails((prevDetails) => {
-    const updatedExperience = prevDetails.experience.map((entry, i) =>
-      i === index ? { ...entry, isEditable: false } : entry
+      if (!entry.companyName?.trim())
+        errors.companyName = "Company name is required.";
+      if (!entry.jobRole?.trim()) errors.jobRole = "Job role is required.";
+      if (!entry.jobExperience?.trim())
+        errors.jobExperience = "Experience is required.";
+      if (!entry.jobDescription?.trim())
+        errors.jobDescription = "Description is required.";
+
+      if (Object.keys(errors).length > 0) {
+        newErrors[index] = errors; // Store errors for the specific card
+        hasErrors = true;
+      }
+    });
+
+    // If there are validation errors, prevent saving and show errors
+    if (hasErrors) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        experience: newErrors, // Store errors at the correct experience index
+      }));
+      alert("Please fill in all required fields before saving.");
+      return;
+    }
+
+    // Ensure all cards are saved
+    const allSaved = userDetails.experience.every(
+      (_, index) => !cardEditingStates[index]
     );
 
-    return { ...prevDetails, experience: updatedExperience };
-  });
+    if (!allSaved) {
+      alert("Please save all individual cards before saving parent changes.");
+      return;
+    }
 
-  setEditingCardIndex(null); // Exit card editing mode
-};
-
-const startCardEditing = (index) => {
-  setEditingCardIndex(index);
-};
-
-
-
-// Add skill/hobby
-const addSelection = (arrayName, value) => {
-  const lowercaseValue = value.toLowerCase();
-
-  setUserDetails((prevDetails) => {
-    const updatedArray = [...new Set([...prevDetails[arrayName], lowercaseValue])];
-
-    return {
+    // If validation passes, save all changes
+    setUserDetails((prevDetails) => ({
       ...prevDetails,
-      [arrayName]: updatedArray,
-    };
-  });
+      experience: prevDetails.experience.map((entry) => ({
+        ...entry,
+        isEditable: false, // Disable editing for all entries
+      })),
+    }));
 
-  // Update skill/hobby options if it's a new value
-  if (arrayName === "skills" && !skillOptions.includes(lowercaseValue)) {
-    setSkillOptions((prev) => [...prev, lowercaseValue]);
-  } else if (arrayName === "hobbies" && !hobbyOptions.includes(lowercaseValue)) {
-    setHobbyOptions((prev) => [...prev, lowercaseValue]);
-  }
+    console.log("All changes saved");
 
-  setSearchTerm((prev) => ({ ...prev, [arrayName]: "" }));
-};
-
-// Search term change
-const handleSearchChange = (e, arrayName) => {
-  setSearchTerm({ ...searchTerm, [arrayName]: e.target.value });
-};
-
-// Remove dynamic entries
-const removeEntry = (field, index) => {
-  const updatedField = userDetails[field].filter((_, i) => i !== index);
-
-  // Update userDetails state
-  setUserDetails((prevDetails) => ({
-    ...prevDetails,
-    [field]: updatedField,
-  }));
-};
+    setIsEditing(false);
+    setCardEditingStates((prev) => prev.map(() => false)); // Reset all cards to non-editing state
+    setErrors({}); // Clear errors after successful save
+  };
 
 
+  // Function to handle editing a specific card
+  const handleCardEdit = (index) => {
+    const updatedStates = [...cardEditingStates ];
+    updatedStates[index] = true; // Enable editing for the specific card
+    setCardEditingStates(updatedStates);
+  };
 
-// Education grade input handler
- const gradeInput = (e) => {
-  const { name, value } = e.target;
+  const handleCollegeCardEdit = (index) => {
+    const updatedStates = [...collegeEditingStates ];
+    updatedStates[index] = true; // Enable editing for the specific card
+    setCollegeEditingStates(updatedStates);
+  };
 
-  // Validate CGPA and percentage
-  if (name === "grade") {
-    if (formData.gradeType === "CGPA" && value > 10) {
-      alert("CGPA must be less than or equal to 10");
-      return;
-    }
-    if (formData.gradeType === "Percentage" && value > 100) {
-      alert("Percentage must be less than or equal to 100");
-      return;
-    }
-  }
+  // Function to handle saving a specific card
+  const handleCardSave = (index) => {
+    setUserDetails((prevDetails) => {
+      const updatedExperience = [...prevDetails.experience];
+      const currentEntry = updatedExperience[index];
 
-  handleInputChange(e); // Call the parent's input handler
-};
+      // Initialize an object to store errors
+      const errors = {};
 
-// Save data into Firebase
-const saveFormDataToFirebase = async () => {
-  const db = getDatabase();
-  const formRef = ref(db, "userDetailss/" + userDetails.uid); // Reference to your userDetails data in the database
-  await set(formRef, formData); // Save the form data
-};
+      // Validate required fields
+      if (!currentEntry.companyName?.trim())
+        errors.companyName = "Company name is required.";
+      if (!currentEntry.companyAddress?.trim())
+        errors.companyAddress = "Address is required.";
+      if (!currentEntry.jobRole?.trim())
+        errors.jobRole = "Job role is required.";
+      if (!currentEntry.jobExperience?.trim())
+        errors.jobExperience = "Experience is required.";
+      if (!currentEntry.jobDescription?.trim())
+        errors.jobDescription = "Description is required.";
 
-// Handle form submission
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     console.log(userDetails.uid);
+      // If validation fails, set errors and prevent saving
+      if (Object.keys(errors).length > 0) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          experience: { ...prevErrors.experience, [index]: errors },
+        }));
+        return prevDetails; // Stop the update
+      }
 
-//     // Validate the form data first
-//     // const isValid = await validateForm();
-//     // if (!isValid) {
-//     //     console.log("Form validation failed:", errors);
-//     //     return;
-//     // }
-
-//     // Proceed with form submission after validation
-//     try {
-//         // Save form data to Firebase
-//         // await saveFormDataToFirebase();
-
-//         // Reset form state or show success message
-//         console.log("Form submitted successfully!",formData);
-
-//     } catch (error) {
-//         console.error("Error saving data to Firebase:", error);
-//     }
-// };
-
-const navigate = useNavigate();
-
- const handleSubmit = async (e) => {
-  e.preventDefault(); // Prevent default form submission behavior
-  setIsLoading(true);
-  console.log(formData.image);
-  console.log("userDetails UID:", userDetails.uid);
-
-  try {
-    // // Perform validation for the current step
-    // const isValid = await validateStep(activeStep);
-
-    // if (!isValid) {
-    //   console.log("Validation failed for step:", activeStep);
-    //   alert(`Please complete all required fields in step ${activeStep + 1} before submitting.`);
-    //   return; // Stop submission if validation fails
-    // }
-
-    const db = getDatabase(); // Initialize Firebase Realtime Database
-
-    // Reference to the userDetails's portfolio node
-    const portfolioRef = dbRef(db, `portfolioId/${userDetails.uid}`);
-
-    // Check if the userDetails already has a portfolio
-    const snapshot = await get(portfolioRef);
-    if (snapshot.exists()) {
-      console.log("userDetails already has a portfolio:", snapshot.val());
-      alert(
-        "You already have a portfolio link. You cannot create another one."
-      );
-      return; // Exit if the portfolio already exists
-    }
-
-    // Upload the image to Firebase Storage
-    let imageUrl = null;
-    if (formData.image) {
-      const storageRef = ref(storage, `images/${formData.image.name}`);
-      const uploadTask = await uploadBytesResumable(storageRef, formData.image);
-      imageUrl = await getDownloadURL(uploadTask.ref);
-
-      // Save the image URL to formData
-      setFormData((prev) => ({
-        ...prev,
-        image: imageUrl, // Store the URL of the image in formData
+      // Clear errors for the saved entry
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        experience: { ...prevErrors.experience, [index]: {} },
       }));
+
+      // Disable editing for the specific card after successful validation
+      const updatedStates = [...cardEditingStates];
+      updatedStates[index] = false;
+      setCardEditingStates(updatedStates);
+
+      return prevDetails; // Ensure state is updated correctly
+    });
+  };
+
+  const saveCardChanges = (index) => {
+    // Save changes for a specific card
+    setUserDetails((prevDetails) => {
+      const updatedExperience = prevDetails.experience.map((entry, i) =>
+        i === index ? { ...entry, isEditable: false } : entry
+      );
+
+      return { ...prevDetails, experience: updatedExperience };
+    });
+
+    setEditingCardIndex(null); // Exit card editing mode
+  };
+
+  const startCardEditing = (index) => {
+    setEditingCardIndex(index);
+  };
+
+  // Add skill/hobby
+  const addSelection = (arrayName, value) => {
+    const lowercaseValue = value.toLowerCase();
+
+    setUserDetails((prevDetails) => {
+      const updatedArray = [
+        ...new Set([...prevDetails[arrayName], lowercaseValue]),
+      ];
+
+      return {
+        ...prevDetails,
+        [arrayName]: updatedArray,
+      };
+    });
+
+    // Update skill/hobby options if it's a new value
+    if (arrayName === "skills" && !skillOptions.includes(lowercaseValue)) {
+      setSkillOptions((prev) => [...prev, lowercaseValue]);
+    } else if (
+      arrayName === "hobbies" &&
+      !hobbyOptions.includes(lowercaseValue)
+    ) {
+      setHobbyOptions((prev) => [...prev, lowercaseValue]);
     }
 
-    // Generate a unique portfolio link
-    const uniqueLink = generatePortfolioLink(formData.name, formData.surname);
+    setSearchTerm((prev) => ({ ...prev, [arrayName]: "" }));
+  };
 
-    // Portfolio data to be saved
-    const portfolioData = {
-      userDetailsId: userDetails.uid,
-      image: imageUrl, // Store the image URL in portfolio data
-      uniqueLink: `${window.location.origin}/${uniqueLink}`, // Full unique link
-      createdAt: Date.now(), // Timestamp for when the portfolio was created
-    };
+  // Search term change
+  const handleSearchChange = (e, arrayName) => {
+    setSearchTerm({ ...searchTerm, [arrayName]: e.target.value });
+  };
 
-    // Save the portfolio data to Firebase under the userDetails's UID
-    await set(portfolioRef, portfolioData);
+  // Remove dynamic entries
+  const removeEntry = (field, index) => {
+    setUserDetails((prevDetails) => {
+      const updatedExperience = prevDetails.experience.filter(
+        (_, i) => i !== index
+      );
+      return { ...prevDetails, experience: updatedExperience };
+    });
 
-    // Save the userDetails data to Firebase under the userDetails's UID
-    await savePortfolioDataToFirebase(formData, userDetails.uid);
+    // Update cardEditingStates correctly
+    setCardEditingStates((prev) => prev.filter((_, i) => i !== index));
 
-    // Reset form state or show a success message
-    console.log("Portfolio data saved successfully!", portfolioData);
-    alert("Portfolio created successfully!");
+    // Ensure no orphaned errors remain
+    setErrors((prevErrors) => {
+      const updatedErrors = { ...prevErrors };
+      if (updatedErrors.experience) {
+        delete updatedErrors.experience[index];
+      }
+      return updatedErrors;
+    });
+  };
 
-    console.log(formData);
+  // Education grade input handler
+  const gradeInput = (e) => {
+    const { name, value } = e.target;
 
-    // await new Promise((resolve) => setTimeout(resolve, 5000)); // 2 seconds delay
+    // Validate CGPA and percentage
+    if (name === "grade") {
+      if (formData.gradeType === "CGPA" && value > 10) {
+        alert("CGPA must be less than or equal to 10");
+        return;
+      }
+      if (formData.gradeType === "Percentage" && value > 100) {
+        alert("Percentage must be less than or equal to 100");
+        return;
+      }
+    }
 
-    setHasPortfolio(true);
-    navigate(location.pathname, { replace: true }); // Refresh the current route
-  } catch (error) {
-    console.error("Error saving portfolio data to Firebase:", error);
-  } finally {
-    setIsLoading(false);
-    navigate(location.pathname, { replace: true });
-  }
-};
+    handleInputChange(e); // Call the parent's input handler
+  };
 
+  // Save data into Firebase
+  const saveFormDataToFirebase = async () => {
+    const db = getDatabase();
+    const formRef = ref(db, "userDetailss/" + userDetails.uid); // Reference to your userDetails data in the database
+    await set(formRef, formData); // Save the form data
+  };
 
+  // Handle form submission
+  //   const handleSubmit = async (e) => {
+  //     e.preventDefault();
+  //     console.log(userDetails.uid);
+
+  //     // Validate the form data first
+  //     // const isValid = await validateForm();
+  //     // if (!isValid) {
+  //     //     console.log("Form validation failed:", errors);
+  //     //     return;
+  //     // }
+
+  //     // Proceed with form submission after validation
+  //     try {
+  //         // Save form data to Firebase
+  //         // await saveFormDataToFirebase();
+
+  //         // Reset form state or show success message
+  //         console.log("Form submitted successfully!",formData);
+
+  //     } catch (error) {
+  //         console.error("Error saving data to Firebase:", error);
+  //     }
+  // };
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    setIsLoading(true);
+    console.log(formData.image);
+    console.log("userDetails UID:", userDetails.uid);
+
+    try {
+
+      const db = getDatabase(); // Initialize Firebase Realtime Database
+
+      // Reference to the userDetails's portfolio node
+      const portfolioRef = dbRef(db, `portfolioId/${userDetails.uid}`);
+
+      // Check if the userDetails already has a portfolio
+      const snapshot = await get(portfolioRef);
+      if (snapshot.exists()) {
+        console.log("userDetails already has a portfolio:", snapshot.val());
+        alert(
+          "You already have a portfolio link. You cannot create another one."
+        );
+        return; // Exit if the portfolio already exists
+      }
+
+      // Upload the image to Firebase Storage
+      let imageUrl = null;
+      if (formData.image) {
+        const storageRef = ref(storage, `images/${formData.image.name}`);
+        const uploadTask = await uploadBytesResumable(
+          storageRef,
+          formData.image
+        );
+        imageUrl = await getDownloadURL(uploadTask.ref);
+
+        // Save the image URL to formData
+        setFormData((prev) => ({
+          ...prev,
+          image: imageUrl, // Store the URL of the image in formData
+        }));
+      }
+
+      // Generate a unique portfolio link
+      const uniqueLink = generatePortfolioLink(formData.name, formData.surname);
+
+      // Portfolio data to be saved
+      const portfolioData = {
+        userDetailsId: userDetails.uid,
+        image: imageUrl, // Store the image URL in portfolio data
+        uniqueLink: `${window.location.origin}/${uniqueLink}`, // Full unique link
+        createdAt: Date.now(), // Timestamp for when the portfolio was created
+      };
+
+      // Save the portfolio data to Firebase under the userDetails's UID
+      await set(portfolioRef, portfolioData);
+
+      // Save the userDetails data to Firebase under the userDetails's UID
+      await savePortfolioDataToFirebase(formData, userDetails.uid);
+
+      // Reset form state or show a success message
+      console.log("Portfolio data saved successfully!", portfolioData);
+      alert("Portfolio created successfully!");
+
+      console.log(formData);
+
+      // await new Promise((resolve) => setTimeout(resolve, 5000)); // 2 seconds delay
+
+      setHasPortfolio(true);
+      navigate(location.pathname, { replace: true }); // Refresh the current route
+    } catch (error) {
+      console.error("Error saving portfolio data to Firebase:", error);
+    } finally {
+      setIsLoading(false);
+      navigate(location.pathname, { replace: true });
+    }
+  };
 
   return (
     <div className="w-full flex flex-col  text-foreground bg-background p-5 gap-10">
@@ -851,307 +1084,442 @@ const navigate = useNavigate();
           </div>
         </div>
       </div>
-      {/* <PersonalInfo /> */}
-      {/* <SocialLinks/> */}
+
       {/* social info */}
       <div className="w-full border-2 p-5 rounded-md relative">
-        <div className="absolute -top-4 left-4 bg-background px-2">
-          <h1 className="text-lg font-bold">Social Info</h1>
+      {/* Header */}
+      <div className="absolute -top-4 left-4 bg-background px-2">
+        <h1 className="text-lg font-bold">Social Info</h1>
+      </div>
+
+      {/* Edit Button */}
+      <button
+        onClick={isEditing ? handleSave : handleEditToggle}
+        className="absolute top-2 right-4 px-3 py-1 bg-primary text-white rounded-md"
+      >
+        {isEditing ? "Save" : "Edit"}
+      </button>
+
+      {/* Social Links Form */}
+      <div className="flex flex-col gap-2 mt-4">
+        <div className="flex gap-5">
+          <div className="flex w-2/4 items-center gap-2">
+            <label htmlFor="linkedIn" className="min-w-fit capitalize">
+              LinkedIn:
+            </label>
+            <Input
+              type="text"
+              name="linkedIn"
+              value={socialData.linkedIn || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="w-full border-2 text-foreground bg-background"
+            />
+          </div>
+          <div className="flex w-2/4 items-center gap-2">
+            <label htmlFor="instagram" className="min-w-fit capitalize">
+              Instagram:
+            </label>
+            <Input
+              type="text"
+              name="instagram"
+              value={socialData.instagram || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="w-full border-2 text-foreground bg-background"
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          {userDetails?.socialLink?.[0] && (
-            <>
-              {/* First block */}
-              <div className=" flex gap-5">
-                <div className="flex w-2/4 items-center gap-2">
-                  <label htmlFor="linkedIn" className="min-w-fit capitalize">
-                    LinkedIn:
-                  </label>
-                  <Input
-                    type="text"
-                    value={userDetails.socialLink[0]?.linkedIn || ""}
-                    disabled
-                    className="w-full border-2 text-foreground bg-background"
-                  />
-                </div>
-                <div className="flex w-2/4 items-center gap-2">
-                  <label htmlFor="instagram" className="min-w-fit capitalize">
-                    Instagram:
-                  </label>
-                  <Input
-                    type="text"
-                    value={userDetails.socialLink[0]?.instagram || ""}
-                    disabled
-                    className="w-full border-2 text-foreground bg-background"
-                  />
-                </div>
-              </div>
-
-              {/* Second block */}
-              <div className="flex gap-5">
-                <div className="flex w-2/4 items-center gap-2">
-                  <label htmlFor="gitHub" className="min-w-fit capitalize">
-                    GitHub:
-                  </label>
-                  <Input
-                    type="text"
-                    value={userDetails.socialLink[0]?.gitHub || ""}
-                    disabled
-                    className="w-full border-2 text-foreground bg-background"
-                  />
-                </div>
-                <div className="flex w-2/4 items-center gap-2">
-                  <label htmlFor="tweeter" className="min-w-fit capitalize">
-                    Twitter:
-                  </label>
-                  <Input
-                    type="text"
-                    value={userDetails.socialLink[0]?.tweeter || ""}
-                    disabled
-                    className="w-full border-2 text-foreground bg-background"
-                  />
-                </div>
-              </div>
-            </>
-          )}
+        <div className="flex gap-5">
+          <div className="flex w-2/4 items-center gap-2">
+            <label htmlFor="gitHub" className="min-w-fit capitalize">
+              GitHub:
+            </label>
+            <Input
+              type="text"
+              name="gitHub"
+              value={socialData.gitHub || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="w-full border-2 text-foreground bg-background"
+            />
+          </div>
+          <div className="flex w-2/4 items-center gap-2">
+            <label htmlFor="tweeter" className="min-w-fit capitalize">
+              Twitter:
+            </label>
+            <Input
+              type="text"
+              name="tweeter"
+              value={socialData.tweeter || ""}
+              onChange={handleChange}
+              disabled={!isEditing}
+              className="w-full border-2 text-foreground bg-background"
+            />
+          </div>
         </div>
       </div>
+    </div>
 
       {/* education info */}
       <div className="w-full border-2 p-5 rounded-md relative">
+        <div className="flex justify-between items-center mb-3 ">
+          {isCardEditing ? (
+            <button
+              onClick={saveCollegeChanges}
+              className={`p-1 rounded-sm absolute -top-4 right-0 ${
+                allCollegeCardsSaved
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-300 text-gray-600 cursor-not-allowed"
+              }`}
+              disabled={!allCollegeCardsSaved}
+              title={"Save"}
+            >
+              <CheckSquare size={15} />
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsCardEditing(true)}
+              className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-0"
+              title={"Edit"}
+            >
+              <Pencil size={15} />
+              {/* Edit All */}
+            </button>
+          )}
+        </div>
+        {isCardEditing && (
+          <button
+            onClick={() => addCollege("college")}
+            className=" text-white px-4 py-2 rounded-md mb-3 bg-yellow-500"
+          >
+            Add College
+          </button>
+        )}
+
         <div className="absolute -top-4 left-4 bg-background px-2">
           <h1 className="text-lg font-bold">Educational Info</h1>
         </div>
-
+        
         <div className="flex  gap-5">
           {userDetails?.colleges?.map((college, index) => (
             <div
               key={index}
-              className="flex flex-col w-2/4 gap-5 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md"
+              className="flex flex-col gap-5 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md relative"
             >
-              {/* College Name and Course */}
-              <div className="flex gap-2 items-center">
+              {collegeEditingStates[index] && (
+                <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => removeCollege("colleges", index)}
+                    className="bg-red-500 text-white p-1 rounded-sm "
+                    title="delete"
+                  >
+                    <X size={15} />
+                  </button>
+
+                  {/* Save Button */}
+                  <button
+                    onClick={() => saveAllEducation(index)}
+                    className="bg-green-500 text-white p-1 rounded-sm "
+                    title="save"
+                  >
+                    <Check size={15} />
+                  </button>
+                </div>
+              )}
+
+              <div className="flex gap-2 flex-col ">
                 <label className="text-sm font-medium text-foreground min-w-fit">
-                  College Name :
+                  College Name:
                 </label>
                 <Input
                   type="text"
-                  value={college.collegeName || "N/A"}
-                  disabled
+                  value={college.collegeName}
+                  onChange={(e) =>
+                    handleInputChange(e, "colleges", index, "collegeName")
+                  }
+                  disabled={!collegeEditingStates[index]}
                   className="border-2 text-foreground bg-background p-2"
                   placeholder="College Name"
                 />
+                {errors.colleges?.[index]?.collegeName && (
+                  <span className="text-red-500 text-sm">
+                    {errors.colleges[index].collegeName}
+                  </span>
+                )}
               </div>
-              <div className="flex gap-2 items-center">
+
+<div className="flex">
+
+              <div className="flex flex-col gap-2 ">
                 <label className="text-sm font-medium text-foreground min-w-fit">
-                  Course :
+                  Course:
                 </label>
                 <Input
                   type="text"
-                  value={college.course || "N/A"}
-                  disabled
+                  value={college.course}
+                  onChange={(e) => handleInputChange(e, "colleges", index, "course")}
+                  disabled={!collegeEditingStates[index]}
                   className="border-2 text-foreground bg-background p-2"
                   placeholder="Course"
                 />
+                {errors.colleges?.[index]?.course && (
+                  <span className="text-red-500 text-sm">
+                    {errors.colleges[index].course}
+                  </span>
+                )}
               </div>
 
-              {/* Grade and Grade Type */}
-              <div className="flex gap-2 items-center">
+              <div className="flex flex-col gap-2 ">
                 <label className="text-sm font-medium text-foreground min-w-fit">
-                  Grade :
+                  Grade:
                 </label>
                 <Input
                   type="text"
-                  value={`${college.grade || "N/A"} ${
-                    college.gradeType || "N/A"
-                  }`}
-                  disabled
-                  className="border-2 text-foreground bg-background p-2 "
-                  placeholder="Grade & Grade Type"
+                  value={college.grade}
+                  onChange={(e) => handleInputChange(e, "colleges", index, "grade")}
+                  disabled={!collegeEditingStates[index]}
+                  className="border-2 text-foreground bg-background p-2"
+                  placeholder="Grade"
                 />
+                {errors.colleges?.[index]?.grade && (
+                  <span className="text-red-500 text-sm">
+                    {errors.colleges[index].grade}
+                  </span>
+                )}
               </div>
+                </div>
+
+
+              {/* Action Buttons */}
+              {/* Edit Button */}
+              {isCardEditing && !collegeEditingStates[index] && (
+                <div className="mt-3">
+                  <button
+                    onClick={() => handleCollegeCardEdit(index)}
+                    className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-0"
+                  >
+                    <Pencil size={15} />
+                  </button>
+                </div>
+              )}
             </div>
           ))}
+        </div>
+
+        {/* Add New Entry & Save All */}
+        <div className="flex gap-3 mt-4">
+          <button
+            className="px-4 py-2 bg-green-600 text-white rounded-md"
+            onClick={addCollege}
+          >
+            Add Education
+          </button>
+          <button
+            className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            onClick={saveAllEducation}
+          >
+            Save All
+          </button>
         </div>
       </div>
 
       {/* professional info */}
       <div className="w-full border-2 p-5 rounded-md relative">
-  {/* Parent Container Edit/Save Buttons */}
-  <div className="flex justify-between items-center mb-3 ">
-    {isEditing ? (
-      <button
-        onClick={saveChanges}
-        className={`px-4 py-2 rounded-md ${
-          allCardsSaved
-            ? "bg-green-500 text-white"
-            : "bg-gray-300 text-gray-600 cursor-not-allowed"
-        }`}
-        disabled={!allCardsSaved}
-      >
-        Save All
-      </button>
-    ) : (
-      <button
-        onClick={() => setIsEditing(true)}
-        className="bg-yellow-500 text-white px-4 py-2 rounded-md"
-      >
-        Edit All
-      </button>
-    )}
-  </div>
-
-  {/* Add Experience Button */}
-  {isEditing && (
-    <button
-      onClick={() => addEntry("experience")}
-      className=" text-white px-4 py-2 rounded-md mb-3 bg-yellow-500"
-    >
-      Add Experience
-    </button>
-  )}
-
-  <div className="absolute -top-4 left-4 bg-background px-2">
-    <h1 className="text-lg font-bold">Professional Info</h1>
-  </div>
-
-  <div className="grid grid-cols-2 gap-5 w-full border-2">
-    {userDetails?.experience?.map((exp, index) => (
-      <div
-        key={index}
-        className="grid grid-cols-2 gap-2 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
-      >
-        {cardEditingStates[index] && (
-          <div className="absolute top-2 right-2 flex gap-2">
-            {/* Save Button */}
+        {/* Parent Container Edit/Save Buttons */}
+        <div className="flex justify-between items-center mb-3 ">
+          {isEditing ? (
             <button
-              onClick={() => handleCardSave(index)}
-              className="bg-green-500 text-white px-2 py-1 rounded-md"
+              onClick={saveChanges}
+              className={`p-1 rounded-sm absolute -top-4 right-0 ${
+                allCardsSaved
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-300 text-gray-600 cursor-not-allowed"
+              }`}
+              disabled={!allCardsSaved}
+              title={"Save"}
             >
-              Save
+              <CheckSquare size={15} />
             </button>
-            {/* Delete Button */}
+          ) : (
             <button
-              onClick={() => removeEntry("experience", index)}
-              className="bg-red-500 text-white px-2 py-1 rounded-md"
+              onClick={() => setIsEditing(true)}
+              className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-0"
+              title={"Edit"}
             >
-              Delete
+              <Pencil size={15} />
+              {/* Edit All */}
             </button>
-          </div>
+          )}
+        </div>
+
+        {/* Add Experience Button */}
+        {isEditing && (
+          <button
+            onClick={() => addEntry("experience")}
+            className=" text-white px-4 py-2 rounded-md mb-3 bg-yellow-500"
+          >
+            Add Experience
+          </button>
         )}
 
-        {/* Company Name and Address */}
-        <div className="flex flex-col gap-1 col-span-2">
-          <label className="text-sm font-medium text-foreground">
-            Company Name
-          </label>
-          <Input
-            type="text"
-            value={exp.companyName || ""} // Ensuring that value is always a string
-            onChange={(e) => handleInputChange(e, "experience", index, "companyName")}
-            disabled={!cardEditingStates[index]}
-            className="border-2 text-foreground bg-background p-2"
-            placeholder="Company Name"
-          />
-          {errors[index]?.companyName && (
-            <span className="text-red-500 text-sm">
-              {errors[index].companyName}
-            </span>
-          )}
+        <div className="absolute -top-4 left-4 bg-background px-2">
+          <h1 className="text-lg font-bold">Professional Info</h1>
         </div>
 
-        <div className="flex flex-col gap-1 col-span-2">
-          <label className="text-sm font-medium text-foreground">
-            Company Address
-          </label>
-          <Input
-            type="text"
-            value={exp.companyAddress || ""}
-            onChange={(e) => handleInputChange(e, "experience", index, "companyAddress")}
-            disabled={!cardEditingStates[index]}
-            className="border-2 text-foreground bg-background p-2"
-            placeholder="Company Address"
-          />
-        </div>
-
-        {/* Job Role and Years of Experience */}
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-foreground">
-            Job Role
-          </label>
-          <Input
-            type="text"
-            value={exp.jobRole || ""}
-            onChange={(e) => handleInputChange(e, "experience", index, "jobRole")}
-            disabled={!cardEditingStates[index]}
-            className="border-2 text-foreground bg-background p-2"
-            placeholder="Job Role"
-          />
-          {errors[index]?.jobRole && (
-            <span className="text-red-500 text-sm">
-              {errors[index].jobRole}
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-foreground">
-            Years of Experience
-          </label>
-          <Input
-            type="text"
-            value={exp.jobExperience || ""}
-            onChange={(e) => handleInputChange(e, "experience", index, "jobExperience")}
-            disabled={!cardEditingStates[index]}
-            className="border-2 text-foreground bg-background p-2"
-            placeholder="Years of Experience"
-          />
-          {errors[index]?.jobExperience && (
-            <span className="text-red-500 text-sm">
-              {errors[index].jobExperience}
-            </span>
-          )}
-        </div>
-
-        {/* Job Description */}
-        <div className="col-span-2 flex flex-col gap-1">
-          <label className="text-sm font-medium text-foreground">
-            Job Description
-          </label>
-          <textarea
-            value={exp.jobDescription || ""}
-            onChange={(e) => handleInputChange(e, "experience", index, "jobDescription")}
-            disabled={!cardEditingStates[index]}
-            className="border-2 text-foreground bg-background p-2 w-full resize-none"
-            placeholder="Job Description"
-            rows={4}
-          />
-          {errors[index]?.jobDescription && (
-            <span className="text-red-500 text-sm">
-              {errors[index].jobDescription}
-            </span>
-          )}
-        </div>
-
-        {/* Edit Button */}
-        {isEditing && !cardEditingStates[index] && (
-          <div className="mt-3">
-            <button
-              onClick={() => handleCardEdit(index)}
-              className="bg-yellow-500 text-white px-2 py-1 rounded-md"
+        <div className="grid grid-cols-2 gap-5 w-full border-2">
+          {userDetails?.experience?.map((exp, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-2 gap-2 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
             >
-              Edit
-            </button>
-          </div>
-        )}
+              {cardEditingStates[index] && (
+                <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => removeEntry("experience", index)}
+                    className="bg-red-500 text-white p-1 rounded-sm "
+                    title="delete"
+                  >
+                    <X size={15} />
+                  </button>
+
+                  {/* Save Button */}
+                  <button
+                    onClick={() => handleCardSave(index)}
+                    className="bg-green-500 text-white p-1 rounded-sm "
+                    title="save"
+                  >
+                    <Check size={15} />
+                  </button>
+                </div>
+              )}
+
+              {/* Company Name and Address */}
+              <div className="flex flex-col gap-1 col-span-2">
+                <label className="text-sm font-medium text-foreground">
+                  Company Name
+                </label>
+                <Input
+                  type="text"
+                  value={exp.companyName || ""} // Ensuring that value is always a string
+                  onChange={(e) =>
+                    handleInputChange(e, "experience", index, "companyName")
+                  }
+                  disabled={!cardEditingStates[index]}
+                  className="border-2 text-foreground bg-background p-2"
+                  placeholder="Company Name"
+                />
+                {errors.experience?.[index]?.companyName && (
+                  <span className="text-red-500 text-xs">
+                    {errors.experience[index].companyName}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1 col-span-2">
+                <label className="text-sm font-medium text-foreground">
+                  Company Address
+                </label>
+                <Input
+                  type="text"
+                  value={exp.companyAddress || ""}
+                  onChange={(e) =>
+                    handleInputChange(e, "experience", index, "companyAddress")
+                  }
+                  disabled={!cardEditingStates[index]}
+                  className="border-2 text-foreground bg-background p-2"
+                  placeholder="Company Address"
+                />
+                {errors.experience?.[index]?.companyAddress && (
+                  <span className="text-red-500 text-xs">
+                    {errors.experience[index].companyAddress}
+                  </span>
+                )}
+              </div>
+
+              {/* Job Role and Years of Experience */}
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-foreground">
+                  Job Role
+                </label>
+                <Input
+                  type="text"
+                  value={exp.jobRole || ""}
+                  onChange={(e) =>
+                    handleInputChange(e, "experience", index, "jobRole")
+                  }
+                  disabled={!cardEditingStates[index]}
+                  className="border-2 text-foreground bg-background p-2"
+                  placeholder="Job Role"
+                />
+                {errors.experience?.[index]?.jobRole && (
+                  <span className="text-red-500 text-xs">
+                    {errors.experience[index].jobRole}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-foreground">
+                  Years of Experience
+                </label>
+                <Input
+                  type="text"
+                  value={exp.jobExperience || ""}
+                  onChange={(e) =>
+                    handleInputChange(e, "experience", index, "jobExperience")
+                  }
+                  disabled={!cardEditingStates[index]}
+                  className="border-2 text-foreground bg-background p-2"
+                  placeholder="Years of Experience"
+                />
+                {errors.experience?.[index]?.jobExperience && (
+                  <span className="text-red-500 text-xs">
+                    {errors.experience[index].jobExperience}
+                  </span>
+                )}
+              </div>
+
+              {/* Job Description */}
+              <div className="col-span-2 flex flex-col gap-1">
+                <label className="text-sm font-medium text-foreground">
+                  Job Description
+                </label>
+                <textarea
+                  value={exp.jobDescription || ""}
+                  onChange={(e) =>
+                    handleInputChange(e, "experience", index, "jobDescription")
+                  }
+                  disabled={!cardEditingStates[index]}
+                  className="border-2 text-foreground bg-background p-2 w-full resize-none"
+                  placeholder="Job Description"
+                  rows={4}
+                />
+                {errors.experience?.[index]?.jobDescription && (
+                  <span className="text-red-500 text-xs">
+                    {errors.experience[index].jobDescription}
+                  </span>
+                )}
+              </div>
+
+              {/* Edit Button */}
+              {isEditing && !cardEditingStates[index] && (
+                <div className="mt-3">
+                  <button
+                    onClick={() => handleCardEdit(index)}
+                    className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-0"
+                  >
+                    <Pencil size={15} />
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-    ))}
-  </div>
-</div>
-
-
-
 
       {/* skills functionality is update*/}
       <div className="mb-5">
@@ -1200,7 +1568,6 @@ const navigate = useNavigate();
           ))}
         </div>
       </div>
-
     </div>
   );
 }
