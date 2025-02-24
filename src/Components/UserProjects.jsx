@@ -7,6 +7,8 @@ import useUserAuth from "./UserAuthentication";
 import { Button } from "./ui/button";
 import DataLoader from "./DataLoader";
 
+import { PlusCircleIcon } from "lucide-react";
+import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 export default function UserProjects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,8 +39,7 @@ export default function UserProjects() {
         setProjects([]);
       }
 
-    // await new Promise((resolve) => setTimeout(resolve, 1000)); // 2 seconds delay
-
+      // await new Promise((resolve) => setTimeout(resolve, 1000)); // 2 seconds delay
     } catch (error) {
       setError(error.message || "Failed to load projects.");
     } finally {
@@ -73,7 +74,7 @@ export default function UserProjects() {
   }, [user.uid]);
 
   if (loading) {
-    return <DataLoader/>;
+    return <DataLoader />;
   }
 
   if (error) {
@@ -81,76 +82,70 @@ export default function UserProjects() {
   }
 
   return (
-    <div className="w-full p-2 bg-background text-foreground">
-      <h1 className="text-2xl font-bold mb-4">All Projects</h1>
-
-      {/* Pass the fetchProjects function as a prop to AddProjects */}
-      {/* <AddProjects fetchProjects={fetchProjects} /> */}
-
-      {/* {projects.length === 0 ? (
-        <p>No projects available.</p>
-      ) : ( */}
-      <ul className="border-4 flex flex-wrap gap-4 p-4 justify-evenly">
-        {/* AddProjects as a card */}
-        <li className=" border-[var(--border)]  rounded-sm shadow w-full sm:w-1/2 lg:w-1/4 flex flex-col justify-center items-center">
-          <AddProjects fetchProjects={fetchProjects} />
-        </li>
-
-        {/* show projects */}
-        {projects.map((project) => (
-          <li
-            key={project.id}
-            className="border-2 border-[var(--border)] p-4 rounded-sm shadow w-full sm:w-1/2 lg:w-1/4 flex flex-col"
-          >
-            {project.projectImage && (
-              <AspectRatio ratio={16 / 9} className="bg-muted">
-                <img
-                  src={project.projectImage}
-                  alt={project.projectName}
-                  fill
-                  className="h-full w-full rounded-md object-cover border-4"
-                />
-              </AspectRatio>
-            )}
-            <h2 className="text-xl font-semibold">{project.projectName}</h2>
-            <p className="mb-2 text-sm">{project.projectDescription}</p>
-            {/* <h2 className="text-xl font-semibold">{project.languages}</h2> */}
-            <a
-              href={project.projectUrl}
-              className="text-blue-600 underline"
-              target="_blank"
-              rel="noopener noreferrer"
+    <Dialog>
+      <div className="w-full p-2 bg-background text-foreground">
+        <span className="flex justify-between px-5 items-center">
+          <h1 className="text-2xl font-bold ">All Projects</h1>
+          <DialogTrigger asChild>
+            <button
+              title="Add project"
+              className="p-2 rounded-md hover:bg-gray-100 transition-colors"
             >
-              Project URL
-            </a>
-            
-            <span className="flex justify-between mt-2">
-              <Button className=" w-2/5 ">Edit</Button>
-              <Button
-                className=" w-2/5"
-                variant="destructive"
-                onClick={() => projectDelete(project.id)}
+              <PlusCircleIcon className="w-6 h-6 text-gray-500" />
+            </button>
+          </DialogTrigger>
+        </span>
+
+        <DialogContent className="border bg-background text-foreground sm:min-w-[600px] sm-max:min-w-full">
+          <AddProjects fetchProjects={fetchProjects} />
+        </DialogContent>
+        {/* </li> */}
+        <ul className=" flex flex-wrap gap-5 mt-5 justify-evenly">
+          {/* AddProjects as a card */}
+
+          {/* show projects */}
+          {projects.map((project) => (
+            <li
+              key={project.id}
+              className="border  p-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
+            >
+              {project.projectImage && (
+                <AspectRatio ratio={16 / 9} className="bg-muted">
+                  <img
+                    src={project.projectImage}
+                    alt={project.projectName}
+                    loading="lazy"
+                    className="h-full w-full rounded-md object-cover "
+                  />
+                </AspectRatio>
+              )}
+              <h2 className="text-xl font-semibold">{project.projectName}</h2>
+              <p className="mb-2 text-sm">{project.projectDescription}</p>
+              {/* <h2 className="text-xl font-semibold">{project.languages}</h2> */}
+              <a
+                href={project.projectUrl}
+                className="text-blue-600 underline"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Delete
-              </Button>
-            </span>
-          </li>
-        ))}
-      </ul>
-      {/* )} */}
-    </div>
+                Project URL
+              </a>
+
+              <span className="flex justify-between mt-2">
+                <Button className=" w-2/5 ">Edit</Button>
+                <Button
+                  className=" w-2/5"
+                  variant="destructive"
+                  onClick={() => projectDelete(project.id)}
+                >
+                  Delete
+                </Button>
+              </span>
+            </li>
+          ))}
+        </ul>
+        {/* )} */}
+      </div>
+    </Dialog>
   );
 }
-
-/**
-project:
-    name,
-    description,
-    image,
-    url
-
-function:
-    edit,
-    share,
-    delete
-*/

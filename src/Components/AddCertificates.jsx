@@ -15,7 +15,14 @@ import { storage, db } from "./../../firebase"; // Import the initialized storag
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, push } from "firebase/database";
 import useUserAuth from "./UserAuthentication";
-import add_Icon from "../assets/add.png";
+import {
+  FileInput,
+  ImageIcon,
+  TypeIcon,
+  LinkIcon,
+  ClipboardIcon,
+  Medal,
+} from "lucide-react";
 
 export default function AddCertificates({ fetchCertificates }) {
   const { user } = useUserAuth();
@@ -25,6 +32,7 @@ export default function AddCertificates({ fetchCertificates }) {
     certificateDescription: "",
     certificateType: "",
     certificateImage: null, // Changed from "" to null to handle files correctly
+    certificateUrl: "",
   });
 
   // Handle input change
@@ -49,6 +57,7 @@ export default function AddCertificates({ fetchCertificates }) {
       certificateDescription,
       certificateImage,
       certificateType,
+      certificateUrl,
     } = formData;
 
     if (!certificateImage) {
@@ -72,6 +81,7 @@ export default function AddCertificates({ fetchCertificates }) {
         certificateDescription,
         certificateType,
         certificateImage: downloadURL, // Store the image URL here
+        certificateUrl,
       };
 
       // Push certificate data under the specific user in Firebase Realtime Database
@@ -85,6 +95,7 @@ export default function AddCertificates({ fetchCertificates }) {
         certificateName: "",
         certificateDescription: "",
         certificateImage: null,
+        certificateUrl: "",
       });
 
       // Call the fetch function to refresh the certificate list
@@ -97,36 +108,37 @@ export default function AddCertificates({ fetchCertificates }) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <img src={add_Icon} alt="Add Certificate" className="cursor-pointer" />
-      </DialogTrigger>
-
-      <DialogContent className="sm:max-w-fit">
+      <div>
         <DialogHeader>
-          <DialogTitle>Create Certificate</DialogTitle>
+          <DialogTitle>Certificate</DialogTitle>
           <DialogDescription>Add your new certificate here.</DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-2">
-            <Input
-              name="certificateName"
-              value={formData.certificateName}
-              onChange={handleInputChange}
-              required
-              placeholder="Certificate Name"
-            />
+        <form onSubmit={handleSubmit} className="mt-5">
+          <div className="flex flex-col gap-4">
+            {/* Certificate Name */}
+            <div className="flex items-center bg-background text-foreground">
+              <Medal className="w-5 h-5 mr-2 text-gray-500" />
+              <Input
+                name="certificateName"
+                value={formData.certificateName}
+                onChange={handleInputChange}
+                required
+                placeholder="Certificate Name"
+                className="w-full bg-background  "
+              />
+            </div>
 
             {/* Certificate Type Dropdown */}
-            <div>
-              {/* <label htmlFor="certificateType" className="block mb-1">Certificate Type</label> */}
+            <div className="flex items-center bg-background text-foreground">
+              <TypeIcon className="w-5 h-5 mr-2 text-gray-500" />
               <select
                 id="certificateType"
                 name="certificateType"
                 value={formData.certificateType}
                 onChange={handleInputChange}
                 required
-                className="p-2 border rounded bg-background text-foreground w-full"
+                className="w-full bg-background h-8 border pb-1 px-2"
               >
                 <option value="" disabled>
                   Select Certificate Type
@@ -137,26 +149,53 @@ export default function AddCertificates({ fetchCertificates }) {
               </select>
             </div>
 
-            <Textarea
-              name="certificateDescription"
-              value={formData.certificateDescription}
-              onChange={handleInputChange}
-              required
-              placeholder="Certificate Description"
-            />
+            {/* Certificate Description */}
+            <div className="flex items-start  bg-background text-foreground">
+              <ClipboardIcon className="w-5 h-5 mr-2 text-gray-500 mt-1" />
+              <Textarea
+                name="certificateDescription"
+                value={formData.certificateDescription}
+                onChange={handleInputChange}
+                required
+                placeholder="Certificate Description"
+                className="w-full bg-background"
+              />
+            </div>
 
-            {/* Image upload */}
-            <Input
-              type="file"
-              name="certificateImage"
-              onChange={handleFileChange}
-              required
-            />
+            {/* Certificate Image Upload */}
+            <div className="flex items-center  bg-background text-foreground">
+              <ImageIcon className="w-5 h-5 mr-2 text-gray-500" />
+              <Input
+                type="file"
+                name="certificateImage"
+                onChange={handleFileChange}
+                required
+                className="w-full bg-background px-2"
+              />
+            </div>
 
-            <Button type="submit">Submit</Button>
+            {/* Certificate URL */}
+            <div className="flex items-center  bg-background text-foreground">
+              <LinkIcon className="w-5 h-5 mr-2 text-gray-500" />
+              <Input
+                name="certificateUrl"
+                value={formData.certificateUrl}
+                onChange={handleInputChange}
+                required
+                placeholder="Certificate URL"
+                className="w-full bg-background"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="mt-5 bg-button hover:bg-button-hover text-button-textColor"
+            >
+              Submit
+            </Button>
           </div>
         </form>
-      </DialogContent>
+      </div>
     </Dialog>
   );
 }

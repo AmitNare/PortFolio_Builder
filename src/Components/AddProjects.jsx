@@ -2,7 +2,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -11,112 +10,128 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Textarea } from "./ui/textarea";
-import { storage, db } from "./../../firebase"; // Import the initialized storage
+import { storage, db } from "./../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ref as dbRef, push, onValue } from "firebase/database";
 import useUserAuth from "./UserAuthentication";
 import add_Icon from "../assets/add.png";
+import { TrashIcon, TvMinimal } from "lucide-react";
+import {
+  FileInput,
+  ImageIcon,
+  TypeIcon,
+  LinkIcon,
+  ClipboardIcon,
+  CodeIcon,
+  GlobeIcon,
+} from "lucide-react";
 
 export default function AddProjects({ fetchProjects }) {
   const { user } = useUserAuth();
 
   const [selectedLanguages, setSelectedLanguages] = useState([]);
-  const [projects, setProjects] = useState([]); // State to store projects
   const [formData, setFormData] = useState({
-    // uid: user.uid,
     projectName: "",
     projectDescription: "",
     projectUrl: "",
-    githubRepoUrl: "",
     languages: [],
     projectImage: "",
   });
 
-  // Fetch projects from Firebase in real-time
-  useEffect(() => {
-    const projectsRef = dbRef(db, `Users/${user.uid}/projects`);
-
-    const unsubscribe = onValue(projectsRef, (snapshot) => {
-      const data = snapshot.val();
-      const projectsArray = data
-        ? Object.keys(data).map((key) => ({
-            id: key,
-            ...data[key],
-          }))
-        : [];
-      setProjects(projectsArray);
-    });
-
-    // Cleanup function to detach the real-time listener
-    return () => unsubscribe();
-  }, [user.uid]);
-
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e) => {
     setFormData({ ...formData, projectImage: e.target.files[0] });
   };
 
-  const languages = [
+  // Predefined languages list
+  const predefinedLanguages = [
     "C",
+    "C++",
     "Java",
     "Python",
     "JavaScript",
-    "ReactJs",
-    "NodeJs",
-    "Sql",
+    "React",
+    "Node.js",
+    "SQL",
     "MongoDB",
     "HTML",
     "CSS",
     "TailwindCSS",
   ];
 
-  const handleButtonClick = (language) => {
-    if (selectedLanguages.includes(language)) {
-      setSelectedLanguages(
-        selectedLanguages.filter((lang) => lang !== language)
-      );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredLanguages, setFilteredLanguages] = useState([]);
+
+  // Filter languages dynamically as user types
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredLanguages([]);
     } else {
-      setSelectedLanguages([...selectedLanguages, language]);
+      setFilteredLanguages(
+        predefinedLanguages.filter((lang) =>
+          lang.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
     }
-    setFormData({ ...formData, languages: selectedLanguages });
+  }, [searchTerm]);
+
+  // Function to add a language
+  const addLanguage = (language) => {
+    const formattedLang = language.trim();
+    if (!formattedLang) return;
+
+    if (!selectedLanguages.includes(formattedLang)) {
+      const updatedLanguages = [...selectedLanguages, formattedLang].sort(); // Sort alphabetically
+      setSelectedLanguages(updatedLanguages);
+      setFormData({ ...formData, languages: updatedLanguages });
+    }
+
+    setSearchTerm("");
+    setFilteredLanguages([]);
+  };
+
+  // Handle Enter key press in input
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && searchTerm.trim()) {
+      addLanguage(searchTerm.trim());
+      e.preventDefault();
+    }
+  };
+
+  const removeLanguage = (index) => {
+    const updatedLanguages = selectedLanguages.filter((_, i) => i !== index);
+    setSelectedLanguages(updatedLanguages);
+    setFormData({ ...formData, languages: updatedLanguages });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if an image has been selected
     if (!formData.projectImage) {
       alert("Please select an image to upload.");
       return;
     }
 
-    // Step 1: Create a reference to Firebase Storage
     const imageRef = ref(storage, `projects/${formData.projectImage.name}`);
 
     try {
-      // Step 2: Upload the image to Firebase Storage
       await uploadBytes(imageRef, formData.projectImage);
-
-      // Step 3: Get the download URL of the uploaded image
       const downloadURL = await getDownloadURL(imageRef);
 
-      // Step 4: Now save the project data with the image URL
       const projectData = {
         projectName: formData.projectName,
         projectDescription: formData.projectDescription,
         projectUrl: formData.projectUrl,
         githubRepoUrl: formData.githubRepoUrl,
         languages: selectedLanguages,
-        projectImage: downloadURL, // Store the image URL here
+        projectImage: downloadURL,
       };
 
-      // Step 5: Push the project under the specific user in Firebase Realtime Database
       const userProjectsRef = dbRef(db, `Users/${user.uid}/projects`);
-      await push(userProjectsRef, projectData); // Add project to the user's projects array
+      await push(userProjectsRef, projectData);
 
       alert("Project successfully added!");
       setFormData({
@@ -129,7 +144,6 @@ export default function AddProjects({ fetchProjects }) {
       });
       setSelectedLanguages([]);
 
-      // Refresh the list of projects
       fetchProjects();
     } catch (error) {
       console.error("Error uploading image or saving project: ", error);
@@ -139,118 +153,121 @@ export default function AddProjects({ fetchProjects }) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <img
-          src={add_Icon}
-          alt=""
-          className=" text-foreground w-auto h-auto cursor-pointer"
-        />
-        {/* <Button variant="outline" className="text-foreground w-full h-full">Add Project</Button> */}
-      </DialogTrigger>
-
-      <DialogContent className="sm:max-w-fit bg-background text-foreground">
+      
+      <div>
         <DialogHeader>
-          <DialogTitle className="text-foreground text-3xl font-medium">
-            Create Project
-          </DialogTitle>
+          <DialogTitle>Project</DialogTitle>
           <DialogDescription>
             Deploy your new project in one-click.
           </DialogDescription>
         </DialogHeader>
 
-        {/* <Projects fetchProjects={fetchProjects} /> */}
-        <div>
-          <form
-            onSubmit={handleSubmit}
-            method="POST"
-            className="bg-background w-auto"
-          >
-            <div className="text-foreground bg-background border-2 rounded-md flex flex-col justify-center m-auto max-w-lg p-4 gap-2">
-              <div className="grid w-full max-w-lg items-center gap-1.5">
-                <label htmlFor="projectName">Name</label>
-                <Input
-                  type="text"
-                  name="projectName"
-                  value={formData.projectName}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="grid w-full items-center gap-1.5">
-                <label htmlFor="projectDescription">Description</label>
-                <Textarea
-                  name="projectDescription"
-                  value={formData.projectDescription}
-                  onChange={handleInputChange}
-                  required
-                  className="max-h-16 min-h-16"
-                />
-              </div>
-
-              <div className="grid w-full max-w-lg items-center gap-1.5">
-                <label htmlFor="projectUrl">Hosting URL</label>
-                <Input
-                  type="text"
-                  name="projectUrl"
-                  value={formData.projectUrl}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              {/* <div className="grid w-full max-w-lg items-center gap-1.5">
-                <label htmlFor="githubRepoUrl">GitHub Repo URL</label>
-                <Input
-                  type="text"
-                  name="githubRepoUrl"
-                  value={formData.githubRepoUrl}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div> */}
-
-              <div className="grid w-full max-w-lg items-center gap-1.5">
-                <label htmlFor="languages">Programming Languages</label>
-                <span className="flex flex-wrap gap-2">
-                  {languages.map((language) => (
-                    <button
-                      key={language}
-                      type="button"
-                      onClick={() => handleButtonClick(language)}
-                      className={`px-4 py-2 rounded w-fit ${
-                        selectedLanguages.includes(language)
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-200 text-gray-700"
-                      }`}
-                    >
-                      {language}
-                    </button>
-                  ))}
-                </span>
-              </div>
-
-              <div className="grid w-full max-w-lg items-center gap-1.5">
-                <label htmlFor="projectImage">Website Image</label>
-                <Input
-                  id="projectImage"
-                  type="file"
-                  name="projectImage"
-                  onChange={handleFileChange}
-                />
-              </div>
-
-              <Button type="submit" className="mt-5">
-                Submit
-              </Button>
+        <form onSubmit={handleSubmit} className="mt-5">
+          <div className="flex flex-col gap-4">
+            {/* Project Name */}
+            <div className="flex items-center  bg-background text-foreground">
+              <TvMinimal className="w-5 h-5 mr-2 text-gray-500" />
+              <Input
+                type="text"
+                name="projectName"
+                value={formData.projectName}
+                onChange={handleInputChange}
+                required
+                placeholder="Project Name"
+                className="w-full bg-background"
+              />
             </div>
-          </form>
-        </div>
 
-        {/* <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter> */}
-      </DialogContent>
+            {/* Project Description */}
+            <div className="flex items-start  bg-background text-foreground">
+              <ClipboardIcon className="w-5 h-5 mr-2 text-gray-500 mt-1" />
+              <Textarea
+                name="projectDescription"
+                value={formData.projectDescription}
+                onChange={handleInputChange}
+                required
+                placeholder="Project Description"
+                className="w-full bg-background"
+              />
+            </div>
+
+            {/* Programming Languages */}
+            <div className="flex items-center  bg-background text-foreground">
+              <CodeIcon className="w-5 h-5 mr-2 text-gray-500" />
+              <Input
+                type="text"
+                placeholder="Search or add a language"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="w-full bg-background"
+              />
+            </div>
+
+            {filteredLanguages.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {filteredLanguages.map((lang, i) => (
+                  <button
+                    key={i}
+                    onClick={() => addLanguage(lang)}
+                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg"
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-2">
+              {selectedLanguages.map((lang, index) => (
+                <div
+                  key={index}
+                  className="px-3 py-1 bg-blue-500 text-white rounded-lg flex items-center gap-2"
+                >
+                  {lang}
+                  <TrashIcon
+                    className="w-4 h-4 cursor-pointer"
+                    onClick={() => removeLanguage(index)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Project Image Upload */}
+            <div className="flex items-center  bg-background text-foreground">
+              <ImageIcon className="w-5 h-5 mr-2 text-gray-500" />
+              <Input
+                id="projectImage"
+                type="file"
+                name="projectImage"
+                onChange={handleFileChange}
+                className="w-full bg-background px-2"
+              />
+            </div>
+
+            {/* Hosting URL */}
+            <div className="flex items-center  bg-background text-foreground">
+              <GlobeIcon className="w-5 h-5 mr-2 text-gray-500" />
+              <Input
+                type="text"
+                name="projectUrl"
+                value={formData.projectUrl}
+                onChange={handleInputChange}
+                required
+                placeholder="Hosting URL"
+                className="w-full bg-background"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="mt-5 bg-button hover:bg-button-hover text-button-textColor"
+            >
+              Submit
+            </Button>
+          </div>
+        </form>
+      </div>
     </Dialog>
   );
 }
