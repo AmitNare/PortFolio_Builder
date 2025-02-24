@@ -5,6 +5,8 @@ import AddCertificate from "./AddCertificates"; // AddCertificate component
 import { Button } from "./ui/button";
 import useUserAuth from "./UserAuthentication";
 import DataLoader from "./DataLoader";
+import { PlusCircleIcon } from "lucide-react";
+import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 
 export default function UserCertificates() {
   const [certificates, setCertificates] = useState([]);
@@ -29,8 +31,7 @@ export default function UserCertificates() {
         }));
         setCertificates(certificatesArray);
 
-    // await new Promise((resolve) => setTimeout(resolve, 1000)); // 2 seconds delay
-
+        // await new Promise((resolve) => setTimeout(resolve, 1000)); // 2 seconds delay
       } else {
         setCertificates([]);
       }
@@ -74,7 +75,7 @@ export default function UserCertificates() {
   }, [user.uid]);
 
   if (loading) {
-    return <DataLoader/>;
+    return <DataLoader />;
   }
 
   if (error) {
@@ -82,58 +83,68 @@ export default function UserCertificates() {
   }
 
   return (
-    <div className="w-full p-2 bg-background text-foreground">
-      <h1 className="text-2xl font-bold mb-4">All Certificates</h1>
-
-      {/* AddCertificate as a card */}
-      <ul className="border-4 flex flex-wrap gap-4 p-4 justify-evenly">
-        <li className="border-[var(--border)] rounded-sm shadow w-full sm:w-1/2 lg:w-1/4 flex flex-col justify-center items-center">
-          <AddCertificate fetchCertificates={fetchCertificates} />
-        </li>
-
-        {/* Show certificates */}
-        {certificates.map((certificate) => {
-          console.log(certificate); // Debug: log each certificate to check its structure
-          return (
-            <li
-              key={certificate.id}
-              className="border-2 border-[var(--border)] p-4 rounded-sm shadow w-full sm:w-1/2 lg:w-1/4 flex flex-col"
+    <Dialog>
+      <div className="w-full bg-background p-5 text-foreground">
+        <span className="flex justify-between px-5 items-center">
+          <h1 className="text-2xl font-bold ">All Certificates</h1>
+          <DialogTrigger asChild>
+            <button
+              title="Add Certificate"
+              className="p-2 rounded-md hover:bg-gray-100 transition-colors"
             >
-              {/* Adjust the field name if necessary */}
-              {certificate.certificateImage && (
-                <img
-                  src={certificate.certificateImage}
-                  alt={certificate.certificateName}
-                  className="h-full w-full rounded-md object-cover border-4"
-                />
-              )}
-              <h2 className="text-xl font-semibold">
-                {certificate.certificateName}
-              </h2>{" "}
-              {/* Adjust the field name if necessary */}
-              {/* Display the certificate type */}
-              <p className="mb-2 text-sm text-foreground">
-                Type:{" "}
-                {certificate.certificateType
-                  ? certificate.certificateType
-                  : "Not specified"}
-              </p>
-              <p className="mb-2 text-sm">{certificate.certificateDescription}</p>{" "}
-              
-              <span className="flex justify-between">
-                <Button className=" w-2/5">Edit</Button>
-                <Button
-                  className=" w-2/5"
-                  variant="destructive"
-                  onClick={() => certificateDelete(certificate.id)}
-                >
-                  Delete
-                </Button>
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+              <PlusCircleIcon className="w-6 h-6 text-gray-500" />
+            </button>
+          </DialogTrigger>
+        </span>
+
+        <DialogContent className="border bg-background text-foreground sm:min-w-[600px] sm-max:min-w-full">
+          <AddCertificate fetchCertificates={fetchCertificates} />
+        </DialogContent>
+        {/* AddCertificate as a card */}
+        <ul className="flex flex-wrap gap-4 mt-5 justify-evenly">
+          {/* Show certificates */}
+          {certificates.map((certificate) => {
+            return (
+              <li
+                key={certificate.id}
+                className="border  p-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
+              >
+                {/* Adjust the field name if necessary */}
+                {certificate.certificateImage && (
+                  <img
+                    src={certificate.certificateImage}
+                    alt={certificate.certificateName}
+                    className="h-full w-full rounded-md object-cover"
+                  />
+                )}
+                <h2 className="text-xl font-semibold">
+                  {certificate.certificateName}
+                </h2>{" "}
+                {/* Display the certificate type */}
+                <p className="mb-2 text-sm text-foreground">
+                  Type:{" "}
+                  {certificate.certificateType
+                    ? certificate.certificateType
+                    : "Not specified"}
+                </p>
+                <p className="mb-2 text-sm">
+                  {certificate.certificateDescription}
+                </p>{" "}
+                <span className="flex justify-between">
+                  <Button className=" w-2/5">Edit</Button>
+                  <Button
+                    className=" w-2/5"
+                    variant="destructive"
+                    onClick={() => certificateDelete(certificate.id)}
+                  >
+                    Delete
+                  </Button>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </Dialog>
   );
 }

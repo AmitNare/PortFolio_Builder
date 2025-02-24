@@ -19,6 +19,7 @@ export default function SetCertificates({ userDetails }) {
           <img
             src={project.certificateImage}
             alt={project.certificateName}
+            loading="lazy"
             className="w-full h-40 object-cover rounded-md mb-3"
           />
           <h3 className="text-xl font-bold mb-2">
