@@ -61,6 +61,7 @@ export default function SignIn() {
       const userCredential = await logIn(email, password);
       const user = userCredential.user;
       console.log("login successful");
+      navigate("/user/profile")
       
     } catch (error) {
       if (error.name === "ValidationError") {

@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendEmailVerification,
 } from "firebase/auth";
 import { getDatabase, ref, get } from "firebase/database";
 import { auth } from "../../firebase";
@@ -15,11 +16,22 @@ export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   // Sign up function
-  function signUp(email, password) {
-    return createUserWithEmailAndPassword(auth, email, password);
+  async function signUp(email, password) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await sendEmailVerification(userCredential.user);
+      alert("Email verification link sent. Please verify your email before logging in.");
+      console.log("User Created...");
+      // navigate("/signin")
+      return userCredential;
+    } catch (error) {
+      console.error("Error during sign up:", error.message);
+      throw error;
+    }
   }
 
   // Function to fetch user role and details
@@ -33,7 +45,7 @@ export function UserAuthContextProvider({ children }) {
       if (userSnapshot.exists()) {
         const userData = { ...userSnapshot.val(), uid };
         console.log(userData);
-        return { role: "user", details: userData, redirectPath: "/user/dashboard" };
+        return { role: "user", details: userData, redirectPath: "/user/profile" };
       }
 
       const adminSnapshot = await get(adminRef);
@@ -53,60 +65,66 @@ export function UserAuthContextProvider({ children }) {
   // Log in function with role and details fetching
   async function logIn(email, password) {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const loggedInUser = userCredential.user;
+
+      if (!loggedInUser.emailVerified) {
+        alert("Please verify your email before logging in.");
+        await signOut(auth);
+        return;
+      }
 
       const { role, details, redirectPath } = await fetchUserDetails(loggedInUser.uid);
       setUserRole(role);
-      setUserDetails(details); // Store user details in state
-
+      setUserDetails(details);
       if (redirectPath) {
         navigate(redirectPath);
       }
 
       return userCredential;
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Error during login:", error.message);
+      throw error;
     }
   }
 
   // Log out function
   function logOut() {
     setUserRole(null);
-    setUserDetails(null); // Clear user details
-
-    const domain = window.location.origin;
-    window.location.href = domain;
-    return signOut(auth);
+    setUserDetails(null);
+    setUser(null);
+    signOut(auth).then(() => {
+      window.location.href = window.location.origin;
+    });
   }
 
   // Track authentication state and handle redirection
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
+      setIsLoading(true);
+      if (currentUser && currentUser.emailVerified) {
         const { role, details, redirectPath } = await fetchUserDetails(currentUser.uid);
+        setUser(currentUser);
         setUserRole(role);
         setUserDetails(details); // Store user details in state
 
         // Only navigate if the role or details have changed
         if (role !== userRole) {
-          if (redirectPath) {
-            navigate(redirectPath); // Redirect to the correct page based on role
-          }
-        }
+        if (redirectPath) {
+          navigate(redirectPath);
+        }}
       } else {
+        setUser(null);
         setUserRole(null);
-        setUserDetails(null); // Clear user details when logged out
+        setUserDetails(null);
       }
+      setIsLoading(false);
     });
 
     return () => unsubscribe();
-  }, [ userRole]); // Ensure that userRole and userDetails are updated
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>; // Prevents unwanted redirects during state changes
 
   return (
     <userAuthentication.Provider
@@ -120,4 +138,5 @@ export function UserAuthContextProvider({ children }) {
 export function useUserAuth() {
   return useContext(userAuthentication);
 }
-export default useUserAuth; 
+
+export default useUserAuth;

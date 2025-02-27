@@ -34,7 +34,6 @@ export default function SignUp() {
     email: "",
     password: "",
     confirmPassword: "",
-    phoneNumber: "",
     role: "",
   });
 
@@ -43,10 +42,6 @@ export default function SignUp() {
     email: Yup.string()
       .email("Invalid email format")
       .required("Email is required"),
-    phoneNumber: Yup.string().matches(
-      /^\+?\d{1,3}[-\s]?\d{1,14}$/,
-      "Phone number must be in digits with country code"
-    ),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
@@ -74,16 +69,17 @@ export default function SignUp() {
       await ValidateSchema.validate(formData, { abortEarly: false });
       setErrors({}); // Clear errors on successful validation
 
-      const { Name, email, password, phoneNumber } = formData;
+      const { Name, email, password } = formData;
       const userCredential = await signUp(email, password);
 
       // Store user details
       const user = userCredential.user;
+      console.log('handleSignUp function');
+
       if (user) {
-        await set(ref(db, "User/" + user.uid), {
+        await set(ref(db, "Users/" + user.uid), {
           name: Name,
           email: user.email,
-          phoneNo: phoneNumber,
           password: password,
           createdAt: Date.now(),
           role: "User",
