@@ -99,7 +99,7 @@ export default function SetPortfolio() {
     };
 
     // check if user is logged in
-    if (user) {
+    if (user && location?.pathname?.includes("/user")) {
       fetchData();
     } else {
       fetchUserDetails();
