@@ -6,6 +6,7 @@ import SetEducation from "./SetEducation";
 import SetProjects from "./SetProjects";
 import SetCertificates from "./SetCertificates";
 import { useLocation, useParams } from "react-router-dom";
+import useUserAuth from "./UserAuthentication";
 
 export default function SetPortfolio() {
   const { userName } = useParams(); // Extract dynamic username
@@ -14,11 +15,14 @@ export default function SetPortfolio() {
   const [error, setError] = useState(null); // Handle errors
   const [loading, setLoading] = useState(true); // Show loading state
 
+  const { user, userDetails: userBaseDetails } = useUserAuth();
+
   // Fetch user data from Firebase
   useEffect(() => {
-    const currentUrl = userName;
-    // setUserName(userName)
-    const fetchUserDetails = async () => {
+    // for direct visitors from base url
+    const fetchUserDetails = async (usernameFromMethod = "") => {
+      const currentUrl = usernameFromMethod ? usernameFromMethod : userName;
+
       try {
         const database = getDatabase();
 
@@ -73,13 +77,35 @@ export default function SetPortfolio() {
       }
     };
 
-    fetchUserDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]); // Dependency: Run when the URL path changes
+    // for users who are logged in, from /user/preview route
+    const fetchData = async () => {
+      if (userBaseDetails) {
+        console.log("User fetchData object:", user); // Log the user object
 
-  useEffect(() => {
-    console.log("Username from URL:", userName); // Debug log
-  }, [userName]);
+        if (userBaseDetails?.uid) {
+          const db = getDatabase();
+          const portfolioRef = ref(db, `portfolioId/${user.uid}`);
+
+          // Check if the user already has a portfolio
+          const snapshot = await get(portfolioRef);
+          if (snapshot.exists()) {
+            const data = snapshot.val(); // Get the data object
+            fetchUserDetails(data.uniqueLink);
+          } else {
+            console.log("No user data available");
+          }
+        }
+      }
+    };
+
+    // check if user is logged in
+    if (user) {
+      fetchData();
+    } else {
+      fetchUserDetails();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   // Scroll to the section specified in the hash
   useEffect(() => {

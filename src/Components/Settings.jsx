@@ -261,7 +261,10 @@ export default function Settings() {
   const handleCopy = async () => {
     if (portfolioLink) {
       try {
-        await navigator.clipboard.writeText(portfolioLink);
+        const domain = window.location;
+        await navigator.clipboard.writeText(
+          `${domain?.origin}/${portfolioLink}`
+        );
         alert("Link copied to clipboard!"); // You can replace this with a toast notification
       } catch (err) {
         console.error("Failed to copy: ", err);
