@@ -30,6 +30,8 @@ export default function SetPortfolio() {
           const portfolios = portfolioSnapshot.val();
           let foundUserUid = null;
 
+          console.log("PP Data: ", portfolios);
+
           // Step 2: Find the user whose link matches the current URL
           Object.entries(portfolios).forEach(([key, portfolio]) => {
             console.log("Checking portfolio:", key);

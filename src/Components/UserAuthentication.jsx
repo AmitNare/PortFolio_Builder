@@ -12,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 
 const userAuthentication = createContext();
 
-// eslint-disable-next-line react/prop-types
 export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
@@ -93,14 +92,13 @@ export function UserAuthContextProvider({ children }) {
         return;
       }
 
-      const { role, details, redirectPath } = await fetchUserDetails(
-        loggedInUser.uid
-      );
+      const { role, details } = await fetchUserDetails(loggedInUser.uid);
       setUserRole(role);
       setUserDetails(details);
-      if (redirectPath) {
-        navigate(redirectPath);
-      }
+
+      // if (redirectPath) {
+      //   navigate(redirectPath);
+      // }
 
       return userCredential;
     } catch (error) {

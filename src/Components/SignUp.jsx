@@ -60,7 +60,7 @@ export default function SignUp() {
     }
   };
 
-  const { signUp } = useUserAuth();
+  const { signUp, user } = useUserAuth();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -104,7 +104,7 @@ export default function SignUp() {
   const errorCount = Object.keys(errors).length;
 
   // user is already logged in, redirect to dashboard
-  if (signUp) {
+  if (user) {
     return <Navigate to="/user/profile" />;
   }
 

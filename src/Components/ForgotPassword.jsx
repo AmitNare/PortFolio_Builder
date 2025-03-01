@@ -17,7 +17,7 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
 
-  const { logIn } = useUserAuth();
+  const { logIn, user } = useUserAuth();
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -62,7 +62,7 @@ export default function SignIn() {
   };
 
   // user is already logged in, redirect to dashboard
-  if (logIn) {
+  if (user) {
     return <Navigate to="/user/profile" />;
   }
 

@@ -28,7 +28,7 @@ export default function SignIn() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false); // Add loading state for better UX
 
-  const { logIn } = useUserAuth();
+  const { logIn, user } = useUserAuth();
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -79,7 +79,7 @@ export default function SignIn() {
   };
 
   // user is already logged in, redirect to dashboard
-  if (logIn) {
+  if (user) {
     return <Navigate to="/user/profile" />;
   }
 
