@@ -18,6 +18,9 @@ import UserCertificates from "./Components/UserCertificates";
 import SetPortfolio from "./Components/SetPortfolio";
 import ForgotPassword from "./Components/ForgotPassword";
 import PublicLayout from "./Components/PublicLayout";
+import Chatbot from "./Components/Chatbot";
+import Settings from "./Components/Settings";
+import ChatGPT from "./Components/ChatGPT";
 
 export default function App() {
   const navigate = useNavigate();
@@ -73,10 +76,13 @@ const [userName, setUserName] = useState('')
                   element={
                     <ProtectedRoutes>
                       <Routes>
-                        <Route path="user/dashboard" element={<UserDashboard />} />
                         <Route path="user/profile" element={<If_PortfolioGenerate />} />
                         <Route path="user/projects" element={<UserProjects />} />
-                        <Route path="user/certificate" element={<UserCertificates />} />
+                        <Route path="user/certificates" element={<UserCertificates />} />
+                        <Route path="user/preview" element={<SetPortfolio />} />
+                        <Route path="user/chatbot" element={<ChatGPT />} />
+                        <Route path="user/settings" element={<Settings />} />
+                        <Route path="/:userName/*" element={<SetPortfolio setUserName={setUserName}/>} />
                         <Route path="*" element={<div>Page Not Found</div>} />
                       </Routes>
                     </ProtectedRoutes>

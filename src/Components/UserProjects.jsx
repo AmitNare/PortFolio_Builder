@@ -83,7 +83,7 @@ export default function UserProjects() {
 
   return (
     <Dialog>
-      <div className="w-full p-2 bg-background text-foreground">
+      <div data-aos="fade-left" className="w-full p-2 bg-background text-foreground ">
         <span className="flex justify-between px-5 items-center">
           <h1 className="text-2xl font-bold ">All Projects</h1>
           <DialogTrigger asChild>

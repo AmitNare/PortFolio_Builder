@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useUserAuth from "./UserAuthentication";
-import logo from "../assets/Images/logo3.webp";
+import logo from "../assets/Images/logo7.webp";
 
 export default function Navbar({ toggleTheme, isDarkTheme }) {
   const navigate = useNavigate();
@@ -47,19 +47,22 @@ export default function Navbar({ toggleTheme, isDarkTheme }) {
   };
 
   return (
-    <div className="sticky top-1 z-50 w-[95%] h-16 bg-slate-400/10 rounded-xl backdrop-blur-lg bg-opacity-70 flex items-center">
+    <div className="sticky top-2 z-50 w-[99%] h-16 bg-slate-400/10 rounded-xl backdrop-blur-lg bg-opacity-70 flex items-center">
 
       <header className=" flex h-full w-full px-12 items-center justify-between gap-4  rounded-xl bg-transparent md:px-20 ">
-        <span className="flex items-center">
-          <div className="w-12 h-12 rounded-full border-2 overflow-hidden">
-            <img
-              src={logo}
-              alt="logo"
-              className="w-full h-full object-cover scale-110 transition-transform duration-300"
-            />
-          </div>
-          <h1 className="text-4xl font-bold text-foreground">Portify</h1>
-        </span>
+        <span className="flex my-2 items-center justify-between gap-1 md-max:ml-12 ">
+                    <div className="w-12 h-12 rounded-md overflow-hidden">
+                      <img
+                        src={logo}
+                        alt="logo"
+                        loading="lazy"
+                        className="w-full h-full object-cover scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h1 className="text-2xl mt-1 text-foreground font-proxemic">
+                      Por<span className="text-[#EE4B2B] ">tify</span>{" "}
+                    </h1>
+                  </span>
 
         {/* Desktop navbar */}
         <nav className=" hidden flex-col gap-8 text-xl font-medium md:flex md:flex-row md:items-center md:gap-8 md:text-lg lg:gap-10">

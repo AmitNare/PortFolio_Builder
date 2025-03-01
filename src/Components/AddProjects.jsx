@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { Textarea } from "./ui/textarea";
 import { storage, db } from "./../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { ref as dbRef, push, onValue } from "firebase/database";
+import { ref as dbRef, push, onValue, update } from "firebase/database";
 import useUserAuth from "./UserAuthentication";
 import add_Icon from "../assets/add.png";
 import { TrashIcon, TvMinimal } from "lucide-react";
@@ -125,7 +125,7 @@ export default function AddProjects({ fetchProjects }) {
         projectName: formData.projectName,
         projectDescription: formData.projectDescription,
         projectUrl: formData.projectUrl,
-        githubRepoUrl: formData.githubRepoUrl,
+
         languages: selectedLanguages,
         projectImage: downloadURL,
       };
@@ -138,7 +138,7 @@ export default function AddProjects({ fetchProjects }) {
         projectName: "",
         projectDescription: "",
         projectUrl: "",
-        githubRepoUrl: "",
+
         languages: [],
         projectImage: "",
       });

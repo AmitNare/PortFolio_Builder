@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Stepper, Step } from "react-form-stepper";
 import * as Yup from "yup";
-import { storage } from '../../firebase'; // Adjust the import according to your setup
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { set, ref as dbRef, get, getDatabase } from 'firebase/database';
+import { storage } from "../../firebase"; // Adjust the import according to your setup
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { set, ref as dbRef, get, getDatabase } from "firebase/database";
 
 import GetUserDetailsForm, {
   AdditionalInfo,
@@ -13,14 +13,18 @@ import GetUserDetailsForm, {
   SocialLinks,
 } from "./GetUserDetailsForm";
 import useUserAuth from "./UserAuthentication";
-import { generatePortfolioLink, savePortfolioDataToFirebase } from "./PortfolioMethods";
+import {
+  generatePortfolioLink,
+  savePortfolioDataToFirebase,
+} from "./PortfolioMethods";
 import DataLoader from "./DataLoader";
 import { useNavigate } from "react-router-dom";
+import { Button } from "./ui/button";
 
-function MultiStepForm({setHasPortfolio, setProfileData}) {
-  const {user, userDetails} = useUserAuth(); 
+function MultiStepForm({ setHasPortfolio, setProfileData }) {
+  const { user, userDetails, setUserDetails } = useUserAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(0);
 
   // Define steps array properly
   const steps = [
@@ -33,7 +37,7 @@ function MultiStepForm({setHasPortfolio, setProfileData}) {
 
   // seperate name field into fname, lname
   const [firstname, ...rest] = userDetails?.name?.split(" ") || [""]; // Safeguard against undefined
-const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest is empty
+  const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest is empty
 
   const [formData, setFormData] = useState({
     name: firstname || "",
@@ -41,16 +45,18 @@ const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest
     email: user.email || " ",
     phoneNo: "",
     gender: "",
+    currentJobRole: "",
     countryCode: "+1",
     image: null,
     resume: null,
     address: "",
     bio: "",
     colleges: [],
-    // collegeName: "",
-    // course: "",
+    collegeName: "",
+    course: "",
     grade: "",
     gradeType: "CGPA", // or "Percentage"
+    description: "",
     skills: [],
     hobbies: [],
 
@@ -62,7 +68,7 @@ const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest
         linkedIn: "",
         gitHub: "",
         instagram: "",
-        tweeter: "",
+        twitter: "",
       },
     ],
   });
@@ -71,24 +77,27 @@ const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest
 
   const handleInputChange = async (e, field, index) => {
     const { name, value } = e.target;
-  
-    if (field) {
-      // For array fields (like experience)
-      setFormData((prevData) => {
+
+    setFormData((prevData) => {
+      if (field) {
+        // Update array fields like experience
         const updatedField = [...prevData[field]];
         updatedField[index] = { ...updatedField[index], [name]: value };
         return { ...prevData, [field]: updatedField };
-      });
-    } else {
-      // For single fields
-      setFormData((prevData) => ({ ...prevData, [name]: value }));
-    }
-  
-    // Validate the specific field and step (if applicable)
-    await validateStep(activeStep, name, value);
+      } else {
+        // Update single fields
+        return { ...prevData, [name]: value };
+      }
+    });
+
+    // Wait for state update before validating
+    setTimeout(async () => {
+      await validateStep(activeStep, name, value);
+    }, 100);
   };
-  
-  
+
+  const SUPPORTED_FORMATS = ["application/pdf"]; // ✅ Allowed file types
+  const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
   const nameValidation = Yup.string()
     .min(2, "Must be at least 3 characters")
@@ -124,6 +133,19 @@ const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest
         return value ? value.size <= 2 * 1024 * 1024 : false;
       }),
 
+    resume: Yup.mixed()
+      .required("Resume is required.")
+      .test(
+        "fileFormat",
+        "Only PDF files are allowed.",
+        (value) => value && SUPPORTED_FORMATS.includes(value.type)
+      )
+      .test(
+        "fileSize",
+        "File size must be less than 2MB.",
+        (value) => value && value.size <= MAX_FILE_SIZE
+      ),
+
     grade: Yup.number()
       .typeError("Grade must be a number")
       .required("Grade is required")
@@ -149,145 +171,159 @@ const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest
 
     jobDescription: Yup.string().max(150, "Bio must not exceed 150 characters"),
 
-    linkedIn: Yup.string(),
-    gitHub: Yup.string(),
-    instagram: Yup.string(),
-    tweeter: Yup.string(),
+    gitHub: Yup.string().url("Invalid GitHub URL"),
+    twitter: Yup.string().url("Invalid Twitter URL"),
+    instagram: Yup.string().url("Invalid Instagram URL"),
+    linkedIn: Yup.string().url("Invalid LinkedIn URL"),
   });
 
   const validateStep = async (step, name, value) => {
-  try {
-    let stepValidationSchema;
+    try {
+      let stepValidationSchema;
 
-    switch (step) {
-      case 0:
-        stepValidationSchema = validationSchema.pick([
-          "name",
-          "email",
-          "phoneNo",
-          "surname",
-          "gender",
-          "address",
-          "bio",
-        ]);
-        break;
-      case 1:
-        // stepValidationSchema = validationSchema.pick(["collegeName", "course"]);
-        break;
-      case 2:
-        // No predefined schema for this step; we handle it dynamically
-        break;
-      case 3:
-        stepValidationSchema = validationSchema.pick([
-          "linkedIn",
-          "gitHub",
-          "instagram",
-          "tweeter",
-        ]);
-        break;
-      default:
-        stepValidationSchema = validationSchema; // Full schema as fallback
-        break;
-    }
-
-    // Step 1: Validate a single field if name and value are provided
-    if (name && value !== undefined && stepValidationSchema) {
-      try {
-        await stepValidationSchema.validateAt(name, {
-          ...formData,
-          [name]: value,
-        });
-        setErrors((prevErrors) => ({ ...prevErrors, [name]: undefined })); // Clear specific field error
-      } catch (fieldError) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: fieldError.message, // Update specific field error
-        }));
-        return false; // Return failure for field validation
+      switch (step) {
+        case 0:
+          stepValidationSchema = validationSchema.pick([
+            "name",
+            "email",
+            "phoneNo",
+            "surname",
+            "gender",
+            "address",
+            "bio",
+            "image",
+            "resume",
+          ]);
+          break;
+        case 1:
+          // stepValidationSchema = validationSchema.pick(["collegeName", "course"]);
+          break;
+        case 2:
+          // No predefined schema for this step; we handle it dynamically
+          break;
+        case 3:
+          stepValidationSchema = validationSchema.pick([
+            "linkedIn",
+            "gitHub",
+            "instagram",
+            "twitter",
+          ]);
+          break;
+        default:
+          stepValidationSchema = validationSchema; // Full schema as fallback
+          break;
       }
-    }
 
-    // Step 2: Handle custom validation for the "experience" step
-    if (step === 2) {
-      const experienceErrors = [];
-      const experienceEntries = formData.experience || [];
+      // Step 1: Validate a single field if name and value are provided
+      if (name && value !== undefined && stepValidationSchema) {
+        try {
+          await stepValidationSchema.validateAt(name, {
+            ...formData,
+            [name]: value,
+          });
+          setErrors((prevErrors) => ({ ...prevErrors, [name]: undefined })); // Clear specific field error
+        } catch (fieldError) {
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: fieldError.message, // Update specific field error
+          }));
+          return false; // Return failure for field validation
+        }
+      }
 
-      experienceEntries.forEach((entry, index) => {
-        const { companyName, jobDescription, jobRole, jobExperience } = entry;
+      // Step 2: Handle custom validation for the "experience" step
+      if (step === 2) {
+        const experienceErrors = [];
+        const experienceEntries = formData.experience || [];
 
-        // Check if any field is filled
-        const isAnyFieldFilled =
-          companyName ||  jobDescription || jobRole || jobExperience ;
+        experienceEntries.forEach((entry, index) => {
+          const { companyName, jobDescription, jobRole, jobExperience } = entry;
 
-        if (isAnyFieldFilled) {
-          // Validate all fields for this entry
-          const entrySchema = Yup.object().shape({
-            companyName: Yup.string().required("Company name is required."),
-            jobDescription: Yup.string().required("Job description is required."),
-            jobRole: Yup.string().required("Job role is required."),
-            jobExperience: Yup.string().required("Job experience is required."),
-            // companyAddress: Yup.string().required("Company address is required."),
-            
+          // Check if any field is filled
+          const isAnyFieldFilled =
+            companyName || jobDescription || jobRole || jobExperience;
+
+          if (isAnyFieldFilled) {
+            // Validate all fields for this entry
+            const entrySchema = Yup.object().shape({
+              companyName: Yup.string().required("Company name is required."),
+              jobDescription: Yup.string().required(
+                "Job description is required."
+              ),
+              jobRole: Yup.string().required("Job role is required."),
+              jobExperience: Yup.string().required(
+                "Job experience is required."
+              ),
+              // companyAddress: Yup.string().required("Company address is required."),
+            });
+
+            try {
+              entrySchema.validateSync(entry, { abortEarly: false });
+            } catch (err) {
+              // Collect errors for the current entry
+              err.inner.forEach((error) => {
+                experienceErrors.push({
+                  index,
+                  field: error.path,
+                  message: error.message,
+                });
+              });
+            }
+          }
+        });
+
+        if (experienceErrors.length > 0) {
+          const newErrors = { ...errors };
+          experienceErrors.forEach(({ index, field, message }) => {
+            if (!newErrors.experience) newErrors.experience = [];
+            if (!newErrors.experience[index]) newErrors.experience[index] = {};
+            newErrors.experience[index][field] = message;
+          });
+          setErrors(newErrors);
+          return false; // Validation failed
+        } else {
+          setErrors((prevErrors) => ({ ...prevErrors, experience: undefined })); // Clear experience errors
+          return true; // Validation passed
+        }
+      }
+
+      // Step 3: Validate the entire step (for other steps)
+      if (stepValidationSchema) {
+        const stepFormData = Object.keys(stepValidationSchema.fields).reduce(
+          (acc, field) => ({ ...acc, [field]: formData[field] }),
+          {}
+        );
+
+        try {
+          const stepErrors = await stepValidationSchema.validate(stepFormData, {
+            abortEarly: false,
           });
 
-          try {
-            entrySchema.validateSync(entry, { abortEarly: false });
-          } catch (err) {
-            // Collect errors for the current entry
-            err.inner.forEach((error) => {
-              experienceErrors.push({
-                index,
-                field: error.path,
-                message: error.message,
-              });
+          // ✅ Validation successful
+          setErrors({}); // Clear all errors
+          return true;
+        } catch (stepError) {
+          if (stepError.inner && Array.isArray(stepError.inner)) {
+            // ✅ Ensure stepError.inner exists and is an array
+            const newErrors = {};
+            stepError.inner.forEach((err) => {
+              newErrors[err.path] = err.message;
             });
+            setErrors(newErrors); // Update errors for all invalid fields
+          } else {
+            console.error("Unexpected validation error:", stepError); // Debugging info
           }
+
+          return false; // Validation failed
         }
-      });
-
-      if (experienceErrors.length > 0) {
-        const newErrors = { ...errors };
-        experienceErrors.forEach(({ index, field, message }) => {
-          if (!newErrors.experience) newErrors.experience = [];
-          if (!newErrors.experience[index]) newErrors.experience[index] = {};
-          newErrors.experience[index][field] = message;
-        });
-        setErrors(newErrors);
-        return false; // Validation failed
-      } else {
-        setErrors((prevErrors) => ({ ...prevErrors, experience: undefined })); // Clear experience errors
-        return true; // Validation passed
       }
+
+      return true; // Default to true if no validation is required for this step
+    } catch (error) {
+      console.error("Unexpected validation error:", error);
+      return false; // Return failure for unexpected errors
     }
-
-    // Step 3: Validate the entire step (for other steps)
-    if (stepValidationSchema) {
-      const stepFormData = Object.keys(stepValidationSchema.fields).reduce(
-        (acc, field) => ({ ...acc, [field]: formData[field] }),
-        {}
-      );
-
-      try {
-        await stepValidationSchema.validate(stepFormData, { abortEarly: false });
-        setErrors({}); // Clear all errors if validation passes
-        return true; // Validation passed
-      } catch (stepError) {
-        const newErrors = {};
-        stepError.inner.forEach((err) => {
-          newErrors[err.path] = err.message;
-        });
-        setErrors(newErrors); // Update errors for all invalid fields in the step
-        return false; // Validation failed
-      }
-    }
-
-    return true; // Default to true if no validation is required for this step
-  } catch (error) {
-    console.error("Unexpected validation error:", error);
-    return false; // Return failure for unexpected errors
-  }
-};
-
+  };
 
   const validateForm = async () => {
     try {
@@ -307,6 +343,17 @@ const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest
   };
 
   const handleNextStep = async () => {
+    let newErrors = { ...errors }; // Keep previous errors
+
+    if (!formData.image) {
+      newErrors.image = "Profile picture is required.";
+    }
+    if (!formData.resume) {
+      newErrors.resume = "Resume is required.";
+    }
+
+    setErrors(newErrors); // Set all errors together
+
     if (activeStep < steps.length - 1) {
       // Step 1: Ensure at least one college is added before proceeding
       if (activeStep === 1 && formData.colleges.length === 0) {
@@ -316,34 +363,31 @@ const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest
         }));
         return; // ❌ Stop execution (user must add at least one college)
       }
-  
+
       // Check if fields are filled properly before proceeding
       if (!validateCollegeFields()) return; // ❌ Stop if validation fails
-  
+
       const isValid = await validateStep(activeStep);
-  
+
       if (isValid) {
         setActiveStep((prev) => {
           const nextStep = prev + 1;
-  
+
           // ✅ Clear errors when moving to Step 2 or beyond
           if (nextStep >= 2) {
             setErrors({});
           }
-  
+
           return nextStep;
         });
-  
+
         console.log("Next step:", activeStep + 1);
       } else {
         console.log("Validation failed:", errors);
       }
     }
   };
-  
-  
-  
-  
+
   const [pdf, setPdf] = useState(null);
   // const [error, setError] = useState("");
   // const [uploading, setUploading] = useState(false);
@@ -400,7 +444,7 @@ const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest
   const [image, setImage] = useState();
   const [isDragOver, setIsDragOver] = useState(false);
   const [imageName, setImageName] = useState("");
-  
+
   // const handleDrop = (event) => {
   //   event.preventDefault();
   //   setIsDragOver(false);
@@ -414,68 +458,71 @@ const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest
       setErrors((prev) => ({ ...prev, image: file ? null : "Invalid image" }));
     } else if (type === "pdf") {
       setFormData((prev) => ({ ...prev, resume: file }));
-      setErrors((prev) => ({ ...prev, resume: file ? null : "Invalid resume" }));
+      setErrors((prev) => ({
+        ...prev,
+        resume: file ? null : "Invalid resume",
+      }));
     }
   };
-  
+
   // Handle drag events
-const handleDragEnter = (event) => {
-  event.preventDefault();
-  if (!image) setIsDragOver(true); // Only show drag-over effect if no image is selected
-};
+  const handleDragEnter = (event) => {
+    event.preventDefault();
+    if (!image) setIsDragOver(true); // Only show drag-over effect if no image is selected
+  };
 
-const handleDragLeave = () => {
-  if (!image) setIsDragOver(false); // Hide drag-over effect if no image is selected
-};
+  const handleDragLeave = () => {
+    if (!image) setIsDragOver(false); // Hide drag-over effect if no image is selected
+  };
 
-const handleDragOver = (event) => {
-  event.preventDefault(); // Prevent the default behavior to allow drop
-};
+  const handleDragOver = (event) => {
+    event.preventDefault(); // Prevent the default behavior to allow drop
+  };
 
-// Handle file drop
-const handleDrop = (event) => {
-  event.preventDefault();
-  const file = event.dataTransfer.files[0]; // Get the file from the drop event
+  // Handle file drop
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0]; // Get the file from the drop event
 
-  if (file) {
-    handleFileChange(file); // Call the image upload function
-  }
-};
+    if (file) {
+      handleFileChange(file); // Call the image upload function
+    }
+  };
 
-// Handle removing the image
-const handleRemoveImage = () => {
-  setImage(null); // Clear the image URL
-  setImageName(""); // Clear the image name
-  // Optionally remove the image from Firebase or mark it as deleted in your database
-};
+  // Handle removing the image
+  const handleRemoveImage = () => {
+    setImage(null); // Clear the image URL
+    setImageName(""); // Clear the image name
+    // Optionally remove the image from Firebase or mark it as deleted in your database
+  };
 
-const validateCollegeFields = () => {
-  const { collegeName, course, grade } = formData;
+  const validateCollegeFields = () => {
+    const { collegeName, course, grade } = formData;
 
-  // Check if at least one field is filled
-  const isAnyFieldFilled = collegeName.trim() || course.trim() || grade;
-  const isAllFieldsFilled = collegeName.trim() && course.trim() && grade;
+    // Check if at least one field is filled
+    const isAnyFieldFilled = collegeName.trim() || course.trim() || grade;
+    const isAllFieldsFilled = collegeName.trim() && course.trim() && grade;
 
-  if (isAnyFieldFilled && !isAllFieldsFilled) {
-    setErrors({
-      collegeName: collegeName ? "" : "College name is required.",
-      course: course ? "" : "Course is required.",
-      grade: grade ? "" : "Grade is required.",
-    });
-    return false; // ❌ Stop execution, fields are not fully filled
-  }
+    if (isAnyFieldFilled && !isAllFieldsFilled) {
+      setErrors({
+        collegeName: collegeName ? "" : "College name is required.",
+        course: course ? "" : "Course is required.",
+        grade: grade ? "" : "Grade is required.",
+      });
+      return false; // ❌ Stop execution, fields are not fully filled
+    }
 
-  // ✅ Clear errors when all fields are correctly filled
-  setErrors({});
-  return true; // ✅ Validation passed
-};
+    // ✅ Clear errors when all fields are correctly filled
+    setErrors({});
+    return true; // ✅ Validation passed
+  };
 
-
-   // Add a new college entry
-   const addCollege = () => {
+  // Add a new college entry
+  const addCollege = () => {
     if (
       formData.collegeName.trim() &&
       formData.course.trim() &&
+      formData.description.trim() &&
       formData.grade
     ) {
       const newCollege = {
@@ -483,14 +530,15 @@ const validateCollegeFields = () => {
         course: formData.course,
         grade: formData.grade,
         gradeType: formData.gradeType,
+        description: formData.description,
       };
-  
+
       const isDuplicate = formData.colleges?.some(
         (college) =>
           college.collegeName === newCollege.collegeName &&
           college.course === newCollege.course
       );
-  
+
       if (!isDuplicate) {
         // Add new college
         setFormData((prev) => ({
@@ -500,8 +548,9 @@ const validateCollegeFields = () => {
           course: "",
           grade: "",
           gradeType: "CGPA",
+          description: "",
         }));
-  
+
         // Clear all errors
         setErrors({});
       } else {
@@ -517,24 +566,23 @@ const validateCollegeFields = () => {
         collegeName: !formData.collegeName ? "College name is required." : "",
         course: !formData.course ? "Course is required." : "",
         grade: !formData.grade ? "Grade is required." : "",
+        description: !formData.description ? "description is required." : "",
       }));
     }
   };
-  
-  
 
   // Remove a college entry
   const removeCollege = (index) => {
     setFormData((prev) => {
       const updatedColleges = [...prev.colleges];
       updatedColleges.splice(index, 1); // Remove the selected college
-  
+
       return {
         ...prev,
         colleges: updatedColleges,
       };
     });
-  
+
     // Clear errors when the last college is removed
     if (formData.colleges.length === 1) {
       setErrors((prev) => ({
@@ -543,7 +591,7 @@ const validateCollegeFields = () => {
       }));
     }
   };
-  
+
   const validateCollegeStep = () => {
     if (formData.colleges.length === 0) {
       setErrors((prev) => ({
@@ -554,8 +602,6 @@ const validateCollegeFields = () => {
     }
     return true;
   };
-  
-  
 
   const [skillOptions, setSkillOptions] = useState([
     "JavaScript",
@@ -603,17 +649,22 @@ const validateCollegeFields = () => {
     setFormData((prevData) => {
       const updatedExperience = [...prevData.experience];
       const lastIndex = updatedExperience.length - 1;
-  
-      // Check if the last entry is complete
+
+      // Validate the last entry before adding a new one
       if (lastIndex >= 0) {
         const lastEntry = updatedExperience[lastIndex];
         const errors = {};
-  
-        if (!lastEntry.companyName.trim()) errors.companyName = "Company name is required.";
+
+        if (!lastEntry.companyName.trim())
+          errors.companyName = "Company name is required.";
         if (!lastEntry.jobRole.trim()) errors.jobRole = "Job role is required.";
-        if (!lastEntry.jobExperience.trim()) errors.jobExperience = "Experience is required.";
-        if (!lastEntry.jobDescription.trim()) errors.jobDescription = "Description is required.";
-  
+        if (!lastEntry.jobExperience.trim())
+          errors.jobExperience = "Experience is required.";
+        if (!lastEntry.jobDescription.trim())
+          errors.jobDescription = "Description is required.";
+        if (!lastEntry.companyAddress.trim())
+          errors.companyAddress = "Company address is required.";
+
         // If there are errors, update the error state and return
         if (Object.keys(errors).length > 0) {
           setErrors((prevErrors) => ({
@@ -623,22 +674,22 @@ const validateCollegeFields = () => {
           return prevData;
         }
       }
-  
+
       // If no errors, clear errors for the last entry and add a new blank entry
       setErrors((prevErrors) => ({
         ...prevErrors,
         experience: { ...prevErrors.experience, [lastIndex]: {} },
       }));
-  
+
       const newEntry = {
         companyName: "",
-        companyAddress: "",
+        companyAddress: "", // Ensure companyAddress is included
         jobRole: "",
         jobExperience: "",
-        jobDuration: "",
+        jobDuration: "Month",
         jobDescription: "",
       };
-  
+
       return {
         ...prevData,
         experience: [...updatedExperience, newEntry],
@@ -676,110 +727,116 @@ const validateCollegeFields = () => {
   // Save data into Firebase
   const saveFormDataToFirebase = async () => {
     const db = getDatabase();
-    const formRef = ref(db, 'Users/' + user.uid); // Reference to your user data in the database
+    const formRef = ref(db, "Users/" + user.uid); // Reference to your user data in the database
     await set(formRef, formData); // Save the form data
   };
 
   // Handle form submission
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     console.log(user.uid);
+  //   const handleSubmit = async (e) => {
+  //     e.preventDefault();
+  //     console.log(user.uid);
 
-//     // Validate the form data first
-//     // const isValid = await validateForm();
-//     // if (!isValid) {
-//     //     console.log("Form validation failed:", errors);
-//     //     return;
-//     // }
+  //     // Validate the form data first
+  //     // const isValid = await validateForm();
+  //     // if (!isValid) {
+  //     //     console.log("Form validation failed:", errors);
+  //     //     return;
+  //     // }
 
-//     // Proceed with form submission after validation
-//     try {
-//         // Save form data to Firebase
-//         // await saveFormDataToFirebase();
+  //     // Proceed with form submission after validation
+  //     try {
+  //         // Save form data to Firebase
+  //         // await saveFormDataToFirebase();
 
-//         // Reset form state or show success message
-//         console.log("Form submitted successfully!",formData);
+  //         // Reset form state or show success message
+  //         console.log("Form submitted successfully!",formData);
 
-//     } catch (error) {
-//         console.error("Error saving data to Firebase:", error);
-//     }
-// };
+  //     } catch (error) {
+  //         console.error("Error saving data to Firebase:", error);
+  //     }
+  // };
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-const handleSubmit = async (e) => {
-  e.preventDefault(); // Prevent default form submission behavior
-  setIsLoading(true);
-  console.log(formData.image);
-  console.log("User UID:", user.uid);
-  
-  try {
+    try {
+      const db = getDatabase();
+      const portfolioRef = dbRef(db, `portfolioId/${user.uid}`);
 
-    const db = getDatabase(); // Initialize Firebase Realtime Database
+      // Check if the user already has a portfolio
+      const snapshot = await get(portfolioRef);
+      if (snapshot.exists()) {
+        alert(
+          "You already have a portfolio link. You cannot create another one."
+        );
+        return;
+      }
 
-    // Reference to the user's portfolio node
-    const portfolioRef = dbRef(db, `portfolioId/${user.uid}`);
+      // **Step 1: Upload Image and Resume**
+      const uploadPromises = [];
 
-    // Check if the user already has a portfolio
-    const snapshot = await get(portfolioRef);
-    if (snapshot.exists()) {
-      console.log("User already has a portfolio:", snapshot.val());
-      alert("You already have a portfolio link. You cannot create another one.");
-      return; // Exit if the portfolio already exists
+      let imageUrl = null;
+      if (formData.image) {
+        const storageRef = ref(storage, `images/${formData.image.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, formData.image);
+        uploadPromises.push(uploadTask.then(() => getDownloadURL(storageRef)));
+      }
+
+      let resumeUrl = null;
+      if (formData.resume) {
+        const storageRef = ref(storage, `resume/${formData.resume.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, formData.resume);
+        uploadPromises.push(uploadTask.then(() => getDownloadURL(storageRef)));
+      }
+
+      // Wait for all uploads to complete
+      const urls = await Promise.all(uploadPromises);
+      imageUrl = urls[0] || null; // First URL is for the image
+      resumeUrl = urls[1] || null; // Second URL is for the resume
+
+      console.log("Uploaded Image URL:", imageUrl);
+      console.log("Uploaded Resume URL:", resumeUrl);
+
+      // **Step 3: Update formData with the correct URLs**
+      const updatedFormData = {
+        ...formData,
+        image: imageUrl,
+        resume: resumeUrl,
+      };
+
+      // Update the formData state with the new URLs
+      setFormData(updatedFormData);
+
+      // **Step 4: Generate Portfolio Link**
+      const uniqueLink = generatePortfolioLink(formData.name, formData.surname);
+
+      // **Step 5: Prepare Portfolio Data**
+      const portfolioData = {
+        uniqueLink: `${window.location.origin}/${uniqueLink}`,
+        createdAt: Date.now(),
+      };
+
+      // **Step 6: Save to Firebase**
+      await set(portfolioRef, portfolioData); // use to store unique link
+      await savePortfolioDataToFirebase(updatedFormData, user.uid); // Use updatedFormData here
+
+      console.log("Portfolio data saved successfully:", portfolioData);
+      alert("Portfolio created successfully!");
+
+      // **Step 7: Update State and Navigate**
+      setProfileData(updatedFormData); // Use updatedFormData here
+      setUserDetails(updatedFormData);
+      setHasPortfolio(true);
+      navigate(location.pathname, { replace: true });
+    } catch (error) {
+      console.error("Error saving portfolio data to Firebase:", error);
+    } finally {
+      setIsLoading(false);
     }
-
-     // Upload the image to Firebase Storage
-     let imageUrl = null;
-     if (formData.image) {
-       const storageRef = ref(storage, `images/${formData.image.name}`);
-       const uploadTask = await uploadBytesResumable(storageRef, formData.image);
-       imageUrl = await getDownloadURL(uploadTask.ref);
-
-       // Save the image URL to formData
-       setFormData((prev) => ({
-         ...prev,
-         image: imageUrl, // Store the URL of the image in formData
-       }));
-     }
-     
-    // Generate a unique portfolio link
-    const uniqueLink = generatePortfolioLink(formData.name, formData.surname);
-
-    // Portfolio data to be saved
-    const portfolioData = {
-      userId: user.uid,
-      image: imageUrl, // Store the image URL in portfolio data
-      uniqueLink: `${window.location.origin}/${uniqueLink}`, // Full unique link
-      createdAt: Date.now(), // Timestamp for when the portfolio was created
-    };
-
-    // Save the portfolio data to Firebase under the user's UID
-    await set(portfolioRef, portfolioData);
-
-    // Save the User data to Firebase under the user's UID
-    await savePortfolioDataToFirebase(formData, user.uid);
-
-    // Reset form state or show a success message
-    console.log("Portfolio data saved successfully!", portfolioData);
-    alert("Portfolio created successfully!");
-
-    console.log(formData);
-
-    // await new Promise((resolve) => setTimeout(resolve, 5000)); // 2 seconds delay
-    setProfileData(formData);
-    setHasPortfolio(true);
-    navigate(location.pathname, { replace: true }); // Refresh the current route
-
-  } catch (error) {
-    console.error("Error saving portfolio data to Firebase:", error);
-  }
-  finally {
-    setIsLoading(false);
-    navigate(location.pathname, { replace: true });
-  }
-};
-
+  };
 
   function getSectionComponent() {
     switch (activeStep) {
@@ -849,49 +906,51 @@ const handleSubmit = async (e) => {
       //     />
       //   );
       case 3:
-        return <SocialLinks 
+        return (
+          <SocialLinks
             formData={formData}
             addEntry={addEntry}
             removeEntry={removeEntry}
             handleInputChange={handleInputChange}
             errors={errors}
-          />;
-          
+          />
+        );
+
       default:
         return null;
     }
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full flex justify-center ">
       {isLoading ? (
         <DataLoader /> // Use the DataLoader component
       ) : (
-    <div className="stepper-container w-full p-2">
-      <Stepper
-        activeStep={activeStep}
-        styleConfig={{
-          activeBgColor: "#4caf50",
-          completedBgColor: "#4caf50",
-          inactiveBgColor: "#e0e0e0",
-          activeTextColor: "#ffffff",
-          completedTextColor: "#ffffff",
-          inactiveTextColor: "#9e9e9e",
-        }}
-        connectorStyleConfig={{
-          activeColor: "#4caf50",
-          completedColor: "#4caf50",
-          disabledColor: "#e0e0e0",
-        }}
-      >
-        {steps.map((step, index) => (
-          <Step key={index} label={step.label} />
-        ))}
-      </Stepper>
+        <div className="stepper-container w-3/4 p-2">
+          <Stepper
+            activeStep={activeStep}
+            styleConfig={{
+              activeBgColor: "#4caf50",
+              completedBgColor: "#4caf50",
+              inactiveBgColor: "#e0e0e0",
+              activeTextColor: "#ffffff",
+              completedTextColor: "#ffffff",
+              inactiveTextColor: "#9e9e9e",
+            }}
+            connectorStyleConfig={{
+              activeColor: "#4caf50",
+              completedColor: "#4caf50",
+              disabledColor: "#e0e0e0",
+            }}
+          >
+            {steps.map((step, index) => (
+              <Step key={index} label={step.label} />
+            ))}
+          </Stepper>
 
-      <div className="mt-1">
-        {getSectionComponent()}
-        {/* <UserDetails
+          <div className="mt-1 ">
+            {getSectionComponent()}
+            {/* <UserDetails
           activeStep={activeStep}
           stepName={steps[activeStep].stepName}
           formData={formData}
@@ -900,44 +959,43 @@ const handleSubmit = async (e) => {
           setErrors={setErrors}
           handleInputChange={handleInputChange}
         /> */}
-        <div className="w-full border-4 mt-4 flex justify-center items-center">
-          <div className="flex justify-between w-3/4 border-4 border-red-500">
-            <button
-              onClick={() => setActiveStep(activeStep - 1)}
-              disabled={activeStep === 0}
-              className="bg-yellow-600 px-2 w-1/4 h-8"
-              // style={styles.button}
-            >
-              Previous
-            </button>
+            <div className="w-full  mt-8 flex justify-center items-center">
+              <div className="flex justify-between w-3/4 ">
+                <Button
+                  variant="outline"
+                  onClick={() => setActiveStep(activeStep - 1)}
+                  disabled={activeStep === 0}
+                  className="border-button text-foreground hover:border-button-hover rounded-md px-2 py-2 w-1/4"
+                  // style={styles.button}
+                >
+                  Previous
+                </Button>
 
-            {activeStep < steps.length - 1 ? (
-              <button
-                onClick={handleNextStep} // Navigate to the next step
-                // style={styles.button}
-              className="bg-button text-button-textColor hover:bg-button-hover px-2 w-1/4"
+                {activeStep < steps.length - 1 ? (
+                  <button
+                    onClick={handleNextStep} // Navigate to the next step
+                    // style={styles.button}
+                    className="bg-button text-button-textColor hover:bg-button-hover rounded-md px-2 py-2 w-1/4"
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit} // Submit the form on the last step
+                    className="bg-button text-button-textColor hover:bg-button-hover rounded-md px-2 py-2 w-1/4"
 
-              >
-                Next
-              </button>
-            ) : (
-              <button
-              onClick={handleSubmit} // Submit the form on the last step
-              className="bg-button text-button-textColor hover:bg-button-hover px-2 w-1/4"
-
-                // style={styles.button}
-              >
-                Submit
-              </button>
-            )}
+                    // style={styles.button}
+                  >
+                    Submit
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
       )}
     </div>
   );
 }
-
 
 export default MultiStepForm;

@@ -84,7 +84,7 @@ export default function UserCertificates() {
 
   return (
     <Dialog>
-      <div className="w-full bg-background p-5 text-foreground">
+      <div data-aos="fade-left" className="w-full bg-background p-5 text-foreground">
         <span className="flex justify-between px-5 items-center">
           <h1 className="text-2xl font-bold ">All Certificates</h1>
           <DialogTrigger asChild>

@@ -12,6 +12,8 @@ export default function About() {
 
   return (
     <>
+    <div className=" text-foreground bg-background">
+
     <h1 className="flex justify-center text-5xl">About</h1>
     <motion.div 
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6"
@@ -31,6 +33,7 @@ export default function About() {
         </motion.div>
       ))}
     </motion.div>
+      </div>
       </>
   );
 }

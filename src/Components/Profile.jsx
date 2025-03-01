@@ -50,62 +50,13 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   const [firstname, ...rest] = userDetails?.name?.split(" ") || [""]; // Safeguard against undefined
   const surname = rest.length > 0 ? rest.join(" ") : ""; // Handle case where rest is empty
 
-  // const [formData, setFormData] = useState({
-  //   name: firstname || "",
-  //   surname: surname || "",
-  //   email: userDetails.email || " ",
-  //   phoneNo: "",
-  //   gender: "",
-  //   countryCode: "+1",
-  //   image: null,
-  //   address: "",
-  //   bio: "",
-  //   colleges: [],
-  //   // collegeName: "",
-  //   // course: "",
-  //   grade: "",
-  //   gradeType: "CGPA", // or "Percentage"
-  //   skills: [],
-  //   hobbies: [],
+ const [errors, setErrors] = useState({});
 
-  //   companyAddress: "",
-  //   experience: [],
-  //   awards: [],
-  //   socialLink: [
-  //     {
-  //       linkedIn: "",
-  //       gitHub: "",
-  //       instagram: "",
-  //       tweeter: "",
-  //     },
-  //   ],
-  // });
-
-  const [errors, setErrors] = useState({});
-
-  //  const handleInputChange = async (e, field, index) => {
-  //   const { name, value } = e.target;
-  //   console.log(`Changing ${name} in ${field} at index ${index} to ${value}`);
-
-  //   if (field) {
-  //     setUserDetails((prevDetails) => {
-  //       const updatedField = [...prevDetails[field]]; // Make a copy of the experience array
-  //       updatedField[index] = { ...updatedField[index], [name]: value }; // Update the specific field
-
-  //       console.log("Updated userDetails:", { ...prevDetails, [field]: updatedField });
-  //       return { ...prevDetails, [field]: updatedField }; // Set the updated state
-  //     });
-  //   } else {
-  //     setUserDetails((prevDetails) => {
-  //       console.log("Updated userDetails for single field:", { ...prevDetails, [name]: value });
-  //       return { ...prevDetails, [name]: value };
-  //     });
-  //   }
-
-  //   // Validation can be added here if required
-  //   await validateStep(activeStep, name, value);
-  // };
-
+ 
+  useEffect(() => {
+    console.log("Profile Data: ",userDetails);
+  }, [])
+ 
   const handleInputChange = (e, section, index, field) => {
     const { value } = e.target;
     setUserDetails((prevDetails) => {
@@ -177,7 +128,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     linkedIn: Yup.string(),
     gitHub: Yup.string(),
     instagram: Yup.string(),
-    tweeter: Yup.string(),
+    twitter: Yup.string(),
   });
 
   const validateStep = async (step, name, value) => {
@@ -207,7 +158,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
             "linkedIn",
             "gitHub",
             "instagram",
-            "tweeter",
+            "twitter",
           ]);
           break;
         default:
@@ -441,6 +392,8 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           errors.collegeName = "College name is required.";
         if (!lastEntry.course?.trim()) errors.course = "Course is required.";
         if (!lastEntry.grade?.trim()) errors.grade = "Grade is required.";
+        if (!lastEntry.description?.trim())
+          errors.description = "college Description is required.";
 
         if (Object.keys(errors).length > 0) {
           setErrors((prevErrors) => ({
@@ -457,6 +410,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         course: "",
         grade: "",
         gradeType: "",
+        description: "",
         isEditable: true,
       };
 
@@ -509,12 +463,14 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   
         // Validate required fields
         if (!currentEntry.collegeName?.trim())
-          errors.collegeName = "Company name is required.";
+          errors.collegeName = "College name is required.";
         if (!currentEntry.course?.trim())
           errors.course = "Address is required.";
         if (!currentEntry.grade?.trim())
-          errors.grade = "Job role is required.";
-  
+          errors.grade = "Grade is required.";
+        if (!currentEntry.description?.trim())
+          errors.description = "College Description is required.";
+
         // If validation fails, set errors and prevent saving
         if (Object.keys(errors).length > 0) {
           setErrors((prevErrors) => ({
@@ -996,179 +952,17 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     }
   };
 
+  
   return (
-    <div className="w-full flex flex-col  text-foreground bg-background p-5 gap-10">
-      {/* personal info */}
-      <div className="w-full border-2 p-5 rounded-md relative">
-        <div className="absolute -top-4 left-4 bg-background px-2">
-          <h1 className="text-lg font-bold">Personal Info</h1>
-        </div>
-
-        <div className=" flex flex-col gap-2">
-          <div className="flex justify-between gap-5">
-            <div className="w-2/4 relative flex items-center gap-2">
-              <Label htmlFor="name" className="min-w-fit">
-                Name :
-              </Label>
-              <Input
-                type="text"
-                value={userDetails?.name || ""}
-                disabled
-                className="w-full border-2 text-foreground bg-background "
-              />
-            </div>
-
-            <div className="w-2/4 relative flex items-center gap-2">
-              <Label htmlFor="surname" className="min-w-fit">
-                Surname :
-              </Label>
-              <Input
-                type="text"
-                value={userDetails?.surname || ""}
-                disabled
-                className="w-full border-2 text-foreground bg-background"
-              />
-            </div>
-          </div>
-
-          <div className="w-full flex justify-between gap-5">
-            <div className="w-2/4  flex items-center gap-2">
-              <Label htmlFor="email" className="min-w-fit">
-                Email :
-              </Label>
-              <Input
-                type="text"
-                value={userDetails?.email || ""}
-                disabled
-                className="w-full border-2 text-foreground bg-background "
-              />
-            </div>
-
-            <div className="w-2/4 flex items-center gap-2">
-              <Label for="phoneNo" className="min-w-fit">
-                Phone No :
-              </Label>
-              <Input
-                type="text"
-                value={userDetails?.phoneNo || ""}
-                disabled
-                className="w-full border-2 text-foreground bg-background"
-              />
-            </div>
-          </div>
-
-          <div className="w-full flex justify-between gap-5">
-            <div className="w-2/4 flex items-center gap-2">
-              <Label for="gender" className="min-w-fit">
-                Gender :
-              </Label>
-              <Input
-                type="text"
-                value={userDetails?.gender || ""}
-                disabled
-                className="w-full border-2 text-foreground bg-background"
-              />
-            </div>
-
-            <div className="w-2/4 flex items-center gap-2">
-              <Label for="address" className="min-w-fit">
-                Address :
-              </Label>
-              <Input
-                type="text"
-                value={userDetails?.address || ""}
-                disabled
-                className="w-full border-2 text-foreground bg-background"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* social info */}
-      <div className="w-full border-2 p-5 rounded-md relative">
-      {/* Header */}
-      <div className="absolute -top-4 left-4 bg-background px-2">
-        <h1 className="text-lg font-bold">Social Info</h1>
-      </div>
-
-      {/* Edit Button */}
-      <button
-        onClick={isEditing ? handleSave : handleEditToggle}
-        className="absolute top-2 right-4 px-3 py-1 bg-primary text-white rounded-md"
-      >
-        {isEditing ? "Save" : "Edit"}
-      </button>
-
-      {/* Social Links Form */}
-      <div className="flex flex-col gap-2 mt-4">
-        <div className="flex gap-5">
-          <div className="flex w-2/4 items-center gap-2">
-            <label htmlFor="linkedIn" className="min-w-fit capitalize">
-              LinkedIn:
-            </label>
-            <Input
-              type="text"
-              name="linkedIn"
-              value={socialData.linkedIn || ""}
-              onChange={handleChange}
-              disabled={!isEditing}
-              className="w-full border-2 text-foreground bg-background"
-            />
-          </div>
-          <div className="flex w-2/4 items-center gap-2">
-            <label htmlFor="instagram" className="min-w-fit capitalize">
-              Instagram:
-            </label>
-            <Input
-              type="text"
-              name="instagram"
-              value={socialData.instagram || ""}
-              onChange={handleChange}
-              disabled={!isEditing}
-              className="w-full border-2 text-foreground bg-background"
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-5">
-          <div className="flex w-2/4 items-center gap-2">
-            <label htmlFor="gitHub" className="min-w-fit capitalize">
-              GitHub:
-            </label>
-            <Input
-              type="text"
-              name="gitHub"
-              value={socialData.gitHub || ""}
-              onChange={handleChange}
-              disabled={!isEditing}
-              className="w-full border-2 text-foreground bg-background"
-            />
-          </div>
-          <div className="flex w-2/4 items-center gap-2">
-            <label htmlFor="tweeter" className="min-w-fit capitalize">
-              Twitter:
-            </label>
-            <Input
-              type="text"
-              name="tweeter"
-              value={socialData.tweeter || ""}
-              onChange={handleChange}
-              disabled={!isEditing}
-              className="w-full border-2 text-foreground bg-background"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <div data-aos="fade-left" className="w-full flex flex-col  text-foreground bg-background p-5 gap-10">
+     
       {/* education info */}
-      <div className="w-full border-2 p-5 rounded-md relative">
+      <div className="w-full border-2 p-3 rounded-md relative">
         <div className="flex justify-between items-center mb-3 ">
           {isCardEditing ? (
             <button
               onClick={saveCollegeChanges}
-              className={`p-1 rounded-sm absolute -top-4 right-0 ${
+              className={`p-1 rounded-sm absolute -top-4 right-3 ${
                 allCollegeCardsSaved
                   ? "bg-green-500 text-white"
                   : "bg-gray-300 text-gray-600 cursor-not-allowed"
@@ -1181,11 +975,10 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           ) : (
             <button
               onClick={() => setIsCardEditing(true)}
-              className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-0"
+              className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
               title={"Edit"}
             >
               <Pencil size={15} />
-              {/* Edit All */}
             </button>
           )}
         </div>
@@ -1202,15 +995,14 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           <h1 className="text-lg font-bold">Educational Info</h1>
         </div>
         
-        <div className="flex  gap-5">
+        <div className="flex gap-5 justify-around items-center flex-wrap">
           {userDetails?.colleges?.map((college, index) => (
             <div
               key={index}
-              className="flex flex-col gap-5 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md relative"
+              className="min-w-[400px] w-[400px] max-w-[500px] flex flex-col flex-wrap gap-5 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md relative"
             >
               {collegeEditingStates[index] && (
                 <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
-                  {/* Delete Button */}
                   <button
                     onClick={() => removeCollege("colleges", index)}
                     className="bg-red-500 text-white p-1 rounded-sm "
@@ -1219,7 +1011,6 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                     <X size={15} />
                   </button>
 
-                  {/* Save Button */}
                   <button
                     onClick={() => saveAllEducation(index)}
                     className="bg-green-500 text-white p-1 rounded-sm "
@@ -1251,55 +1042,105 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                 )}
               </div>
 
-<div className="flex">
-
-              <div className="flex flex-col gap-2 ">
-                <label className="text-sm font-medium text-foreground min-w-fit">
-                  Course:
-                </label>
-                <Input
-                  type="text"
-                  value={college.course}
-                  onChange={(e) => handleInputChange(e, "colleges", index, "course")}
-                  disabled={!collegeEditingStates[index]}
-                  className="border-2 text-foreground bg-background p-2"
-                  placeholder="Course"
-                />
-                {errors.colleges?.[index]?.course && (
-                  <span className="text-red-500 text-sm">
-                    {errors.colleges[index].course}
-                  </span>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-2 ">
-                <label className="text-sm font-medium text-foreground min-w-fit">
-                  Grade:
-                </label>
-                <Input
-                  type="text"
-                  value={college.grade}
-                  onChange={(e) => handleInputChange(e, "colleges", index, "grade")}
-                  disabled={!collegeEditingStates[index]}
-                  className="border-2 text-foreground bg-background p-2"
-                  placeholder="Grade"
-                />
-                {errors.colleges?.[index]?.grade && (
-                  <span className="text-red-500 text-sm">
-                    {errors.colleges[index].grade}
-                  </span>
-                )}
-              </div>
+              <div className="flex gap-2">
+                <div className="flex flex-col gap-2 ">
+                  <label className="text-sm font-medium text-foreground min-w-fit">
+                    Course:
+                  </label>
+                  <Input
+                    type="text"
+                    value={college.course}
+                    onChange={(e) => handleInputChange(e, "colleges", index, "course")}
+                    disabled={!collegeEditingStates[index]}
+                    className="border-2 text-foreground bg-background p-2"
+                    placeholder="Course"
+                  />
+                  {errors.colleges?.[index]?.course && (
+                    <span className="text-red-500 text-sm">
+                      {errors.colleges[index].course}
+                    </span>
+                  )}
                 </div>
 
+                <div className="flex flex-col gap-2 ">
+                  <label className="text-sm font-medium text-foreground min-w-fit">
+                    Grade:
+                  </label>
+                  <div className="flex flex-col" >
+                  <div className="flex gap-2 ">
+                    {collegeEditingStates[index] ? (
+                      <>
+                        <Input
+                          type="text"
+                          value={college.grade}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            if (college.gradeType === "CGPA" && value > 10) {
+                              alert("CGPA must be less than or equal to 10");
+                              return;
+                            }
+                            if (college.gradeType === "Percentage" && value > 100) {
+                              alert("Percentage must be less than or equal to 100");
+                              return;
+                            }
+                            handleInputChange(e, "colleges", index, "grade");
+                          }}className="border-2 text-foreground bg-background p-2 w-32"
+                          placeholder="Grade"
+                        />
+                        <select
+                          value={college.gradeType}
+                          onChange={(e) => handleInputChange(e, "colleges", index, "gradeType")}
+                          className="border-2 text-foreground bg-background p-2 w-32"
+                        >
+                          <option value="%">%</option>
+                          <option value="CGPA">CGPA</option>
+                        </select>
+                      </>
+                    ) : (
+                      <Input
+                        type="text"
+                        value={`${college.grade} ${college.gradeType}`}
+                        disabled={!collegeEditingStates[index]}
+                        className="border-2 text-foreground bg-background p-2 w-32"
+                        placeholder="Grade"
+                      />
+                    )}
+                    </div>
+                    {errors.colleges?.[index]?.grade && (
+                      <span className="text-red-500 text-sm">
+                        {errors.colleges[index].grade}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
 
-              {/* Action Buttons */}
-              {/* Edit Button */}
+              <div className="flex gap-2 flex-col ">
+                <label className="text-sm font-medium text-foreground min-w-fit">
+                  College Description:
+                </label>
+                <Input
+                  type="text"
+                  value={college.description}
+                  onChange={(e) =>
+                    handleInputChange(e, "colleges", index, "description")
+                  }
+                  disabled={!collegeEditingStates[index]}
+                  className="border-2 text-foreground bg-background p-2"
+                  placeholder="College Name"
+                />
+                {errors.colleges?.[index]?.description && (
+                  <span className="text-red-500 text-sm">
+                    {errors.colleges[index].description}
+                  </span>
+                )}
+              </div>
+
               {isCardEditing && !collegeEditingStates[index] && (
                 <div className="mt-3">
                   <button
                     onClick={() => handleCollegeCardEdit(index)}
-                    className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-0"
+                    className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
                   >
                     <Pencil size={15} />
                   </button>
@@ -1308,23 +1149,9 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
             </div>
           ))}
         </div>
-
-        {/* Add New Entry & Save All */}
-        <div className="flex gap-3 mt-4">
-          <button
-            className="px-4 py-2 bg-green-600 text-white rounded-md"
-            onClick={addCollege}
-          >
-            Add Education
-          </button>
-          <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md"
-            onClick={saveAllEducation}
-          >
-            Save All
-          </button>
-        </div>
       </div>
+
+
 
       {/* professional info */}
       <div className="w-full border-2 p-5 rounded-md relative">
@@ -1333,7 +1160,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           {isEditing ? (
             <button
               onClick={saveChanges}
-              className={`p-1 rounded-sm absolute -top-4 right-0 ${
+              className={`p-1 rounded-sm absolute -top-4 right-3 ${
                 allCardsSaved
                   ? "bg-green-500 text-white"
                   : "bg-gray-300 text-gray-600 cursor-not-allowed"
@@ -1346,7 +1173,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-0"
+              className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
               title={"Edit"}
             >
               <Pencil size={15} />
@@ -1510,7 +1337,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                 <div className="mt-3">
                   <button
                     onClick={() => handleCardEdit(index)}
-                    className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-0"
+                    className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
                   >
                     <Pencil size={15} />
                   </button>

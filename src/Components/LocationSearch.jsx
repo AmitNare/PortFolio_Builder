@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Input } from "./ui/input";
 
-const LocationSearch = ({ handleInputChange, errors, fieldsToShow, fieldPass  }) => {
+const LocationSearch = ({ handleInputChange, errors, fieldsToShow, fieldPass, index, value }) => {
   const [query, setQuery] = useState("");
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -75,19 +75,24 @@ const LocationSearch = ({ handleInputChange, errors, fieldsToShow, fieldPass  })
   };
 
   const handleAddressClick = (address) => {
-    setQuery(address); // Set input value to the selected address
-    setLocations([]); // Clear the list
-    setSelectedLocation(address); // Avoid triggering API for selected address
-
-    handleInputChange({ target: { name: fieldPass, value: address } }); // Update parent state
+    setQuery(address);
+    setLocations([]);
+    setSelectedLocation(address);
+  
+    // Ensure companyAddress is updated inside the experience array
+    handleInputChange(
+      { target: { name: fieldPass, value: address } }, // Simulate event object
+      "experience", 
+      index // Ensure index is passed correctly
+    );
   };
-
+  
   return (
     <div className="relative bg-background text-foreground ">
       <Input
         type="text"
         name="address"
-        value={query}
+        value={query || value}
         onChange={handleChange}
         placeholder="Enter a location"
         className={`p-2 border h-10 rounded-md w-full  text-foreground `}
@@ -95,16 +100,16 @@ const LocationSearch = ({ handleInputChange, errors, fieldsToShow, fieldPass  })
           />
 
       {loading && <p>Loading...</p>}
-      {errors.address && <p className="absolute text-red-500 text-sm ">{errors.address}</p>}
+      {errors.address && <p className="absolute text-red-500 text-sm ">{errors.address || "Address is required"}</p>}
 
       {locations.length > 0 && (
-        <div className="absolute bg-gray-500 w-full z-10 ">
+        <div className="absolute bg-slate-200 w-full z-10 ">
 
-        <ul className=" border-t ">
+        <ul className=" ">
           {locations.map((location, index) => (
             <li
             key={index}
-            className="border-b py-2 cursor-pointer "
+            className="border-b border-black p-1 cursor-pointer "
               onClick={() => handleAddressClick(location.formatted)}
               >
               <p>{location.formatted}</p>

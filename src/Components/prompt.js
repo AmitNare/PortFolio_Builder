@@ -1,0 +1,1 @@
+export const content = `Rewrite the user's broken or unstructured bio into a polished, professional, and engaging portfolio description. Use clear, confident language that highlights key skills and achievements. Output only the final content—no introductions, explanations, or extra remarks.`;

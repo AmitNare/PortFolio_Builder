@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Camera, Send } from "lucide-react";
 import { useUserAuth } from "./UserAuthentication";
 import { BsGithub } from "react-icons/bs";
-import { Twitter, Instagram, Linkedin } from "lucide-react";
+import { Twitter, Instagram, Linkedin, Copy } from "lucide-react";
 import { getAuth, updateEmail, sendEmailVerification } from "firebase/auth";
 import { db, storage, storage as storageRef } from "../../firebase"; // Adjust the import according to your setup
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -26,6 +26,7 @@ export default function Settings() {
   const [resumeName, setResumeName] = useState("");
   const [emailConfirmed, setEmailConfirmed] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const [portfolioLink, setPortfolioLink] = useState();
 
   // const [profileImage, setProfileImage] = useState(userDetails?.image || null);
 
@@ -84,6 +85,33 @@ export default function Settings() {
       });
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (userDetails) {
+        console.log("User fetchData object:", user); // Log the user object
+        if (userDetails?.uid) {
+          const db = getDatabase();
+                const portfolioRef = dbRef(db, `portfolioId/${user.uid}`);
+          
+                // Check if the user already has a portfolio
+                const snapshot = await get(portfolioRef);
+                if (snapshot.exists()) {
+                  const data = snapshot.val(); // Get the data object
+                  setPortfolioLink(data.uniqueLink); // Access the uniqueLink property
+                } else {
+                  console.log("No user data available");
+                }
+                
+              }
+      } else {
+        console.error("User  object is undefined");
+      }
+    };
+  
+    fetchData();
+  }, [userDetails]); // Add user as a dependency if it can change
+  
 
   const formik = useFormik({
     initialValues: {
@@ -213,12 +241,31 @@ const updateUserEmail = async (newEmail) => {
     return <div>Loading...</div>; // or any loading indicator
   }
 
+  const handleCopy = async () => {
+    if (portfolioLink) {
+      try {
+        await navigator.clipboard.writeText(portfolioLink);
+        alert("Link copied to clipboard!"); // You can replace this with a toast notification
+      } catch (err) {
+        console.error("Failed to copy: ", err);
+      }
+    }
+  };
+
   return (
     <form
       data-aos="fade-left"
       className="space-y-8 max-w-2xl mx-auto p-5"
       onSubmit={formik.handleSubmit}
     >
+      {portfolioLink && 
+        <strong className="flex w-full border-2 justify-center items-center">
+          {portfolioLink} 
+          <button onClick={handleCopy}>
+            <Copy /> {/* Replace with your copy icon */}
+          </button>
+        </strong>
+      }
       <div className="flex flex-col items-center space-y-4">
         <div className="relative">
           {profileImage ? (

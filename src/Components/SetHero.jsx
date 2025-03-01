@@ -8,7 +8,7 @@ import linkedin from "../assets/Images/linkedin.png";
 import Address from "../assets/Images/gps.png";
 import wave_hand from "../assets/Images/wave-hand.gif";
 
-import '../App.css';
+import "../App.css";
 import { Label } from "./ui/label";
 
 export default function SetHero({ userDetails }) {
@@ -31,7 +31,17 @@ export default function SetHero({ userDetails }) {
         .then((snapshot) => {
           if (snapshot.exists()) {
             const userData = snapshot.val();
-            setRoles(userData.experience?.map((exp) => exp.jobRole) || []);
+            if (userData.image) {
+              setImageUrl(userData.image); // Assuming userData.image contains the URL
+            }
+            const roles = userData.experience?.map((exp) => exp.jobRole) || [];
+
+            // Add current job role if it exists
+            if (userData.currentJobRole) {
+              roles.push(userData.currentJobRole); // Assuming currentJobRole is a string or object
+            }
+
+            setRoles(roles);
           } else {
             console.error("No user data found.");
           }
@@ -41,17 +51,17 @@ export default function SetHero({ userDetails }) {
         });
 
       // Fetch image URL
-      get(imageRef)
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            setImageUrl(snapshot.val()); // Assuming the imageRef stores the URL
-          } else {
-            console.error("No image data found.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching image data:", error);
-        });
+      // get(imageRef)
+      //   .then((snapshot) => {
+      //     if (snapshot.exists()) {
+      //       setImageUrl(snapshot.val()); // Assuming the imageRef stores the URL
+      //     } else {
+      //       console.error("No image data found.");
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error fetching image data:", error);
+      //   });
     }
   }, [userDetails?.uid]);
 
@@ -89,35 +99,33 @@ export default function SetHero({ userDetails }) {
   }, [displayedText, isDeleting, typingSpeed, currentRoleIndex, roles]);
 
   return (
-    <div className="lg:p-20 border-4 flex md:gap-1 bg-background justify-evenly items-center md-max:flex-col md-max:p-5 border-red-500 md:p-10">
+    <div  className="w-full lg:p-20 flex md:gap-1 bg-background justify-evenly items-center md-max:flex-col md-max:p-5 md:p-10">
       {/* Profile Image Section */}
-      <div className="border-4 border-red-500 lg-max:min-w-2/4 lg-max:min-h-[350px] xl:w-fit">
+      <div  className=" lg-max:min-w-2/4 lg-max:min-h-[350px] xl:w-fit">
         <img
           src={imageUrl}
           alt="Profile"
-          className="border-4 border-green-400 lg:w-[450px] lg-max:max-w-[350px] lg:h-[400px] lg-max:min-h-[340px] object-cover md-max:w-full md-max:mx-auto rounded-[50%] "
+          className="lg:w-[450px] lg-max:max-w-[350px] lg:h-[400px] lg-max:min-h-[340px] object-cover md-max:w-full md-max:mx-auto rounded-[50%] "
         />
       </div>
 
       {/* Text Section */}
-      <div className="border-2 pb-20 text-foreground border-green-500 flex flex-col items-center text-2xl my-auto md-max:w-full md:w-2/4">
-        <section className="w-full">
-        <h3 clssName="flex items-center border-2">
-  Hello 
-  {/* <span 
-  className="shake-emoji"
-  > */}
-    👋 
-    <img 
-      src={wave_hand} 
-      // autoPlay 
-      // loop 
-      // muted 
-      className="object-contain border-2 w-8 h-8 -rotate-[15deg] "
-    />
-  {/* </span>,  */}
-  my name is
-</h3>
+      <div  className=" pb-20 text-foreground  flex flex-col items-center text-2xl my-auto md-max:w-full md:w-2/4">
+        <section className="w-full ">
+          <div className="flex items-center ">
+            <span > 
+            Hello
+            </span> 
+           
+            <img
+              src={wave_hand}
+              // autoPlay
+              // loop
+              // muted
+              className="object-contain w-8 h-8 -rotate-[15deg] "
+            />
+            my name is
+          </div>
 
           <strong className="md:text-5xl text-green-500 font-bold md-max:text-5xl lg:text-6xl xl:text-7xl">
             {`${userDetails.name} ${userDetails.surname}`}
@@ -127,7 +135,11 @@ export default function SetHero({ userDetails }) {
           </h2>
 
           <div className="flex items-center mt-1">
-            <img src={Address} alt="" className="w-6 h-6 object-contain border-2 -ml-1 " />
+            <img
+              src={Address}
+              alt=""
+              className="w-6 h-6 object-contain border-2 -ml-1 "
+            />
             <Label>{userDetails.address} </Label>
           </div>
 

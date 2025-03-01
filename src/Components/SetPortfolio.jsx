@@ -7,22 +7,21 @@ import SetProjects from "./SetProjects";
 import SetCertificates from "./SetCertificates";
 import { useLocation, useParams, Link } from "react-router-dom";
 
-export default function SetPortfolio({setUserName}) {
+export default function SetPortfolio({ setUserName }) {
   const { userName } = useParams(); // Extract dynamic username
   const location = useLocation(); // Get the current location
   const [userDetails, setUserDetails] = useState(null); // Store user details
   const [error, setError] = useState(null); // Handle errors
   const [loading, setLoading] = useState(true); // Show loading state
 
-  useEffect(() => {
-    setUserName(userName)
-  
-    
-  }, [location])
-  
+  // useEffect(() => {
+  //   setUserName(userName)
+
+  // }, [location])
+
   // Fetch user data from Firebase
   useEffect(() => {
-    const currentUrl = window.location.href; // Get the full URL
+    const currentUrl = userName; // Get the full URL
     // setUserName(userName)
     const fetchUserDetails = async () => {
       try {
@@ -38,8 +37,10 @@ export default function SetPortfolio({setUserName}) {
 
           // Step 2: Find the user whose link matches the current URL
           Object.entries(portfolios).forEach(([key, portfolio]) => {
+            console.log("Checking portfolio:", key);
             if (portfolio.uniqueLink === currentUrl) {
-              foundUserUid = portfolio.userId; // Extract the user's UID
+              foundUserUid = key; // Extract the user's UID
+              console.log("foundUserUid : ", foundUserUid);
             }
           });
 
@@ -60,6 +61,7 @@ export default function SetPortfolio({setUserName}) {
               ...userData,
               uid: foundUserUid, // Include the UID in the userDetails
             });
+            console.log(userDetails);
           } else {
             setError("User details not found in the database.");
           }
@@ -108,24 +110,31 @@ export default function SetPortfolio({setUserName}) {
   }
 
   return (
-    <div className="mt-20">
-      
+    <div className="mt-5 w-full">
       {/* Portfolio Sections */}
       <section id="SetHero">
         <SetHero userDetails={userDetails} />
       </section>
-      <section id="SetProjects">
-        <SetProjects userDetails={userDetails} />
-      </section>
-      <section id="SetCertificates">
-        <SetCertificates userDetails={userDetails} />
-      </section>
-      <section id="SetEducation">
-        <SetEducation userDetails={userDetails} />
-      </section>
-      <section id="SetExperience">
-        <SetExperience userDetails={userDetails} />
-      </section>
+      {userDetails.projects && (
+        <section id="SetProjects">
+          <SetProjects userDetails={userDetails} />
+        </section>
+      )}
+      {userDetails.certificates && (
+        <section id="SetCertificates">
+          <SetCertificates userDetails={userDetails} />
+        </section>
+      )}
+      {userDetails.colleges && (
+        <section id="SetEducation">
+          <SetEducation userDetails={userDetails} />
+        </section>
+      )}
+      {userDetails.experience && (
+        <section id="SetExperience">
+          <SetExperience userDetails={userDetails} />
+        </section>
+      )}
     </div>
   );
 }

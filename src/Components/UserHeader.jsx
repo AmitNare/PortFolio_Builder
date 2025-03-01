@@ -16,11 +16,9 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link, useNavigate } from "react-router-dom";
 import Theme from "./Theme";
-import logo from '../assets/Images/logo7.webp'
+import logo from "../assets/Images/logo7.webp";
 
-export default function UserHeader(
-  { toggleTheme, isDarkTheme, name }
-) {
+export default function UserHeader({ toggleTheme, isDarkTheme, name }) {
   const navigate = useNavigate();
 
   return (
@@ -29,15 +27,18 @@ export default function UserHeader(
         <header className="bg-background sticky w-[99%] mt-2 flex h-16 bg-white-400/10 rounded-xl backdrop-blur-lg bg-opacity-70 items-center justify-between gap-4 border px-4 md:px-10">
           {/* <h1 className="text-4xl font-bold text-foreground">{name}</h1> */}
 
-<span className="flex my-2 items-center justify-between gap-1">
+          <span className="flex my-2 items-center justify-between gap-1 md-max:ml-12 ">
             <div className="w-12 h-12 rounded-md overflow-hidden">
-              <img 
-                src={logo} 
-                alt="logo" 
+              <img
+                src={logo}
+                alt="logo"
+                loading="lazy"
                 className="w-full h-full object-cover scale-110 transition-transform duration-300"
               />
             </div>
-            <h1 className="text-2xl  text-foreground md-max:ml-20 font-proxemic">Portify</h1>
+            <h1 className="text-2xl mt-1 text-foreground font-proxemic">
+              Por<span className="text-[#EE4B2B] ">tify</span>{" "}
+            </h1>
           </span>
 
           {/* Theme Toggle Button */}

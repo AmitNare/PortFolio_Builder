@@ -10,6 +10,7 @@ import { generatePortfolioLink, savePortfolioDataToFirebase } from "./PortfolioM
 import { getDatabase, ref, set } from "firebase/database";
 import { query, orderByChild, child, equalTo, get, push } from "firebase/database";
 
+
 export default function If_PortfolioGenerate() {
   const { userDetails, user, setUserDetails } = useUserAuth();
   const [loading, setLoading] = useState(true);
@@ -31,6 +32,7 @@ export default function If_PortfolioGenerate() {
         // Simulate additional loader time
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
+        
         setHasPortfolio(portfolioExists);
       } catch (error) {
         console.error("Error checking portfolio status:", error);
@@ -41,6 +43,23 @@ export default function If_PortfolioGenerate() {
 
     checkPortfolioStatus();
   }, [user?.uid]);
+
+  // useEffect(() => {
+  //   const fetchUserDetails = async () => {
+  //     if (user?.uid) {
+  //       const db = getDatabase();
+  //       const userRef = ref(db, `Users/${user.uid}`);
+  //       const snapshot = await get(userRef);
+  //       if (snapshot.exists()) {
+  //         setUserDetails(snapshot.val());
+  //       } else {
+  //         console.log("No user data available");
+  //       }
+  //     }
+  //   };
+  
+  //   fetchUserDetails();
+  // }, [user?.uid]);
 
   // const handleSubmit = async (portfolioData) => {
   //   setIsSubmitting(true); // Show loader during submission
@@ -70,7 +89,7 @@ export default function If_PortfolioGenerate() {
   }
 
   return (
-    <div className=" w-full">
+    <div  className=" w-full ">
       {hasPortfolio ? (
         <Profile userId={user?.uid} userDetails={profileData || userDetails} setUserDetails={setUserDetails} />
       ) : (
@@ -82,5 +101,4 @@ export default function If_PortfolioGenerate() {
   );
 }
 
-// i create form componet where i add submit button , i want after user click submit show loader some time and after next show profile component 
 

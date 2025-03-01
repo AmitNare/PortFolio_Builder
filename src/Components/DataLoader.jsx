@@ -3,7 +3,7 @@ import '../style.css'
 
 export default function DataLoader() {
   return (
-    <div className="w-full h-full flex justify-center items-center border-2">
+    <div className="w-full h-full flex justify-center items-center ">
       <div class="typewriter">
         <div class="slide ">
           <i></i>

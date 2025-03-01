@@ -29,11 +29,11 @@ export const PersonalInfo = ({
   setFormData,
   setErrors,
 }) => (
-  <div className="flex flex-col items-center p-0 w-full border-4 bg-background text-foreground">
+  <div className="flex flex-col items-center p-0 w-full  bg-background text-foreground">
     {/* <h3>Personal Information</h3> */}
-    <div className="w-3/4 bg-background text-foreground flex flex-col justify-between items border-2 border-green-500 gap-4 lg-max:w-full">
+    <div className="w-full px-4 py-2 bg-background text-foreground flex flex-col justify-between items rounded-md border gap-4 lg-max:w-full">
       <div className="flex justify-between gap-10 relative">
-        <span className="flex flex-col border-2 w-2/4">
+        <span className="flex flex-col  w-2/4">
           <Label className="text-lg">Name</Label>
           <Input
             type="text"
@@ -46,14 +46,14 @@ export const PersonalInfo = ({
           />
           {errors.name && (
             <span
-              className="absolute text-red-500 text-sm "
+              className="absolute text-red-500 text-xs "
               style={{ "margin-top": "68px" }}
             >
               {errors.name}
             </span>
           )}
         </span>
-        <span className="flex flex-col relative border-2 w-2/4">
+        <span className="flex flex-col relative  w-2/4">
           <Label className="text-lg">Surname</Label>
           <Input
             type="text"
@@ -66,7 +66,7 @@ export const PersonalInfo = ({
           />
           {errors.surname && (
             <span
-              className="absolute text-red-500 text-sm"
+              className="absolute text-red-500 text-xs"
               style={{ "margin-top": "68px" }}
             >
               {errors.surname}
@@ -89,7 +89,7 @@ export const PersonalInfo = ({
           />
           {errors.email && (
             <span
-              className="absolute text-red-500 text-sm "
+              className="absolute text-red-500 text-xs "
               style={{ "margin-top": "68px" }}
             >
               {errors.email}
@@ -110,7 +110,7 @@ export const PersonalInfo = ({
           />
           {errors.phoneNo && (
             <span
-              className="absolute text-red-500 text-sm "
+              className="absolute text-red-500 text-xs "
               style={{ "margin-top": "68px" }}
             >
               {errors.phoneNo}
@@ -119,9 +119,11 @@ export const PersonalInfo = ({
         </span>
       </div>
 
-      <div className="flex flex-col relative">
+      <div className="flex w-full gap-10">
+        <span className="flex flex-col relative w-2/4   ">
+
         <Label className="text-lg">Gender</Label>
-        <div className="flex gap-5">
+        <div className="flex gap-3">
           <div>
             <Input
               className="peer sr-only"
@@ -132,7 +134,7 @@ export const PersonalInfo = ({
               checked={formData.gender === "male"}
               onChange={(e) => handleInputChange(e)}
             />
-            <div className="bg-background text-foreground flex h-12 w-24 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-gray-300 bg-gray-50 p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
+            <div className="bg-background text-foreground flex h-fit w-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
               <Label
                 className=" flex cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
                 htmlFor="male"
@@ -144,7 +146,7 @@ export const PersonalInfo = ({
                   imageRendering="optimizeQuality"
                   clipRule="evenodd"
                   fillRule="evenodd"
-                  className="h-8 w-8 fill-current peer-checked:fill-blue-500"
+                  className="h-7 w-6 fill-current peer-checked:fill-blue-500"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path d="M35927 32903c412,2646 927,5119 1312,6767 -1320,-1159 -6849,-6682 -6569,-1799 342,5954 5284,6851 5297,6853l826 176 0 841c0,18 -115,6164 5054,8983 2585,1411 5371,2117 8155,2117 2783,0 5567,-706 8152,-2117 5169,-2819 5054,-8965 5054,-8983l0 -841 826 -176c13,-2 4955,-899 5297,-6853 273,-4760 -5035,428 -6400,1585 466,-2425 1265,-6640 1627,-10534 -707,-1139 -1761,-2058 -3310,-2445 -5841,-1459 -12802,2359 -14487,-898 -1685,-3256 -4043,-5728 -4043,-5728 0,0 -1461,5389 -4266,7749 -1302,1095 -2073,3278 -2525,5303zm7891 26143c0,0 -2213,3386 -2734,5600 -521,2213 -16015,783 -16407,9375 -392,8593 -391,16666 -391,16666l51429 0c0,0 1,-8073 -391,-16666 -392,-8592 -15886,-7162 -16407,-9375 -520,-2214 -2734,-5600 -2734,-5600 89,59 -103,-469 -339,-1065 1123,-370 2228,-847 3303,-1433 5035,-2746 5946,-8013 6109,-10011 1747,-593 5810,-2604 6152,-8552 329,-5738 -2626,-5167 -4942,-3884 588,-3342 1229,-9312 59,-16047 -1797,-10330 -8310,-7860 -13363,-8645 -5054,-786 -11791,3480 -11791,3480 0,0 -6064,-785 -8872,4717 -1830,3589 -79,10904 1361,15557l178 1232c-2363,-1457 -5799,-2573 -5444,3590 341,5948 4404,7959 6151,8552 163,1998 1075,7265 6110,10011 1074,586 2179,1063 3302,1433 -236,596 -428,1124 -339,1065zm11413 -875c37,1566 129,3813 367,5042 391,2019 -326,4297 -326,4297l-5271 5389 -5272 -5389c0,0 -717,-2278 -326,-4297 238,-1229 330,-3475 367,-5042 1719,502 3476,753 5232,753 1755,0 3511,-251 5229,-753z"></path>
@@ -164,7 +166,7 @@ export const PersonalInfo = ({
               checked={formData.gender === "female"}
               onChange={(e) => handleInputChange(e)}
             />
-            <div className="flex h-12 w-24 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-gray-300 bg-gray-50 p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
+            <div className="flex h-fit w-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
               <Label
                 className="flex cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
                 htmlFor="female"
@@ -203,7 +205,7 @@ export const PersonalInfo = ({
               checked={formData.gender === "other"}
               onChange={(e) => handleInputChange(e)}
             />
-            <div className="flex h-12 w-24 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-gray-300 bg-gray-50 p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
+            <div className="flex h-fit w-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
               <Label
                 className="flex cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
                 htmlFor="other"
@@ -232,12 +234,35 @@ export const PersonalInfo = ({
         </div>
         {errors.gender && (
           <span
-            className="absolute text-red-500 text-sm "
-            style={{ "margin-top": "75px" }}
+            className="absolute text-red-500 text-xs "
+            style={{ "margin-top": "65px" }}
           >
             {errors.gender}
           </span>
         )}
+        </span>
+
+        <span className="flex flex-col relative w-2/4  ">
+          <Label className="text-lg">Job Role</Label>
+          <Input
+            type="text"
+            placeholder="eg. Manager, HR"
+            className="text-lg p-2 border h-10 rounded-md"
+            name="currentJobRole"
+            autoComplete="currentJobRole"
+            value={formData.currentJobRole}
+            onChange={(e) => handleInputChange(e)}
+          />
+          {errors.currentJobRole && (
+            <span
+              className="absolute text-red-500 text-xs "
+              style={{ "margin-top": "68px" }}
+            >
+              {errors.currentJobRole}
+            </span>
+          )}
+        </span>
+
       </div>
 
       <div className="flex flex-col relative">
@@ -250,11 +275,11 @@ export const PersonalInfo = ({
           fieldsToShow={["suburb", "city", "state", "country"]}
           fieldPass="address"
         />
-        {errors.address && (
-          <span className="absolute text-red-500 text-sm mt-16 py-1">
+        {/* {errors.address && (
+          <span className="absolute text-red-500 text-xs mt-16 py-1">
             {errors.address}
           </span>
-        )}
+        )} */}
       </div>
 
       <div className="flex w-full flex-col relative">
@@ -271,7 +296,7 @@ export const PersonalInfo = ({
         />
         {errors.bio && (
           <span
-            className="absolute text-red-500 text-sm "
+            className="absolute text-red-500 text-xs "
             style={{ "margin-top": "108px" }}
           >
             {errors.bio}
@@ -279,18 +304,17 @@ export const PersonalInfo = ({
         )}
       </div>
 
-{/* Add profile picture */}
-<FileUpload
+      {/* Add profile picture */}
+      <FileUpload
         label="Profile Picture"
         accept="image/jpeg,image/png,image/jpg"
-        icon='📷'
-        onFileChange={(file, error) =>
-          handleFileChange(file, "image", error)
-        }
+        icon="📷"
+        onFileChange={(file, error) => handleFileChange(file, "image", error)}
         file={formData.image}
         fileName={formData.image?.name}
         error={errors.image}
       />
+
       <FileUpload
         label="Resume"
         accept="application/pdf"
@@ -391,10 +415,10 @@ export const EducationAndSkills = ({
                 name="collegeName"
                 value={formData.collegeName}
                 onChange={handleInputChange}
-                className="px-2 border-2 h-10 rounded-md"
+                className="px-2  h-10 rounded-md"
               />
               {errors.collegeName && (
-                <span className="absolute text-red-500 text-sm mt-14 py-1">
+                <span className="absolute text-red-500 text-xs mt-[58px] py-1">
                   {errors.collegeName}
                 </span>
               )}
@@ -407,10 +431,10 @@ export const EducationAndSkills = ({
                 name="course"
                 value={formData.course}
                 onChange={handleInputChange}
-                className="px-2 border-2 h-10 rounded-md"
+                className="px-2  h-10 rounded-md"
               />
               {errors.course && (
-                <span className="absolute text-red-500 text-sm mt-14 py-1">
+                <span className="absolute text-red-500 text-xs mt-[58px] py-1">
                   {errors.course}
                 </span>
               )}
@@ -424,10 +448,10 @@ export const EducationAndSkills = ({
                   name="grade"
                   value={formData.grade}
                   onChange={gradeInput}
-                  className="px-2 border-2 w-30 h-10 rounded-md"
+                  className="px-2  w-30 h-10 rounded-md"
                 />
                 {errors.grade && (
-                  <span className="absolute text-red-500 text-sm mt-16">
+                  <span className="absolute text-red-500 text-xs mt-[58px] ">
                     {errors.grade}
                   </span>
                 )}
@@ -435,7 +459,7 @@ export const EducationAndSkills = ({
                   name="gradeType"
                   value={formData.gradeType}
                   onChange={handleInputChange}
-                  className="bg-background text-foreground border-2 h-10 px-2 text-center text-sm appearance-auto rounded-md"
+                  className="bg-background text-foreground  h-10 px-2 text-center text-sm appearance-auto rounded-md"
                 >
                   <option >select</option>
                   <option value="CGPA">CGPA</option>
@@ -446,8 +470,23 @@ export const EducationAndSkills = ({
                 )}
               </div>
             </div>
+            <div className="flex flex-col mt-4 gap-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                type="text"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="px-2  h-10 rounded-md"
+              />
+              {errors.description && (
+                <span className="absolute text-red-500 text-xs mt-[98px] py-1">
+                  {errors.description}
+                </span>
+              )}
+            </div>
             {errors.colleges && (
-                  <span className="absolute text-red-500 text-sm mt-16">
+                  <span className="absolute text-red-500 text-xs mt-16">
                     {errors.colleges}
                   </span>
                 )}
@@ -466,7 +505,7 @@ export const EducationAndSkills = ({
             {formData.colleges.map((college, index) => (
               <div
                 key={index}
-                className="p-4 border-2 border-gray-300 rounded-md mb-3"
+                className="p-4  border-gray-300 rounded-md mb-3"
               >
                 <div className="flex justify-between items-center">
                   <div>
@@ -509,7 +548,7 @@ export const ProfessionalInfo = ({
 
         {/* Render Experiences (Newest First) */}
         {formData.experience.map((exp, index) => (
-          <div key={index} className="flex flex-col mb-4 border-2 p-4 gap-5">
+          <div key={index} className="flex flex-col mb-4  p-4 gap-5">
             <div className="w-full flex justify-between gap-6">
               <span className="w-2/4 relative">
                 <Label htmlFor="CompanyName">Company Name</Label>
@@ -531,11 +570,12 @@ export const ProfessionalInfo = ({
               <span className="w-2/4 relative">
                 <Label htmlFor="companyAddress">Address</Label>
                 <LocationSearch
-                  handleInputChange={handleInputChange}
+                  handleInputChange={(e) => handleInputChange(e, "experience", index)}
                   errors={errors}
                   // experienceErrors={experienceErrors}
                   fieldsToShow={["city"]}
                   fieldPass="companyAddress"
+                  index={index} // Pass index properly
                 />
                 {errors.experience?.[index]?.companyAddress && (
                   <span className="text-red-500 text-sm absolute mt-0">
@@ -583,13 +623,15 @@ export const ProfessionalInfo = ({
                     </span>
                   )}
                   <select
-                    className=" bg-background text-foreground w-2/4 border-2 h-10 text-center appearance-auto rounded-md"
-                    // value={exp.jobDuration} // Assuming 'timeUnit' is in your state
-                    // onChange={(e) => handleInputChange(e, "experience", index)}
-                  >
-                    <option value="Month">Month</option>
-                    <option value="Year">Year</option>
-                  </select>
+  className="bg-background text-foreground w-2/4 h-10 text-center appearance-auto rounded-md"
+  value={exp.jobDuration } // Bind value to formData
+  onChange={(e) => handleInputChange(e, "experience", index)} // Update state
+  name="jobDuration" // Ensure name matches the formData key
+>
+  <option value="Month">Month</option>
+  <option value="Year">Year</option>
+</select>
+
                   <TrashIcon
                     className="w-10 text-red-500 cursor-pointer"
                     onClick={() => removeEntry("experience", index)}
@@ -854,20 +896,20 @@ export const SocialLinks = ({
             </div>
 
             <div className="flex gap-2 items-center">
-              <label htmlFor={`Tweeter-${index}`} className="font-medium">
-                Tweeter:
+              <label htmlFor={`twitter-${index}`} className="font-medium">
+                Twitter:
               </label>
               <input
                 type="url"
-                name="tweeter"
-                value={link?.tweeter || ""}
+                name="twitter"
+                value={link?.twitter || ""}
                 onChange={(e) => handleInputChange(e, "socialLink", index)}
-                placeholder="Enter your Tweeter URL"
+                placeholder="Enter your twitter URL"
                 className="w-full h-10 p-2 border rounded text-foreground bg-background"
               />
-              {errors[`socialLink[${index}].tweeter`] && (
+              {errors[`socialLink[${index}].twitter`] && (
                 <p className="text-red-500 text-sm">
-                  {errors[`socialLink[${index}].tweeter`]}
+                  {errors[`socialLink[${index}].twitter`]}
                 </p>
               )}
             </div>

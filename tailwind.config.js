@@ -12,7 +12,7 @@ export default {
     				max: '599px'
     			},
     			'md-max': {
-    				max: '768px'
+    				max: '769px'
     			},
     			'lg-max': {
     				max: '1024px'

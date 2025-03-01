@@ -105,7 +105,7 @@ const FileUpload = ({
           </label>
         </div>
       ) : (
-        <div className="flex items-center justify-between border p-2 rounded-md">
+        <div className="flex items-center justify-between border p-2 rounded-md gap-2">
           {imagePreviewUrl && (
             <img
               src={imagePreviewUrl}
