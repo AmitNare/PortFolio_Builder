@@ -1,5 +1,4 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import SignIn from "./Components/SignIn";
 import SignUp from "./Components/SignUp";
 import UserProjects from "./Components/UserProjects";
@@ -14,6 +13,9 @@ import GlobalAuthProtector from "./Components/GlobalAuthProtector/GlobalAuthProt
 import UserAuthProtector from "./Components/UserAuthProtector/UserAuthProtector";
 
 export default function App() {
+  const location = useLocation();
+  console.log("App Logs: ", location.pathname);
+
   return (
     <Routes>
       <Route path="/" element={<GlobalAuthProtector />}>
@@ -26,12 +28,12 @@ export default function App() {
 
         {/* User Dashboard */}
         <Route path="/user" element={<UserAuthProtector />}>
-          <Route path="user/profile" element={<If_PortfolioGenerate />} />
-          <Route path="user/projects" element={<UserProjects />} />
-          <Route path="user/certificates" element={<UserCertificates />} />
-          <Route path="user/preview" element={<SetPortfolio />} />
-          <Route path="user/chatbot" element={<ChatGPT />} />
-          <Route path="user/settings" element={<Settings />} />
+          <Route path="/user/profile" element={<If_PortfolioGenerate />} />
+          <Route path="/user/projects" element={<UserProjects />} />
+          <Route path="/user/certificates" element={<UserCertificates />} />
+          <Route path="/user/preview" element={<SetPortfolio />} />
+          <Route path="/user/chatbot" element={<ChatGPT />} />
+          <Route path="/user/settings" element={<Settings />} />
         </Route>
 
         {/* Global Portfolio Page */}

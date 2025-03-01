@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import CardTemplete from "./CardTemplete";
@@ -61,8 +61,7 @@ export default function SignIn() {
       const userCredential = await logIn(email, password);
       const user = userCredential.user;
       console.log("login successful");
-      navigate("/user/profile")
-      
+      navigate("/user/profile");
     } catch (error) {
       if (error.name === "ValidationError") {
         const newErrors = error.inner.reduce((acc, curr) => {
@@ -78,6 +77,11 @@ export default function SignIn() {
       setLoading(false); // Stop loading
     }
   };
+
+  // user is already logged in, redirect to dashboard
+  if (logIn) {
+    return <Navigate to="/user/profile" />;
+  }
 
   const loginContent = (
     <form onSubmit={handleLogin} className="w-full">
@@ -97,7 +101,11 @@ export default function SignIn() {
             value={formData.email}
             className="w-full mt-1 mb-1"
           />
-          {errors.email && <p className="text-red-500 absolute mt-14 text-sm">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-red-500 absolute mt-14 text-sm">
+              {errors.email}
+            </p>
+          )}
         </div>
 
         <div className="grid relative">
@@ -111,7 +119,11 @@ export default function SignIn() {
             value={formData.password}
             className="w-full mt-1 mb-1"
           />
-          {errors.password && <p className="text-red-500 absolute mt-14 text-sm">{errors.password}</p>}
+          {errors.password && (
+            <p className="text-red-500 absolute mt-14 text-sm">
+              {errors.password}
+            </p>
+          )}
         </div>
       </div>
       <div className="mt-8 flex flex-col justify-between ">
@@ -139,19 +151,18 @@ export default function SignIn() {
         </div>
 
         <div className="flex flex-col  text-md text-center text-foreground gap-2">
-        <p className="flex justify-center items-center -2">
-  Don't have an account ?
-  <Button
-    variant="link"
-    className="no-underline text-md text-blue-500 px-1 py-0 m-0 text-center inline-flex items-center"
-    onClick={() => {
-      navigate("/signup");
-    }}
- >
-    Sign Up
-  </Button>
-</p>
-
+          <p className="flex justify-center items-center -2">
+            Don't have an account ?
+            <Button
+              variant="link"
+              className="no-underline text-md text-blue-500 px-1 py-0 m-0 text-center inline-flex items-center"
+              onClick={() => {
+                navigate("/signup");
+              }}
+            >
+              Sign Up
+            </Button>
+          </p>
         </div>
       </div>
     </form>

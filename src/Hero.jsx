@@ -1,12 +1,11 @@
-import React from 'react'
-import { useUserAuth } from './Components/UserAuthentication'
+import { useUserAuth } from "./Components/UserAuthentication";
 
 export default function Hero() {
-  const {user} = useUserAuth();
+  const { user } = useUserAuth();
   return (
-    <div className='text-foreground'>
+    <div className="text-foreground">
       Welcome
       {user && user.email}
     </div>
-  )
+  );
 }

@@ -1,27 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getDatabase, ref, get } from "firebase/database";
 import SetHero from "./SetHero";
 import SetExperience from "./SetExperience";
 import SetEducation from "./SetEducation";
 import SetProjects from "./SetProjects";
 import SetCertificates from "./SetCertificates";
-import { useLocation, useParams, Link } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
-export default function SetPortfolio({ setUserName }) {
+export default function SetPortfolio() {
   const { userName } = useParams(); // Extract dynamic username
   const location = useLocation(); // Get the current location
   const [userDetails, setUserDetails] = useState(null); // Store user details
   const [error, setError] = useState(null); // Handle errors
   const [loading, setLoading] = useState(true); // Show loading state
 
-  // useEffect(() => {
-  //   setUserName(userName)
-
-  // }, [location])
-
   // Fetch user data from Firebase
   useEffect(() => {
-    const currentUrl = userName; // Get the full URL
+    const currentUrl = userName;
     // setUserName(userName)
     const fetchUserDetails = async () => {
       try {
@@ -77,11 +72,13 @@ export default function SetPortfolio({ setUserName }) {
     };
 
     fetchUserDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]); // Dependency: Run when the URL path changes
 
   useEffect(() => {
     console.log("Username from URL:", userName); // Debug log
   }, [userName]);
+
   // Scroll to the section specified in the hash
   useEffect(() => {
     const scrollToSection = () => {

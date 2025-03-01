@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation, useParams } from "react-router-dom";
 import Navbar from "../Navbar";
 
 export default function GlobalAuthProtector() {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const location = useLocation();
+  const { userName } = useParams();
+  const path = location.pathname;
+  const [isDarkTheme, setIsDarkTheme] = useState(
+    localStorage.getItem("theme") === "dark"
+  );
 
   // Toggle theme logic
   const toggleTheme = () => {
@@ -24,6 +29,16 @@ export default function GlobalAuthProtector() {
   useEffect(() => {
     localStorage.setItem("theme", isDarkTheme ? "dark" : "light");
   }, [isDarkTheme]);
+
+  // Check for User Dashboard Routes
+  if (path?.startsWith("/user")) {
+    return <Outlet />;
+  }
+
+  // Portfolio Page Content
+  if (userName) {
+    return <Outlet />;
+  }
 
   return (
     <div

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import CardTemplete from "./CardTemplete";
+import useUserAuth from "./UserAuthentication";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ export default function SignIn() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
+
+  const { logIn } = useUserAuth();
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -55,15 +58,20 @@ export default function SignIn() {
       console.error("Error sending password reset email:", error.message);
       alert("Failed to send reset email. Please try again.");
     }
-    console.log("Password Rest Link Sent")
-
+    console.log("Password Rest Link Sent");
   };
-  
+
+  // user is already logged in, redirect to dashboard
+  if (logIn) {
+    return <Navigate to="/user/profile" />;
+  }
+
   const loginContent = (
     <form className="w-full flex flex-col gap-4">
       <div className="relative">
         <p className="text-foreground text-lg">
-          Please provide your email address to receive a password reset link. Follow the instructions in the email to securely reset your password.
+          Please provide your email address to receive a password reset link.
+          Follow the instructions in the email to securely reset your password.
         </p>
       </div>
       <div className="flex gap-2 w-full sm-max:flex-col sm-max:gap-4">
@@ -101,10 +109,9 @@ export default function SignIn() {
 
   return (
     <div className="w-full  flex justify-center items-center  py-24 ">
-
-    <div className="lg:w-2/5 lg:min-w-[800px] flex flex-col md:flex-row justify-center items-center  lg:justify-center bg-background text-foreground p-5 gap-8 border-2 ">
-      <CardTemplete title="Reset Your Password" content={loginContent} />
-    </div>
+      <div className="lg:w-2/5 lg:min-w-[800px] flex flex-col md:flex-row justify-center items-center  lg:justify-center bg-background text-foreground p-5 gap-8 border-2 ">
+        <CardTemplete title="Reset Your Password" content={loginContent} />
+      </div>
     </div>
   );
 }

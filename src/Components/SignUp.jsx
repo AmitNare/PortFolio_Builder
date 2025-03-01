@@ -9,7 +9,7 @@ import CardTemplete from "./CardTemplete";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 import { auth } from "../../firebase";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useUserAuth } from "./UserAuthentication";
 
 const USERID = import.meta.env.VITE_EMAILJS_USERID;
@@ -74,7 +74,7 @@ export default function SignUp() {
 
       // Store user details
       const user = userCredential.user;
-      console.log('handleSignUp function');
+      console.log("handleSignUp function");
 
       if (user) {
         await set(ref(db, "Users/" + user.uid), {
@@ -103,6 +103,11 @@ export default function SignUp() {
 
   const errorCount = Object.keys(errors).length;
 
+  // user is already logged in, redirect to dashboard
+  if (signUp) {
+    return <Navigate to="/user/profile" />;
+  }
+
   const content = (
     <form onSubmit={handleSignUp} className="w-full">
       <div className={`grid ${errorCount > 0 ? "gap-4" : "gap-4"} w-full`}>
@@ -116,7 +121,9 @@ export default function SignUp() {
             value={formData.Name}
             className="w-full mt-1 mb-1"
           />
-          {errors.Name && <p className="text-red-500 absolute mt-14 text-sm">{errors.Name}</p>}
+          {errors.Name && (
+            <p className="text-red-500 absolute mt-14 text-sm">{errors.Name}</p>
+          )}
         </div>
 
         <div className="grid relative">
@@ -130,7 +137,11 @@ export default function SignUp() {
             value={formData.email}
             className="w-full mt-1 mb-1"
           />
-          {errors.email && <p className="text-red-500 absolute mt-14 text-sm">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-red-500 absolute mt-14 text-sm">
+              {errors.email}
+            </p>
+          )}
         </div>
 
         <div className="grid relative">
@@ -144,7 +155,11 @@ export default function SignUp() {
             value={formData.password}
             className="w-full mt-1 mb-1"
           />
-          {errors.password && <p className="text-red-500 absolute mt-14 text-sm">{errors.password}</p>}
+          {errors.password && (
+            <p className="text-red-500 absolute mt-14 text-sm">
+              {errors.password}
+            </p>
+          )}
         </div>
 
         <div className="grid relative">
@@ -159,7 +174,9 @@ export default function SignUp() {
             className="w-full mt-1 mb-1"
           />
           {errors.confirmPassword && (
-            <p className="text-red-500 absolute mt-14 text-sm">{errors.confirmPassword}</p>
+            <p className="text-red-500 absolute mt-14 text-sm">
+              {errors.confirmPassword}
+            </p>
           )}
         </div>
       </div>

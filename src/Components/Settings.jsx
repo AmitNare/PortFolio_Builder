@@ -12,7 +12,7 @@ import { db, storage, storage as storageRef } from "../../firebase"; // Adjust t
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { set, ref as dbRef, get, getDatabase, update } from "firebase/database";
 import save_changes from "../assets/Images/save_changes.png";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -35,16 +35,28 @@ export default function Settings() {
     surname: yup.string().required("Surname is required"),
     phoneNo: yup
       .string()
-      .matches(/^\+[1-9]{1}[0-9]{1,3}\s?[1-9]{1}[0-9]{9}$/, "Phone number must include a valid country code and 10-digit number")
+      .matches(
+        /^\+[1-9]{1}[0-9]{1,3}\s?[1-9]{1}[0-9]{9}$/,
+        "Phone number must include a valid country code and 10-digit number"
+      )
       .required("Phone number is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
-    image: yup.string().url("Invalid image URL").required("Image URL is required"),
-    resume: yup.string().url("Invalid resume URL").required("Resume URL is required"),
+    image: yup
+      .string()
+      .url("Invalid image URL")
+      .required("Image URL is required"),
+    resume: yup
+      .string()
+      .url("Invalid resume URL")
+      .required("Resume URL is required"),
     socialLink: yup
       .array()
       .of(
         yup.object({
-          gitHub: yup.string().url("Invalid GitHub URL").required("GitHub URL is required"),
+          gitHub: yup
+            .string()
+            .url("Invalid GitHub URL")
+            .required("GitHub URL is required"),
           twitter: yup.string().url("Invalid Twitter URL"),
           instagram: yup.string().url("Invalid Instagram URL"),
           linkedIn: yup.string().url("Invalid LinkedIn URL"),
@@ -58,30 +70,30 @@ export default function Settings() {
   const handleSave = async () => {
     if (!emailConfirmed) {
       await Swal.fire({
-        title: 'Please wait',
-        text: 'Waiting for email confirmation...',
-        icon: 'info',
-        confirmButtonText: 'OK'
+        title: "Please wait",
+        text: "Waiting for email confirmation...",
+        icon: "info",
+        confirmButtonText: "OK",
       });
       return;
     }
 
     try {
       // Simulate saving data
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       await Swal.fire({
-        title: 'Success',
-        text: 'Data saved successfully!',
-        icon: 'success',
-        confirmButtonText: 'OK'
+        title: "Success",
+        text: "Data saved successfully!",
+        icon: "success",
+        confirmButtonText: "OK",
       });
     } catch (error) {
       await Swal.fire({
-        title: 'Error',
-        text: 'Failed to save data.',
-        icon: 'error',
-        confirmButtonText: 'OK'
+        title: "Error",
+        text: "Failed to save data.",
+        icon: "error",
+        confirmButtonText: "OK",
       });
     }
   };
@@ -92,26 +104,24 @@ export default function Settings() {
         console.log("User fetchData object:", user); // Log the user object
         if (userDetails?.uid) {
           const db = getDatabase();
-                const portfolioRef = dbRef(db, `portfolioId/${user.uid}`);
-          
-                // Check if the user already has a portfolio
-                const snapshot = await get(portfolioRef);
-                if (snapshot.exists()) {
-                  const data = snapshot.val(); // Get the data object
-                  setPortfolioLink(data.uniqueLink); // Access the uniqueLink property
-                } else {
-                  console.log("No user data available");
-                }
-                
-              }
+          const portfolioRef = dbRef(db, `portfolioId/${user.uid}`);
+
+          // Check if the user already has a portfolio
+          const snapshot = await get(portfolioRef);
+          if (snapshot.exists()) {
+            const data = snapshot.val(); // Get the data object
+            setPortfolioLink(data.uniqueLink); // Access the uniqueLink property
+          } else {
+            console.log("No user data available");
+          }
+        }
       } else {
         console.error("User  object is undefined");
       }
     };
-  
+
     fetchData();
   }, [userDetails]); // Add user as a dependency if it can change
-  
 
   const formik = useFormik({
     initialValues: {
@@ -143,10 +153,10 @@ export default function Settings() {
         const userRef = dbRef(db, `Users/${userDetails?.uid}`);
 
         await savePortfolioDataToFirebase(updatedFormData, userDetails.uid);
-        setUserDetails(prevDetails => ({
+        setUserDetails((prevDetails) => ({
           ...prevDetails,
-          ...updatedFormData
-      }));
+          ...updatedFormData,
+        }));
         console.log("Form submitted successfully:", updatedFormData);
         // await handleSave();
       } catch (error) {
@@ -156,8 +166,8 @@ export default function Settings() {
   });
 
   useEffect(() => {
-    console.log("userDetails: ",userDetails);
-    console.log("User: ",user);
+    console.log("userDetails: ", userDetails);
+    console.log("User: ", user);
 
     if (userDetails) {
       formik.setValues({
@@ -188,49 +198,56 @@ export default function Settings() {
 
   const handleResumeChange = async (e) => {
     const file = e.target.files?.[0];
-    if (file && file.type === "application/pdf" && file.size <= 5 * 1024 * 1024) {
+    if (
+      file &&
+      file.type === "application/pdf" &&
+      file.size <= 5 * 1024 * 1024
+    ) {
       const storageRef = ref(storage, `resumes/${file.name}`);
       await uploadBytes(storageRef, file);
       const fileURL = await getDownloadURL(storageRef);
       formik.setFieldValue("resume", fileURL);
-      setResumeName(file.name.length > 20 ? `${file.name.slice(0, 17)}...` : file.name);
+      setResumeName(
+        file.name.length > 20 ? `${file.name.slice(0, 17)}...` : file.name
+      );
     } else {
       alert("Please upload a PDF file under 5MB.");
     }
   };
 
-
-const updateUserEmail = async (newEmail) => {
+  const updateUserEmail = async (newEmail) => {
     const auth = getAuth();
-    const user = auth.currentUser ;
+    const user = auth.currentUser;
 
     if (user) {
-        try {
-            // Update the user's email
-            await updateEmail(user, newEmail);
-            console.log("Email updated successfully");
+      try {
+        // Update the user's email
+        await updateEmail(user, newEmail);
+        console.log("Email updated successfully");
 
-            // Send a verification email to the new email address
-            await sendEmailVerification(user);
-            console.log("Verification email sent. Please verify your new email address.");
-        } catch (error) {
-            // Handle specific error cases
-            if (error.code === 'auth/email-already-in-use') {
-                console.error("This email address is already in use.");
-            } else if (error.code === 'auth/invalid-email') {
-                console.error("The email address is not valid.");
-            } else if (error.code === 'auth/operation-not-allowed') {
-                console.error("Email/password accounts are not enabled.");
-            } else {
-                console.error("Error updating email: ", error.message);
-            }
+        // Send a verification email to the new email address
+        await sendEmailVerification(user);
+        console.log(
+          "Verification email sent. Please verify your new email address."
+        );
+      } catch (error) {
+        // Handle specific error cases
+        if (error.code === "auth/email-already-in-use") {
+          console.error("This email address is already in use.");
+        } else if (error.code === "auth/invalid-email") {
+          console.error("The email address is not valid.");
+        } else if (error.code === "auth/operation-not-allowed") {
+          console.error("Email/password accounts are not enabled.");
+        } else {
+          console.error("Error updating email: ", error.message);
         }
+      }
     } else {
-        console.log("No user is signed in.");
+      console.log("No user is signed in.");
     }
-};
+  };
 
- const handleSocialLinkChange = (index, field, value) => {
+  const handleSocialLinkChange = (index, field, value) => {
     const updatedLinks = [...formik.values.socialLink];
     updatedLinks[index][field] = value;
     formik.setFieldValue("socialLink", updatedLinks);
@@ -258,21 +275,21 @@ const updateUserEmail = async (newEmail) => {
       className="space-y-8 max-w-2xl mx-auto p-5"
       onSubmit={formik.handleSubmit}
     >
-      {portfolioLink && 
+      {portfolioLink && (
         <strong className="flex w-full border-2 justify-center items-center">
-          {portfolioLink} 
+          {portfolioLink}
           <button onClick={handleCopy}>
             <Copy /> {/* Replace with your copy icon */}
           </button>
         </strong>
-      }
+      )}
       <div className="flex flex-col items-center space-y-4">
         <div className="relative">
           {profileImage ? (
             <Avatar className="w-32 h-32">
               <AvatarImage
                 src={profileImage}
-                alt="User's profile picture"               
+                alt="User's profile picture"
                 loading="lazy"
                 className="object-cover"
               />
@@ -303,92 +320,104 @@ const updateUserEmail = async (newEmail) => {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
-    <div className="flex flex-col relative gap-1">
-      <Label htmlFor="name">Name</Label>
-      <Input
-        id="name"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.name}
-        placeholder="John"
-      />
-      {formik.touched.name && formik.errors.name && (
-        <div className="absolute text-red-500 text-sm mt-14">{formik.errors.name}</div>
-      )}
-    </div>
+        <div className="flex flex-col relative gap-1">
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.name}
+            placeholder="John"
+          />
+          {formik.touched.name && formik.errors.name && (
+            <div className="absolute text-red-500 text-sm mt-14">
+              {formik.errors.name}
+            </div>
+          )}
+        </div>
 
-    <div className="flex flex-col relative gap-1">
-      <Label htmlFor="surname">Surname</Label>
-      <Input
-        id="surname"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.surname}
-        placeholder="Doe"
-      />
-      {formik.touched.surname && formik.errors.surname && (
-        <div className="absolute text-red-500 text-sm mt-14">{formik.errors.surname}</div>
-      )}
-    </div>
+        <div className="flex flex-col relative gap-1">
+          <Label htmlFor="surname">Surname</Label>
+          <Input
+            id="surname"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.surname}
+            placeholder="Doe"
+          />
+          {formik.touched.surname && formik.errors.surname && (
+            <div className="absolute text-red-500 text-sm mt-14">
+              {formik.errors.surname}
+            </div>
+          )}
+        </div>
 
-    <div className="flex flex-col relative gap-1">
-      <Label htmlFor="phoneNo">Phone No</Label>
-      <Input
-        id="phoneNo"
-        type="tel"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.phoneNo}
-        placeholder="+1 (555) 000-0000"
-      />
-      {formik.touched.phoneNo && formik.errors.phoneNo && (
-        <div className="absolute text-red-500 text-sm mt-14">{formik.errors.phoneNo}</div>
-      )}
-    </div>
+        <div className="flex flex-col relative gap-1">
+          <Label htmlFor="phoneNo">Phone No</Label>
+          <Input
+            id="phoneNo"
+            type="tel"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.phoneNo}
+            placeholder="+1 (555) 000-0000"
+          />
+          {formik.touched.phoneNo && formik.errors.phoneNo && (
+            <div className="absolute text-red-500 text-sm mt-14">
+              {formik.errors.phoneNo}
+            </div>
+          )}
+        </div>
 
-    <div className="flex flex-col relative gap-1">
-      <Label htmlFor="address">Address</Label>
-      <LocationSearch
-        handleInputChange={formik.handleChange}
-        errors={formik.errors}
-        value={formik.values.address}
-        fieldsToShow={["suburb", "city", "state", "country"]}
-        fieldPass="address"
-      />
-      {formik.touched.address && formik.errors.address && (
-        <div className="absolute text-red-500 text-sm mt-14">{formik.errors.address}</div>
-      )}
-    </div>
+        <div className="flex flex-col relative gap-1">
+          <Label htmlFor="address">Address</Label>
+          <LocationSearch
+            handleInputChange={formik.handleChange}
+            errors={formik.errors}
+            value={formik.values.address}
+            fieldsToShow={["suburb", "city", "state", "country"]}
+            fieldPass="address"
+          />
+          {formik.touched.address && formik.errors.address && (
+            <div className="absolute text-red-500 text-sm mt-14">
+              {formik.errors.address}
+            </div>
+          )}
+        </div>
 
-    <div className="flex flex-col relative gap-1">
-      <Label htmlFor="currentJobRole">Current Job Role</Label>
-      <Input
-        id="currentJobRole"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.currentJobRole}
-        placeholder="Manager, HR"
-      />
-      {formik.touched.currentJobRole && formik.errors.currentJobRole && (
-        <div className="absolute text-red-500 text-sm mt-14">{formik.errors.currentJobRole}</div>
-      )}
-    </div>
+        <div className="flex flex-col relative gap-1">
+          <Label htmlFor="currentJobRole">Current Job Role</Label>
+          <Input
+            id="currentJobRole"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.currentJobRole}
+            placeholder="Manager, HR"
+          />
+          {formik.touched.currentJobRole && formik.errors.currentJobRole && (
+            <div className="absolute text-red-500 text-sm mt-14">
+              {formik.errors.currentJobRole}
+            </div>
+          )}
+        </div>
 
-    <div className="flex flex-col relative gap-1">
-      <Label htmlFor="email">Email</Label>
-      <Input
-        id="email"
-        type="email"
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        value={formik.values.email}
-        placeholder="johndoe@example.com"
-      />
-      {formik.touched.email && formik.errors.email && (
-        <div className="absolute text-red-500 text-sm mt-14">{formik.errors.email}</div>
-      )}
-    </div>
-  </div>
+        <div className="flex flex-col relative gap-1">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.email}
+            placeholder="johndoe@example.com"
+          />
+          {formik.touched.email && formik.errors.email && (
+            <div className="absolute text-red-500 text-sm mt-14">
+              {formik.errors.email}
+            </div>
+          )}
+        </div>
+      </div>
 
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Social Links</h2>
@@ -484,23 +513,21 @@ const updateUserEmail = async (newEmail) => {
         </Label>
       </div>> */}
       <div className="flex justify-center">
-
- <Button
-      size='lg'
-      type="submit"
-      className="w-2/4 md-max:w-full bg-button text-button-textColor hover:bg-button-hover relative overflow-hidden flex items-center justify-center"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <span className="relative z-10">Save</span>
-      <Send
-        className={` w-8 h-8 transition-transform duration-300 ${
-          isHovered ? 'translate-x-0 rotate-45 ' : 'translate-x-full '
-        } `}
-      />
-    </Button>
-    </div>
-
+        <Button
+          size="lg"
+          type="submit"
+          className="w-2/4 md-max:w-full bg-button text-button-textColor hover:bg-button-hover relative overflow-hidden flex items-center justify-center"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <span className="relative z-10">Save</span>
+          <Send
+            className={` w-8 h-8 transition-transform duration-300 ${
+              isHovered ? "translate-x-0 rotate-45 " : "translate-x-full "
+            } `}
+          />
+        </Button>
+      </div>
     </form>
   );
 }

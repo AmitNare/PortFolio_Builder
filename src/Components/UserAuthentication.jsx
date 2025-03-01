@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 const userAuthentication = createContext();
 
+// eslint-disable-next-line react/prop-types
 export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
@@ -22,9 +23,15 @@ export function UserAuthContextProvider({ children }) {
   // Sign up function
   async function signUp(email, password) {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       await sendEmailVerification(userCredential.user);
-      alert("Email verification link sent. Please verify your email before logging in.");
+      alert(
+        "Email verification link sent. Please verify your email before logging in."
+      );
       console.log("User Created...");
       // navigate("/signin")
       return userCredential;
@@ -45,13 +52,21 @@ export function UserAuthContextProvider({ children }) {
       if (userSnapshot.exists()) {
         const userData = { ...userSnapshot.val(), uid };
         console.log(userData);
-        return { role: "user", details: userData, redirectPath: "/user/profile" };
+        return {
+          role: "user",
+          details: userData,
+          redirectPath: "/user/profile",
+        };
       }
 
       const adminSnapshot = await get(adminRef);
       if (adminSnapshot.exists()) {
         const adminData = adminSnapshot.val();
-        return { role: "admin", details: adminData, redirectPath: "/admin-dashboard" };
+        return {
+          role: "admin",
+          details: adminData,
+          redirectPath: "/admin-dashboard",
+        };
       }
 
       console.warn("Role not found in database.");
@@ -65,7 +80,11 @@ export function UserAuthContextProvider({ children }) {
   // Log in function with role and details fetching
   async function logIn(email, password) {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const loggedInUser = userCredential.user;
 
       if (!loggedInUser.emailVerified) {
@@ -74,7 +93,9 @@ export function UserAuthContextProvider({ children }) {
         return;
       }
 
-      const { role, details, redirectPath } = await fetchUserDetails(loggedInUser.uid);
+      const { role, details, redirectPath } = await fetchUserDetails(
+        loggedInUser.uid
+      );
       setUserRole(role);
       setUserDetails(details);
       if (redirectPath) {
@@ -103,16 +124,19 @@ export function UserAuthContextProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setIsLoading(true);
       if (currentUser && currentUser.emailVerified) {
-        const { role, details, redirectPath } = await fetchUserDetails(currentUser.uid);
+        const { role, details } = await fetchUserDetails(currentUser.uid);
+
         setUser(currentUser);
         setUserRole(role);
         setUserDetails(details); // Store user details in state
 
         // Only navigate if the role or details have changed
-        if (role !== userRole) {
-        if (redirectPath) {
-          navigate(redirectPath);
-        }}
+        // if (role !== userRole) {
+        //   if (redirectPath) {
+        //     console.log("Fuck here: ", redirectPath);
+        //     navigate(redirectPath);
+        //   }
+        // }
       } else {
         setUser(null);
         setUserRole(null);
@@ -128,7 +152,15 @@ export function UserAuthContextProvider({ children }) {
 
   return (
     <userAuthentication.Provider
-      value={{ user, userRole, userDetails, setUserDetails, signUp, logIn, logOut }}
+      value={{
+        user,
+        userRole,
+        userDetails,
+        setUserDetails,
+        signUp,
+        logIn,
+        logOut,
+      }}
     >
       {children}
     </userAuthentication.Provider>
