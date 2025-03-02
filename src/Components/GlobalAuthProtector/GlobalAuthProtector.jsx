@@ -36,9 +36,11 @@ export default function GlobalAuthProtector() {
   }
 
   // Portfolio Page Content
-  if (userName) {
-    return <Outlet />;
-  }
+  // if (userName) {
+  //   return <Outlet />;
+  // }
+
+  console.log("Username: ", userName);
 
   return (
     <div
@@ -47,7 +49,11 @@ export default function GlobalAuthProtector() {
       } relative min-h-screen bg-lightBg dark:bg-darkBg flex w-full text-foreground`}
     >
       <div className="w-full flex flex-col items-center bg-background text-foreground">
-        <Navbar toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
+        <Navbar
+          toggleTheme={toggleTheme}
+          isDarkTheme={isDarkTheme}
+          isPortfolioPage={userName}
+        />
         <Outlet />
       </div>
     </div>

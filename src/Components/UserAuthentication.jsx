@@ -131,7 +131,7 @@ export function UserAuthContextProvider({ children }) {
         // Only navigate if the role or details have changed
         // if (role !== userRole) {
         //   if (redirectPath) {
-        //     console.log("Fuck here: ", redirectPath);
+        //     console.log("Bug here: ", redirectPath);
         //     navigate(redirectPath);
         //   }
         // }

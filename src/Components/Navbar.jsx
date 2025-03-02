@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 import { Moon, Sun, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -6,11 +7,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import useUserAuth from "./UserAuthentication";
 import logo from "../assets/Images/logo7.webp";
 
-export default function Navbar({ toggleTheme, isDarkTheme }) {
+export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { logOut } = useUserAuth(); // Access logOut from context
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState(isPortfolioPage || "");
 
   // Retrieve userName from localStorage on mount
   useEffect(() => {
@@ -48,28 +49,27 @@ export default function Navbar({ toggleTheme, isDarkTheme }) {
 
   return (
     <div className="sticky top-2 z-50 w-[99%] h-16 bg-slate-400/10 rounded-xl backdrop-blur-lg bg-opacity-70 flex items-center">
-
       <header className=" flex h-full w-full px-12 items-center justify-between gap-4  rounded-xl bg-transparent md:px-20 ">
         <span className="flex my-2 items-center justify-between gap-1 md-max:ml-12 ">
-                    <div className="w-12 h-12 rounded-md overflow-hidden">
-                      <img
-                        src={logo}
-                        alt="logo"
-                        loading="lazy"
-                        className="w-full h-full object-cover scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                    <h1 className="text-2xl mt-1 text-foreground font-proxemic">
-                      Por<span className="text-[#EE4B2B] ">tify</span>{" "}
-                    </h1>
-                  </span>
+          <div className="w-12 h-12 rounded-md overflow-hidden">
+            <img
+              src={logo}
+              alt="logo"
+              loading="lazy"
+              className="w-full h-full object-cover scale-110 transition-transform duration-300"
+            />
+          </div>
+          <h1 className="text-2xl mt-1 text-foreground font-proxemic">
+            Por<span className="text-[#EE4B2B] ">tify</span>{" "}
+          </h1>
+        </span>
 
         {/* Desktop navbar */}
         <nav className=" hidden flex-col gap-8 text-xl font-medium md:flex md:flex-row md:items-center md:gap-8 md:text-lg lg:gap-10">
           <ul className="flex space-x-4">
             <li>
               <Link
-                to={`/`}
+                to={userName ? `/${userName}#SetHero` : `/#Hero`}
                 className="hover:text-foreground text-xl"
               >
                 Home
@@ -77,7 +77,7 @@ export default function Navbar({ toggleTheme, isDarkTheme }) {
             </li>
             <li>
               <Link
-                to={`/${userName}#SetProjects `}
+                to={userName ? `/${userName}#SetProjects` : `/#About`}
                 className="hover:text-foreground text-xl"
               >
                 About
@@ -85,7 +85,7 @@ export default function Navbar({ toggleTheme, isDarkTheme }) {
             </li>
             <li>
               <Link
-                to={`/${userName}#SetCertificates`}
+                to={userName ? `/${userName}#SetCertificates` : `/#Features`}
                 className="hover:text-foreground text-xl"
               >
                 Features
@@ -93,7 +93,7 @@ export default function Navbar({ toggleTheme, isDarkTheme }) {
             </li>
             <li>
               <Link
-                to={`/${userName}#SetEducation`}
+                to={userName ? `/${userName}#SetEducation` : `/#Feedback`}
                 className="hover:text-foreground text-xl"
               >
                 Contact
@@ -126,34 +126,39 @@ export default function Navbar({ toggleTheme, isDarkTheme }) {
             )}
           </Button>
 
-          {!userName && (
+          {/* No Buttons on Portfolio Page */}
+          {!isPortfolioPage && (
             <>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/signin")}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Login
-              </Button>
+              {!userName && (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate("/signin")}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    Login
+                  </Button>
 
-              <Button
-                variant="outline"
-                onClick={() => navigate("/signup")}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Register
-              </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate("/signup")}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    Register
+                  </Button>
+                </>
+              )}
+
+              {userName && (
+                <Button
+                  variant="outline"
+                  onClick={handleLogOut}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  Logout
+                </Button>
+              )}
             </>
-          )}
-
-          {userName && (
-            <Button
-              variant="outline"
-              onClick={handleLogOut}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Logout
-            </Button>
           )}
         </section>
 
