@@ -2,7 +2,6 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import { Button } from "./ui/button";
 
 export default function SetCertificates({ userDetails }) {
   const [active, setActive] = useState(null);
@@ -32,33 +31,6 @@ export default function SetCertificates({ userDetails }) {
     id: key,
     ...value,
   }));
-
-  const handleDownload = async (imageUrl) => {
-    try {
-      const response = await fetch(imageUrl);
-      
-      // Check if the response is OK (status in the range 200-299)
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
-      const blob = await response.blob();
-      const fileName = imageUrl.split("/").pop().split("?")[0];
-  
-      // Create a link element
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = fileName; // Set the file name for download
-      document.body.appendChild(a);
-      a.click(); // Trigger the download
-      document.body.removeChild(a); // Clean up
-      window.URL.revokeObjectURL(url); // Release the object URL
-    } catch (error) {
-      console.error("Download failed:", error);
-      alert("Failed to download image: " + error.message);
-    }
-  };
 
   return (<>
     <AnimatePresence>
@@ -113,9 +85,13 @@ export default function SetCertificates({ userDetails }) {
                 </div>
 
                 {active.certificateUrl && (
-                  <Button onClick={() => handleDownload(active.certificateImage)}>
-                  Download Image
-                </Button>
+                  <motion.a
+                    layoutId={`button-${active.certificateName}-${id}`}
+                    href={active.certificateUrl}
+                    target="_blank"
+                    className="px-4 py-3 text-sm rounded-full font-bold bg-green-500 text-white">
+                    View Certificate
+                  </motion.a>
                 )}
               </div>
             </div>
