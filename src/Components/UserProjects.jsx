@@ -6,9 +6,10 @@ import { AspectRatio } from "./ui/aspect-ratio";
 import useUserAuth from "./UserAuthentication";
 import { Button } from "./ui/button";
 import DataLoader from "./DataLoader";
-
-import { PlusCircleIcon } from "lucide-react";
+import Swal from "sweetalert2"; // Import SweetAlert2
+import { PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
+
 export default function UserProjects() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +61,13 @@ export default function UserProjects() {
       setProjects((prevProjects) =>
         prevProjects.filter((project) => project.id !== projectId)
       );
-      alert("Project deleted successfully!");
+      // alert("Project deleted successfully!");
+      Swal.fire({
+              icon: "success",
+              title: "Project Deleted",
+              text: "The Project has been deleted successfully.",
+              confirmButtonText: "Okay",
+            });
     } catch (error) {
       console.error("Error deleting project:", error);
       alert("Failed to delete the project. Please try again.");
@@ -107,7 +114,7 @@ export default function UserProjects() {
           {projects.map((project) => (
             <li
               key={project.id}
-              className="border  p-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
+              className="border relative p-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
             >
               {project.projectImage && (
                 <AspectRatio ratio={16 / 9} className="bg-muted">
@@ -132,14 +139,11 @@ export default function UserProjects() {
               </a>
 
               <span className="flex justify-between mt-2">
-                <Button className=" w-2/5 ">Edit</Button>
-                <Button
-                  className=" w-2/5"
-                  variant="destructive"
-                  onClick={() => projectDelete(project.id)}
-                >
-                  Delete
-                </Button>
+                {/* <Button className=" w-2/5 ">Edit</Button> */}
+                <TrashIcon
+                      className="absolute bg-background text-red-500 cursor-pointer right-2 -top-4"
+                      onClick={() => projectDelete(project.id)}
+              />
               </span>
             </li>
           ))}

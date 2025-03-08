@@ -815,7 +815,7 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
 
       // **Step 5: Prepare Portfolio Data**
       const portfolioData = {
-        uniqueLink: `${window.location.origin}/${uniqueLink}`,
+        uniqueLink: uniqueLink,
         createdAt: Date.now(),
       };
 

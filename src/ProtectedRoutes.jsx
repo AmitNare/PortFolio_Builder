@@ -9,9 +9,9 @@ export default function ProtectedRoutes({ children, role }) {
   console.log("Protected Routes : ", user, userRole);
 
   // Allow public routes (for example, URLs starting with "/portfolio/")
-  if (location.pathname.startsWith("/portfolio/")) {
-    return children;
-  }
+  // if (location.pathname.startsWith("/portfolio/")) {
+  //   return children;
+  // }
 
   // Redirect unauthenticated users to the home page
   if (!user) {

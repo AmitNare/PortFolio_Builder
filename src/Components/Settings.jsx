@@ -9,7 +9,7 @@ import { BsGithub } from "react-icons/bs";
 import { Twitter, Instagram, Linkedin, Copy } from "lucide-react";
 import { getAuth, updateEmail, sendEmailVerification } from "firebase/auth";
 import { db, storage, storage as storageRef } from "../../firebase"; // Adjust the import according to your setup
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
 import { set, ref as dbRef, get, getDatabase, update } from "firebase/database";
 import save_changes from "../assets/Images/save_changes.png";
 import Swal from "sweetalert2";
@@ -28,7 +28,7 @@ export default function Settings() {
   const [isHovered, setIsHovered] = useState(false);
   const [portfolioLink, setPortfolioLink] = useState();
 
-  // const [profileImage, setProfileImage] = useState(userDetails?.image || null);
+  // const [profileImage, setProfileImage] = useState(userDetails?.image || null); gsutil cors set cors.json gs://portfolio-builder-3e3a8.appspot.com
 
   const validationSchema = yup.object({
     name: yup.string().required("Name is required"),
@@ -127,6 +127,7 @@ export default function Settings() {
     initialValues: {
       name: userDetails?.name || "",
       surname: userDetails?.surname || "",
+      gender: userDetails?.gender || "",
       email: userDetails?.email || "",
       phoneNo: userDetails?.phoneNo || "",
       image: userDetails?.image || "",
@@ -173,6 +174,7 @@ export default function Settings() {
       formik.setValues({
         name: userDetails.name || "",
         surname: userDetails.surname || "",
+        gender: userDetails.gender || "",
         phoneNo: userDetails.phoneNo || "",
         email: userDetails.email || "",
         image: userDetails.image || "",
@@ -196,25 +198,40 @@ export default function Settings() {
     }
   };
 
-  const handleResumeChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (
-      file &&
-      file.type === "application/pdf" &&
-      file.size <= 5 * 1024 * 1024
-    ) {
-      const storageRef = ref(storage, `resumes/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const fileURL = await getDownloadURL(storageRef);
-      formik.setFieldValue("resume", fileURL);
-      setResumeName(
-        file.name.length > 20 ? `${file.name.slice(0, 17)}...` : file.name
-      );
-    } else {
-      alert("Please upload a PDF file under 5MB.");
+  // const handleResumeChange = async (e) => {
+  //   const file = e.target.files?.[0];
+  //   if (
+  //     file &&
+  //     file.type === "application/pdf" &&
+  //     file.size <= 5 * 1024 * 1024
+  //   ) {
+  //     const storageRef = ref(storage, `resumes/${file.name}`);
+  //     await uploadBytes(storageRef, file);
+  //     const fileURL = await getDownloadURL(storageRef);
+  //     formik.setFieldValue("resume", fileURL);
+  //     setResumeName(
+  //       file.name.length > 20 ? `${file.name.slice(0, 17)}...` : file.name
+  //     );
+  //   } else {
+  //     alert("Please upload a PDF file under 5MB.");
+  //   }
+  // };
+
+
+  const downloadResume = async () => {
+    const storage = getStorage();
+    const resumePath = formik.values.resume; // Path in your Firebase Storage
+  
+    try {
+      const url = await getDownloadURL(ref(storage, resumePath));
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error("Failed to download the resume:", error);
     }
   };
-
+  
+  
+  
   const updateUserEmail = async (newEmail) => {
     const auth = getAuth();
     const user = auth.currentUser;
@@ -351,6 +368,23 @@ export default function Settings() {
           {formik.touched.surname && formik.errors.surname && (
             <div className="absolute text-red-500 text-sm mt-14">
               {formik.errors.surname}
+            </div>
+          )}
+        </div>
+
+        {/* <div className="grid gap-6 sm:grid-cols-2"> */}
+        <div className="flex flex-col relative gap-1">
+          <Label htmlFor="gender">Gender</Label>
+          <Input
+            id="gender"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.gender}
+            placeholder="John"
+          />
+          {formik.touched.name && formik.errors.name && (
+            <div className="absolute text-red-500 text-sm mt-14">
+              {formik.errors.name}
             </div>
           )}
         </div>
@@ -494,13 +528,13 @@ export default function Settings() {
         ))}
       </div>
 
-      {/* <div className="space-y-4">
+      <div className="space-y-4">
         <h2 className="text-xl font-semibold">Resume</h2>
-        {resumeName && (
+        {formik.values.resume && (
           <div className="flex items-center space-x-4">
             <span>{resumeName}</span>
-            <Button type="button" onClick={removeResume} className="bg-red-500 text-white">
-              Remove Resume
+            <Button type="button" onClick={downloadResume} className="bg-red-500 text-white">
+               Resume
             </Button>
           </div>
         )}
@@ -511,10 +545,11 @@ export default function Settings() {
             type="file"
             accept="application/pdf"
             className="hidden"
-            onChange={handleResumeChange}
+            // onChange={handleResumeChange}
           />
         </Label>
-      </div>> */}
+      </div>
+
       <div className="flex justify-center">
         <Button
           size="lg"

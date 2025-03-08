@@ -11,6 +11,7 @@ import Settings from "./Components/Settings";
 import ChatGPT from "./Components/ChatGPT";
 import GlobalAuthProtector from "./Components/GlobalAuthProtector/GlobalAuthProtector";
 import UserAuthProtector from "./Components/UserAuthProtector/UserAuthProtector";
+import UserFeatures from "./Components/UserFeatures";
 
 export default function App() {
   const location = useLocation();
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/user/profile" element={<If_PortfolioGenerate />} />
           <Route path="/user/projects" element={<UserProjects />} />
           <Route path="/user/certificates" element={<UserCertificates />} />
+          <Route path="/user/features" element={<UserFeatures />} />
           <Route path="/user/preview" element={<SetPortfolio />} />
           <Route path="/user/chatbot" element={<ChatGPT />} />
           <Route path="/user/settings" element={<Settings />} />

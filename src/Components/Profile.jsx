@@ -9,6 +9,7 @@ import {
   CheckSquare,
   Pencil,
   X,
+  TrashIcon,
 } from "lucide-react";
 
 import GetUserDetailsForm, {
@@ -27,12 +28,11 @@ import DataLoader from "./DataLoader";
 import { useNavigate } from "react-router-dom";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import { TrashIcon } from "lucide-react";
 
 export default function Profile({ userId, userDetails, setUserDetails }) {
   // const { userDetails,setUserDetails } = useUserAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [isCardEditing, setIsCardEditing] = useState(false);
+  const [isCardEditing, setIsCardEditing] = useState(false); // used to edit education cards
   const [editingCardIndex, setEditingCardIndex] = useState(null);
 
   const [cardEditingStates, setCardEditingStates] = useState(
@@ -382,19 +382,19 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     setUserDetails((prevDetails) => {
       const updatedColleges = [...prevDetails.colleges];
       const lastIndex = updatedColleges.length - 1;
-
+  
       // Validate the last entry before adding a new one
       if (lastIndex >= 0) {
         const lastEntry = updatedColleges[lastIndex];
         const errors = {};
-
+  
         if (!lastEntry.collegeName?.trim())
           errors.collegeName = "College name is required.";
         if (!lastEntry.course?.trim()) errors.course = "Course is required.";
         if (!lastEntry.grade?.trim()) errors.grade = "Grade is required.";
         if (!lastEntry.description?.trim())
-          errors.description = "college Description is required.";
-
+          errors.description = "College Description is required.";
+  
         if (Object.keys(errors).length > 0) {
           setErrors((prevErrors) => ({
             ...prevErrors,
@@ -403,7 +403,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           return prevDetails;
         }
       }
-
+  
       // Add a new blank entry
       const newEntry = {
         collegeName: "",
@@ -413,29 +413,28 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         description: "",
         isEditable: true,
       };
-
+  
       return {
         ...prevDetails,
         colleges: [...updatedColleges, newEntry],
       };
     });
-
+  
     // Enable editing for the new entry
     setCollegeEditingStates((prev) => [...prev, true]);
   };
+  
 
   // Remove a college entry
   const removeCollege = (field, index) => {
     setUserDetails((prevDetails) => {
-      const updatedColleges = prevDetails.colleges.filter(
-        (_, i) => i !== index
-      );
+      const updatedColleges = prevDetails.colleges.filter((_, i) => i !== index);
       return { ...prevDetails, colleges: updatedColleges };
     });
-
-    // Update cardEditingStates correctly
+  
+    // Update collegeEditingStates correctly
     setCollegeEditingStates((prev) => prev.filter((_, i) => i !== index));
-
+  
     // Ensure no orphaned errors remain
     setErrors((prevErrors) => {
       const updatedErrors = { ...prevErrors };
@@ -445,6 +444,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
       return updatedErrors;
     });
   };
+  
 
   const handleEducationSave = (index) => {
     const updatedStates = [...collegeEditingStates];
@@ -574,6 +574,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   useEffect(() => {
     setAllCollegeCardsSaved(collegeEditingStates.every((state) => !state));
   }, [collegeEditingStates]);
+  
 
   const saveCollegeChanges = () => {
     let hasErrors = false;
@@ -824,24 +825,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     });
   };
 
-  // Education grade input handler
-  const gradeInput = (e) => {
-    const { name, value } = e.target;
 
-    // Validate CGPA and percentage
-    if (name === "grade") {
-      if (formData.gradeType === "CGPA" && value > 10) {
-        alert("CGPA must be less than or equal to 10");
-        return;
-      }
-      if (formData.gradeType === "Percentage" && value > 100) {
-        alert("Percentage must be less than or equal to 100");
-        return;
-      }
-    }
-
-    handleInputChange(e); // Call the parent's input handler
-  };
 
   // Save data into Firebase
   const saveFormDataToFirebase = async () => {
@@ -849,31 +833,6 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     const formRef = ref(db, "userDetailss/" + userDetails.uid); // Reference to your userDetails data in the database
     await set(formRef, formData); // Save the form data
   };
-
-  // Handle form submission
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-  //     console.log(userDetails.uid);
-
-  //     // Validate the form data first
-  //     // const isValid = await validateForm();
-  //     // if (!isValid) {
-  //     //     console.log("Form validation failed:", errors);
-  //     //     return;
-  //     // }
-
-  //     // Proceed with form submission after validation
-  //     try {
-  //         // Save form data to Firebase
-  //         // await saveFormDataToFirebase();
-
-  //         // Reset form state or show success message
-  //         console.log("Form submitted successfully!",formData);
-
-  //     } catch (error) {
-  //         console.error("Error saving data to Firebase:", error);
-  //     }
-  // };
 
   const navigate = useNavigate();
 
@@ -985,7 +944,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         {isCardEditing && (
           <button
             onClick={() => addCollege("college")}
-            className=" text-white px-4 py-2 rounded-md mb-3 bg-yellow-500"
+            className="bg-button text-button-textColor hover:bg-button-hover px-4 py-2 rounded-md mb-3 "
           >
             Add College
           </button>
@@ -1186,7 +1145,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         {isEditing && (
           <button
             onClick={() => addEntry("experience")}
-            className=" text-white px-4 py-2 rounded-md mb-3 bg-yellow-500"
+            className=" bg-button text-button-textColor hover:bg-button-hover px-4 py-2 rounded-md mb-3 "
           >
             Add Experience
           </button>
@@ -1200,7 +1159,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           {userDetails?.experience?.map((exp, index) => (
             <div
               key={index}
-              className="grid grid-cols-2 gap-2 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
+              className="  grid grid-cols-2 gap-2 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
             >
               {cardEditingStates[index] && (
                 <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
@@ -1293,7 +1252,46 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                 <label className="text-sm font-medium text-foreground">
                   Years of Experience
                 </label>
-                <Input
+                {cardEditingStates[index] ? (
+                      <span className={`flex gap-2 flex-wrap`}>
+                        <Input
+                          type="text"
+                          value={exp.jobExperience}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            // if (college.gradeType === "CGPA" && value > 10) {
+                            //   alert("CGPA must be less than or equal to 10");
+                            //   return;
+                            // }
+                            // if (college.gradeType === "Percentage" && value > 100) {
+                            //   alert("Percentage must be less than or equal to 100");
+                            //   return;
+                            // }
+                            handleInputChange(e, "experience", index, "jobExperience");
+                          }} 
+                          className="border-2 text-foreground bg-background p-2 w-32"
+                          placeholder="Grade"
+                        />
+                        <select
+                          value={exp.jobDuration}
+                          onChange={(e) => handleInputChange(e, "experience", index, "jobDuration") }
+                          className="border-2 text-foreground bg-background p-2 w-32"
+                        >
+                          <option value="Year">Year</option>
+                          <option value="Month">Month</option>
+                        </select>
+                      </span>
+                    ) : (
+                      <Input
+                        type="text"
+                        value={`${exp.jobExperience} ${exp.jobDuration}`}
+                        disabled={!cardEditingStates[index]}
+                        className="border-2 text-foreground bg-background p-2 w-32"
+                        placeholder="Grade"
+                      />
+                    )}
+
+                {/* <Input
                   type="text"
                   value={exp.jobExperience || ""}
                   onChange={(e) =>
@@ -1302,7 +1300,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   disabled={!cardEditingStates[index]}
                   className="border-2 text-foreground bg-background p-2"
                   placeholder="Years of Experience"
-                />
+                /> */}
                 {errors.experience?.[index]?.jobExperience && (
                   <span className="text-red-500 text-xs">
                     {errors.experience[index].jobExperience}

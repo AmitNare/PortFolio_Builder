@@ -5,7 +5,8 @@ import AddCertificate from "./AddCertificates"; // AddCertificate component
 import { Button } from "./ui/button";
 import useUserAuth from "./UserAuthentication";
 import DataLoader from "./DataLoader";
-import { PlusCircleIcon } from "lucide-react";
+import Swal from "sweetalert2"; // Import SweetAlert2
+import { PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 
 export default function UserCertificates() {
@@ -61,7 +62,12 @@ export default function UserCertificates() {
           (certificate) => certificate.id !== certificateId
         )
       );
-      alert("Certificate deleted successfully!");
+      Swal.fire({
+                    icon: "success",
+                    title: "Certificate Deleted",
+                    text: "The Certificate has been deleted successfully.",
+                    confirmButtonText: "Okay",
+                  });
     } catch (error) {
       console.error("Error deleting certificate:", error);
       alert("Failed to delete the certificate. Please try again.");
@@ -101,13 +107,13 @@ export default function UserCertificates() {
           <AddCertificate fetchCertificates={fetchCertificates} />
         </DialogContent>
         {/* AddCertificate as a card */}
-        <ul className="flex flex-wrap gap-4 mt-5 justify-evenly">
+        <ul className="flex flex-wrap gap-5 mt-5 justify-evenly">
           {/* Show certificates */}
           {certificates.map((certificate) => {
             return (
               <li
                 key={certificate.id}
-                className="border  p-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
+                className="border relative p-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
               >
                 {/* Adjust the field name if necessary */}
                 {certificate.certificateImage && (
@@ -131,14 +137,11 @@ export default function UserCertificates() {
                   {certificate.certificateDescription}
                 </p>{" "}
                 <span className="flex justify-between">
-                  <Button className=" w-2/5">Edit</Button>
-                  <Button
-                    className=" w-2/5"
-                    variant="destructive"
-                    onClick={() => certificateDelete(certificate.id)}
-                  >
-                    Delete
-                  </Button>
+                  {/* <Button className=" w-2/5">Edit</Button> */}
+                  <TrashIcon
+                      className="absolute bg-background text-red-500 cursor-pointer right-2 -top-4"
+                      onClick={() => certificateDelete(certificate.id)}
+              />
                 </span>
               </li>
             );

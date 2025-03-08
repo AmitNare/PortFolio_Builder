@@ -11,6 +11,7 @@ import {
   Settings,
   Sparkles,
   AwardIcon,
+  Boxes,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +48,7 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
     { label: "Profile", path: "/user/profile", icon: User },
     { label: "Projects", path: "/user/projects", icon: Briefcase },
     { label: "Achivement", path: "/user/certificates", icon: AwardIcon },
+    { label: "Features", path: "/user/features", icon: Boxes },
     { label: "Preview", path: "/user/preview", icon: Home },
   ];
 

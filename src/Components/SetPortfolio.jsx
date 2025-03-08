@@ -7,6 +7,7 @@ import SetProjects from "./SetProjects";
 import SetCertificates from "./SetCertificates";
 import { useLocation, useParams } from "react-router-dom";
 import useUserAuth from "./UserAuthentication";
+import SetFeatures from "./SetFeatures";
 
 export default function SetPortfolio() {
   const { userName } = useParams(); // Extract dynamic username
@@ -143,6 +144,11 @@ export default function SetPortfolio() {
       {userDetails.projects && (
         <section id="SetProjects">
           <SetProjects userDetails={userDetails} />
+        </section>
+      )}
+      {userDetails.features && (
+        <section id="SetFeatures">
+          <SetFeatures userDetails={userDetails} />
         </section>
       )}
       {userDetails.certificates && (
