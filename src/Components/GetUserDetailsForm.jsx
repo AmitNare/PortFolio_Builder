@@ -7,7 +7,6 @@ import { Textarea } from "./ui/textarea";
 import LocationSearch from "./LocationSearch";
 import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
-import DatePicker from "react-datepicker";
 import FileUpload from "./FileUpload";
 
 export const PersonalInfo = ({
