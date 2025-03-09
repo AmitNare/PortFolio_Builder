@@ -1,17 +1,29 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, Send } from "lucide-react";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import {
+  Camera,
+  Download,
+  FilePenLine,
+  // NotepadText,
+  Send,
+  Upload,
+} from "lucide-react";
 import { useUserAuth } from "./UserAuthentication";
 import { BsGithub } from "react-icons/bs";
 import { Twitter, Instagram, Linkedin, Copy } from "lucide-react";
 import { getAuth, updateEmail, sendEmailVerification } from "firebase/auth";
-import { db, storage, storage as storageRef } from "../../firebase"; // Adjust the import according to your setup
-import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
-import { set, ref as dbRef, get, getDatabase, update } from "firebase/database";
-import save_changes from "../assets/Images/save_changes.png";
+import { storage /* storage as storageRef */ } from "../../firebase"; // Adjust the import according to your setup
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  getStorage,
+} from "firebase/storage";
+import { ref as dbRef, get, update, getDatabase } from "firebase/database";
+// import save_changes from "../assets/Images/save_changes.png";
 import Swal from "sweetalert2";
 
 import * as yup from "yup";
@@ -23,8 +35,8 @@ export default function Settings() {
   const { user, userDetails, setUserDetails } = useUserAuth();
   const socialLinks = userDetails?.socialLink || [];
   const [profileImage, setProfileImage] = useState(userDetails?.image || null);
-  const [resumeName, setResumeName] = useState("");
-  const [emailConfirmed, setEmailConfirmed] = useState(true);
+  const [, setResumeName] = useState("");
+  const [emailConfirmed] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [portfolioLink, setPortfolioLink] = useState();
 
@@ -67,6 +79,7 @@ export default function Settings() {
     currentJobRole: yup.string().required("Current job role is required"),
   });
 
+  // eslint-disable-next-line no-unused-vars
   const handleSave = async () => {
     if (!emailConfirmed) {
       await Swal.fire({
@@ -89,6 +102,7 @@ export default function Settings() {
         confirmButtonText: "OK",
       });
     } catch (error) {
+      console.log("Error: ", error);
       await Swal.fire({
         title: "Error",
         text: "Failed to save data.",
@@ -121,6 +135,7 @@ export default function Settings() {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userDetails]); // Add user as a dependency if it can change
 
   const formik = useFormik({
@@ -151,7 +166,7 @@ export default function Settings() {
         }
 
         const updatedFormData = { ...values, image: imageUrl };
-        const userRef = dbRef(db, `Users/${userDetails?.uid}`);
+        // const userRef = dbRef(db, `Users/${userDetails?.uid}`);
 
         await savePortfolioDataToFirebase(updatedFormData, userDetails.uid);
         setUserDetails((prevDetails) => ({
@@ -184,6 +199,7 @@ export default function Settings() {
         currentJobRole: userDetails.currentJobRole || "",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userDetails]);
 
   const handleImageChange = (e) => {
@@ -198,40 +214,118 @@ export default function Settings() {
     }
   };
 
-  // const handleResumeChange = async (e) => {
-  //   const file = e.target.files?.[0];
-  //   if (
-  //     file &&
-  //     file.type === "application/pdf" &&
-  //     file.size <= 5 * 1024 * 1024
-  //   ) {
-  //     const storageRef = ref(storage, `resumes/${file.name}`);
-  //     await uploadBytes(storageRef, file);
-  //     const fileURL = await getDownloadURL(storageRef);
-  //     formik.setFieldValue("resume", fileURL);
-  //     setResumeName(
-  //       file.name.length > 20 ? `${file.name.slice(0, 17)}...` : file.name
-  //     );
-  //   } else {
-  //     alert("Please upload a PDF file under 5MB.");
-  //   }
-  // };
+  // upload or change the resume
+  const handleResumeChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
+    // Validate file type & size
+    if (file.type !== "application/pdf") {
+      console.error("Only PDF files are allowed.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      console.error("File must be under 5MB.");
+      return;
+    }
 
-  const downloadResume = async () => {
-    const storage = getStorage();
-    const resumePath = formik.values.resume; // Path in your Firebase Storage
-  
     try {
-      const url = await getDownloadURL(ref(storage, resumePath));
-      window.open(url, '_blank');
+      const storageRef = ref(storage, `resumes/${user.uid}/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      // Show upload progress
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`Upload is ${progress}% done`);
+        },
+        (error) => {
+          console.error("Resume upload failed:", error);
+        },
+        async () => {
+          const fileURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+          // ✅ Save resume URL in Firebase Realtime Database under "Users" node
+          const db = getDatabase();
+          const userRef = dbRef(db, `Users/${user.uid}`);
+          await update(userRef, { resume: fileURL });
+
+          // ✅ Update Formik and UI
+          formik.setFieldValue("resume", fileURL);
+          setResumeName(file.name);
+          setUserDetails((prevDetails) => ({
+            ...prevDetails,
+            resume: fileURL,
+          }));
+
+          console.log("Resume uploaded and saved successfully!");
+        }
+      );
     } catch (error) {
-      console.error("Failed to download the resume:", error);
+      console.error("Error uploading resume:", error);
     }
   };
-  
-  
-  
+
+  // download file from firebase url
+
+  const downloadResume = async () => {
+    if (!formik.values.resume) {
+      console.error("No Resume Found");
+      return;
+    }
+
+    try {
+      const storage = getStorage();
+
+      // Extract the relative path from the full URL
+      const fullUrl = formik.values.resume;
+      const decodedUrl = decodeURIComponent(fullUrl); // Decode special characters
+      const pathStartIndex = decodedUrl.indexOf("/o/") + 3; // Find "/o/" and move forward
+      const pathEndIndex = decodedUrl.indexOf("?alt="); // Cut before query params
+      const storagePath = decodedUrl.substring(pathStartIndex, pathEndIndex);
+
+      console.log("Extracted Storage Path:", storagePath);
+
+      // Create Firebase storage reference using extracted path
+      const resumeRef = ref(storage, storagePath);
+
+      // Get fresh download URL (optional, but useful if token expires)
+      const downloadUrl = await getDownloadURL(resumeRef);
+
+      // Trigger download
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", getFileNameFromURL(formik?.values?.resume));
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
+
+  function getFileNameFromURL(url) {
+    try {
+      // Extract the part after "o/" and before "?alt="
+      const match = url.match(/o\/(.*?)\?alt=/);
+
+      if (match && match[1]) {
+        // Decode the URL-encoded file path to get the actual file name
+        const filePath = decodeURIComponent(match[1]);
+
+        // Get the last part after the last "/"
+        return filePath.split("/").pop();
+      }
+
+      return null; // Return null if no match is found
+    } catch (error) {
+      console.error("Error extracting file name:", error);
+      return null;
+    }
+  }
+
   const updateUserEmail = async (newEmail) => {
     const auth = getAuth();
     const user = auth.currentUser;
@@ -530,24 +624,57 @@ export default function Settings() {
 
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Resume</h2>
-        {formik.values.resume && (
-          <div className="flex items-center space-x-4">
-            <span>{resumeName}</span>
-            <Button type="button" onClick={downloadResume} className="bg-red-500 text-white">
-               Resume
-            </Button>
-          </div>
-        )}
-        <Label htmlFor="resume" className="bg-primary text-primary-foreground rounded-full p-2 cursor-pointer">
-          Upload Resume
-          <Input
-            id="resume"
-            type="file"
-            accept="application/pdf"
-            className="hidden"
-            // onChange={handleResumeChange}
-          />
-        </Label>
+
+        <div className="w-full border-2 border-dashed bg-[#374151]/20 border-gray-400 rounded-xl flex flex-col items-center justify-center gap-3 p-6 transition">
+          {!formik?.values?.resume ? (
+            <>
+              <p className="flex items-center gap-2 text-base font-medium text-white">
+                Upload your Resume / CV (PDF)
+              </p>
+              <Label
+                htmlFor="resume"
+                className="bg-primary text-primary-foreground px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-primary/90 transition"
+              >
+                <Upload size={18} /> Upload
+                <Input
+                  id="resume"
+                  type="file"
+                  accept="application/pdf"
+                  className="hidden"
+                  onChange={handleResumeChange}
+                />
+              </Label>
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-3">
+              <p className="text-white text-base font-medium">
+                {getFileNameFromURL(formik?.values?.resume) || "NA"}
+              </p>
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  onClick={downloadResume}
+                  className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-600 transition"
+                >
+                  <Download size={18} /> Download
+                </Button>
+                <Label
+                  htmlFor="resume"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-blue-600 transition"
+                >
+                  <FilePenLine size={18} /> Update Resume
+                  <Input
+                    id="resume"
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    onChange={handleResumeChange}
+                  />
+                </Label>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex justify-center">
