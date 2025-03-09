@@ -34,6 +34,8 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isCardEditing, setIsCardEditing] = useState(false); // used to edit education cards
   const [editingCardIndex, setEditingCardIndex] = useState(null);
+  const [isSkillEditing, setIsSkillEditing] = useState(false);
+  const [isSkillEdit, setIsSkillEdit] = useState(false);
 
   const [cardEditingStates, setCardEditingStates] = useState(
     Array(userDetails?.experience?.length || 0).fill(false)
@@ -367,14 +369,19 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   };
 
   // Save updated data
-  const handleSave = () => {
-   if (userDetails?.socialLink?.length > 0) {
-      userDetails.socialLink[0] = { ...socialData }; // Directly modify the object
-    }
-    setIsEditing(false);
-    console.log(socialData)
-    console.log(userDetails)
+  
+  const toggleEdit = () => {
+    setIsSkillEdit(!isSkillEdit);
   };
+
+  const saveSkillChanges = () => {
+    // Implement your save logic here
+    // For example, you might want to send the updated skills to a server
+    console.log("skillOptions: ", userDetails.skills)
+    
+    toggleEdit(); // Switch back to view mode after saving
+  }
+
   /** Social link methods end */
 
   // Add a new college entry
@@ -503,12 +510,13 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     "Python",
     "Project Management",
   ]);
+  const [searchTerm, setSearchTerm] = useState({ skills: "", hobbies: "" });
+
   const [hobbyOptions, setHobbyOptions] = useState([
     "Reading",
     "Traveling",
     "Cooking",
   ]);
-  const [searchTerm, setSearchTerm] = useState({ skills: "", hobbies: "" });
 
   // Add dynamic entries
   const addEntry = () => {
@@ -824,6 +832,28 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
       return updatedErrors;
     });
   };
+
+  // remove skills
+ // Function to remove a skill entry
+const removeSkillEntry = (index) => {
+  setUserDetails((prevDetails) => {
+    const updatedSkills = prevDetails.skills.filter((_, i) => i !== index);
+    return { ...prevDetails, skills: updatedSkills };
+  });
+
+  // No need to update isSkillEditing since it's a boolean
+  // If you need to track editing states, consider using an array or object
+
+  // Update errors correctly
+  setErrors((prevErrors) => {
+    const updatedErrors = { ...prevErrors };
+    if (updatedErrors.skills) {
+      delete updatedErrors.skills[index];
+    }
+    return updatedErrors;
+  });
+};
+
 
 
 
@@ -1347,52 +1377,80 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
       </div>
 
       {/* skills functionality is update*/}
-      <div className="mb-5">
-        <label>Skills</label>
-        <input
-          type="text"
-          placeholder="Search or add a skill"
-          value={searchTerm.skills || ""}
-          onChange={(e) => handleSearchChange(e, "skills")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && searchTerm.skills.trim()) {
-              addSelection("skills", searchTerm.skills.trim().toLowerCase());
-              e.preventDefault();
-            }
-          }}
-          className="w-full px-2 border h-10 rounded-md mb-1 "
-        />
-        <div className="flex flex-wrap gap-2 mb-1 mt-2">
-          {searchTerm.skills &&
-            skillOptions
-              .filter((skill) =>
-                skill.toLowerCase().includes(searchTerm.skills.toLowerCase())
-              )
-              .map((skill, i) => (
-                <button
-                  key={`skill-option-${i}`}
-                  onClick={() => addSelection("skills", skill)}
-                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg"
-                >
-                  {skill}
-                </button>
-              ))}
+      <div className="mb-5 border rounded-md relative">
+      <div className="absolute -top-4 left-4 bg-background px-2">
+          <h1 className="text-lg font-bold">Skills</h1>
         </div>
+      <div className="flex justify-between mb-2 ">
+        {isSkillEdit ? (
+          <button onClick={saveSkillChanges} className="bg-green-500 text-white p-1 rounded-sm absolute -top-3 right-3" title="save">
+           <CheckSquare size={15} />
+          </button>
+        ) : (
+          <button onClick={toggleEdit} className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3" title={"Edit"}>
+            <Pencil size={15} />
+          </button>
+        )}
+      </div>
+      {isSkillEdit ? (
+        <>
+          <input
+            type="text"
+            placeholder="Search or add a skill"
+            value={searchTerm.skills || ""}
+            onChange={(e) => handleSearchChange(e, "skills")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && searchTerm.skills.trim()) {
+                addSelection("skills", searchTerm.skills.trim().toLowerCase());
+                e.preventDefault();
+              }
+            }}
+            className="w-full px-2 border h-10 rounded-md mb-1 mt-4 bg-transparent"
+          />
+          <div className="flex flex-wrap gap-2 mb-1 mt-2">
+            {searchTerm.skills &&
+              skillOptions
+                .filter((skill) =>
+                  skill.toLowerCase().includes(searchTerm.skills.toLowerCase())
+                )
+                .map((skill, i) => (
+                  <button
+                    key={`skill-option-${i}`}
+                    onClick={() => addSelection("skills", skill)}
+                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg"
+                  >
+                    {skill}
+                  </button>
+                ))}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {userDetails?.skills?.map((skill, index) => (
+              <div
+                key={`skill-${index}`}
+                className="px-3 py-1 bg-blue-500 text-white rounded-lg flex items-center gap-2"
+              >
+                {skill}
+                <TrashIcon
+                  className="w-4 h-4 cursor-pointer"
+                  onClick={() => removeSkillEntry( index)}
+                />
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
         <div className="flex flex-wrap gap-2">
           {userDetails?.skills?.map((skill, index) => (
             <div
               key={`skill-${index}`}
-              className="px-3 py-1 bg-blue-500 text-white rounded-lg flex items-center gap-2"
+              className="px-3 py-1 mt-4 bg-blue-500 text-white rounded-lg flex items-center gap-2"
             >
               {skill}
-              <TrashIcon
-                className="w-4 h-4 cursor-pointer "
-                onClick={() => removeEntry("skills", index)}
-              />
             </div>
           ))}
         </div>
-      </div>
+      )}
+    </div>
     </div>
   );
 }
