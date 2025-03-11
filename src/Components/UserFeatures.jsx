@@ -7,7 +7,7 @@ import useUserAuth from "./UserAuthentication";
 import DataLoader from "./DataLoader";
 import { PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import swal from "sweetalert2"; // Import SweetAlert2
 
 export default function UserFeatures() {
   const [features, setFeatures] = useState([]);
@@ -58,7 +58,7 @@ export default function UserFeatures() {
     const featureRef = ref(db, `Users/${user.uid}/features/${featureId}`);
     try {
       await set(featureRef, updatedFeature);
-      Swal.fire({
+      swal.fire({
         icon: "success",
         title: "Feature Updated",
         text: "The feature has been updated successfully.",
@@ -87,7 +87,7 @@ export default function UserFeatures() {
       );
 
       // SweetAlert2 success message
-      Swal.fire({
+      swal.fire({
         icon: "success",
         title: "Feature Deleted",
         text: "The feature has been deleted successfully.",

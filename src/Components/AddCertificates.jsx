@@ -23,7 +23,7 @@ import {
   ClipboardIcon,
   Medal,
 } from "lucide-react";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import swal from "sweetalert2";
 
 export default function AddCertificates({ fetchCertificates }) {
   const { user } = useUserAuth();
@@ -89,12 +89,12 @@ export default function AddCertificates({ fetchCertificates }) {
       const certificatesRef = dbRef(db, `Users/${user.uid}/certificates`);
       await push(certificatesRef, certificateData); // Add certificate to the user's list
 
-      Swal.fire({
-              icon: "success",
-              title: "New Certificate Added",
-              text: "The Certificate has been added successfully.",
-              confirmButtonText: "Okay",
-            });
+      swal.fire({
+        icon: "success",
+        title: "New Certificate Added",
+        text: "The Certificate has been added successfully.",
+        confirmButtonText: "Okay",
+      });
       // Reset form data
       setFormData({
         certificateName: "",

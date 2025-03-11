@@ -24,7 +24,7 @@ import {
 } from "firebase/storage";
 import { ref as dbRef, get, update, getDatabase } from "firebase/database";
 // import save_changes from "../assets/Images/save_changes.png";
-import Swal from "sweetalert2";
+import swal from "sweetalert2";
 
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -82,7 +82,7 @@ export default function Settings() {
   // eslint-disable-next-line no-unused-vars
   const handleSave = async () => {
     if (!emailConfirmed) {
-      await Swal.fire({
+      await swal.fire({
         title: "Please wait",
         text: "Waiting for email confirmation...",
         icon: "info",
@@ -95,7 +95,7 @@ export default function Settings() {
       // Simulate saving data
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      await Swal.fire({
+      await swal.fire({
         title: "Success",
         text: "Data saved successfully!",
         icon: "success",
@@ -103,7 +103,7 @@ export default function Settings() {
       });
     } catch (error) {
       console.log("Error: ", error);
-      await Swal.fire({
+      await swal.fire({
         title: "Error",
         text: "Failed to save data.",
         icon: "error",

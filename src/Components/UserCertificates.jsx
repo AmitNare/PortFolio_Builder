@@ -5,7 +5,7 @@ import AddCertificate from "./AddCertificates"; // AddCertificate component
 import { Button } from "./ui/button";
 import useUserAuth from "./UserAuthentication";
 import DataLoader from "./DataLoader";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import swal from "sweetalert2"; // Import SweetAlert2
 import { PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 
@@ -62,12 +62,12 @@ export default function UserCertificates() {
           (certificate) => certificate.id !== certificateId
         )
       );
-      Swal.fire({
-                    icon: "success",
-                    title: "Certificate Deleted",
-                    text: "The Certificate has been deleted successfully.",
-                    confirmButtonText: "Okay",
-                  });
+      swal.fire({
+        icon: "success",
+        title: "Certificate Deleted",
+        text: "The Certificate has been deleted successfully.",
+        confirmButtonText: "Okay",
+      });
     } catch (error) {
       console.error("Error deleting certificate:", error);
       alert("Failed to delete the certificate. Please try again.");
@@ -90,7 +90,10 @@ export default function UserCertificates() {
 
   return (
     <Dialog>
-      <div data-aos="fade-left" className="w-full bg-background p-5 text-foreground">
+      <div
+        data-aos="fade-left"
+        className="w-full bg-background p-5 text-foreground"
+      >
         <span className="flex justify-between px-5 items-center">
           <h1 className="text-2xl font-bold ">All Certificates</h1>
           <DialogTrigger asChild>
@@ -139,9 +142,9 @@ export default function UserCertificates() {
                 <span className="flex justify-between">
                   {/* <Button className=" w-2/5">Edit</Button> */}
                   <TrashIcon
-                      className="absolute bg-background text-red-500 cursor-pointer right-2 -top-4"
-                      onClick={() => certificateDelete(certificate.id)}
-              />
+                    className="absolute bg-background text-red-500 cursor-pointer right-2 -top-4"
+                    onClick={() => certificateDelete(certificate.id)}
+                  />
                 </span>
               </li>
             );

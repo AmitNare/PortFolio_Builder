@@ -25,7 +25,7 @@ import {
   CodeIcon,
   GlobeIcon,
 } from "lucide-react";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import swal from "sweetalert2"; // Import SweetAlert2
 
 export default function AddProjects({ fetchProjects }) {
   const { user } = useUserAuth();
@@ -134,12 +134,12 @@ export default function AddProjects({ fetchProjects }) {
       const userProjectsRef = dbRef(db, `Users/${user.uid}/projects`);
       await push(userProjectsRef, projectData);
 
-      Swal.fire({
-              icon: "success",
-              title: "New Project Added",
-              text: "The Project has been added successfully.",
-              confirmButtonText: "Okay",
-            });
+      swal.fire({
+        icon: "success",
+        title: "New Project Added",
+        text: "The Project has been added successfully.",
+        confirmButtonText: "Okay",
+      });
 
       setFormData({
         projectName: "",
@@ -160,7 +160,6 @@ export default function AddProjects({ fetchProjects }) {
 
   return (
     <Dialog>
-      
       <div>
         <DialogHeader>
           <DialogTitle>Project</DialogTitle>

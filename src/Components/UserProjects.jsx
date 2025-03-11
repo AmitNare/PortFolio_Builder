@@ -6,7 +6,7 @@ import { AspectRatio } from "./ui/aspect-ratio";
 import useUserAuth from "./UserAuthentication";
 import { Button } from "./ui/button";
 import DataLoader from "./DataLoader";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import swal from "sweetalert2"; // Import SweetAlert2
 import { PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 
@@ -61,13 +61,14 @@ export default function UserProjects() {
       setProjects((prevProjects) =>
         prevProjects.filter((project) => project.id !== projectId)
       );
+
       // alert("Project deleted successfully!");
-      Swal.fire({
-              icon: "success",
-              title: "Project Deleted",
-              text: "The Project has been deleted successfully.",
-              confirmButtonText: "Okay",
-            });
+      swal.fire({
+        icon: "success",
+        title: "Project Deleted",
+        text: "The Project has been deleted successfully.",
+        confirmButtonText: "Okay",
+      });
     } catch (error) {
       console.error("Error deleting project:", error);
       alert("Failed to delete the project. Please try again.");
@@ -90,7 +91,10 @@ export default function UserProjects() {
 
   return (
     <Dialog>
-      <div data-aos="fade-left" className="w-full p-2 bg-background text-foreground ">
+      <div
+        data-aos="fade-left"
+        className="w-full p-2 bg-background text-foreground "
+      >
         <span className="flex justify-between px-5 items-center">
           <h1 className="text-2xl font-bold ">All Projects</h1>
           <DialogTrigger asChild>
@@ -141,9 +145,9 @@ export default function UserProjects() {
               <span className="flex justify-between mt-2">
                 {/* <Button className=" w-2/5 ">Edit</Button> */}
                 <TrashIcon
-                      className="absolute bg-background text-red-500 cursor-pointer right-2 -top-4"
-                      onClick={() => projectDelete(project.id)}
-              />
+                  className="absolute bg-background text-red-500 cursor-pointer right-2 -top-4"
+                  onClick={() => projectDelete(project.id)}
+                />
               </span>
             </li>
           ))}
