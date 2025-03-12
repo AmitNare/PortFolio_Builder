@@ -73,11 +73,19 @@ export default function UserFeatures() {
 
   // Delete a feature
   const featureDelete = async (featureId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this feature?"
-    );
-    if (!confirmed) return;
-
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to delete this feature?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+  
+    if (!result.isConfirmed) return;
+  
     setDeleting(true);
     try {
       const featureRef = ref(db, `Users/${user.uid}/features/${featureId}`);
@@ -85,7 +93,7 @@ export default function UserFeatures() {
       setFeatures((prevFeatures) =>
         prevFeatures.filter((feature) => feature.id !== featureId)
       );
-
+  
       // SweetAlert2 success message
       Swal.fire({
         icon: "success",
@@ -95,11 +103,16 @@ export default function UserFeatures() {
       });
     } catch (error) {
       console.error("Error deleting feature:", error);
-      alert("Failed to delete the feature. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Deletion Failed",
+        text: "Failed to delete the feature. Please try again.",
+      });
     } finally {
       setDeleting(false);
     }
   };
+  
 
   useEffect(() => {
     fetchFeatures();

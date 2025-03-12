@@ -45,10 +45,18 @@ export default function UserCertificates() {
 
   // Delete a certificate
   const certificateDelete = async (certificateId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this certificate?"
-    );
-    if (!confirmed) return;
+    const result = await Swal.fire({
+              title: "Are you sure?",
+              text: "Do you really want to delete this certificate?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#d33",
+              cancelButtonColor: "#3085d6",
+              confirmButtonText: "Yes, delete it!",
+              cancelButtonText: "Cancel",
+            });
+          
+            if (!result.isConfirmed) return;
 
     setDeleting(true);
     try {

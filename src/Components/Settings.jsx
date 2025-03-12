@@ -14,7 +14,7 @@ import {
 import { useUserAuth } from "./UserAuthentication";
 import { BsGithub } from "react-icons/bs";
 import { Twitter, Instagram, Linkedin, Copy } from "lucide-react";
-import { getAuth, updateEmail, sendEmailVerification } from "firebase/auth";
+import { getAuth, sendEmailVerification, updateEmail, EmailAuthProvider } from 'firebase/auth';
 import { storage /* storage as storageRef */ } from "../../firebase"; // Adjust the import according to your setup
 import {
   ref,
@@ -36,7 +36,7 @@ export default function Settings() {
   const socialLinks = userDetails?.socialLink || [];
   const [profileImage, setProfileImage] = useState(userDetails?.image || null);
   const [, setResumeName] = useState("");
-  const [emailConfirmed] = useState(true);
+  const [emailConfirmed, setEmailConfirmed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [portfolioLink, setPortfolioLink] = useState();
 
@@ -81,15 +81,15 @@ export default function Settings() {
 
   // eslint-disable-next-line no-unused-vars
   const handleSave = async () => {
-    if (!emailConfirmed) {
-      await Swal.fire({
-        title: "Please wait",
-        text: "Waiting for email confirmation...",
-        icon: "info",
-        confirmButtonText: "OK",
-      });
-      return;
-    }
+    // if (!emailConfirmed) {
+    //   await Swal.fire({
+    //     title: "Please wait",
+    //     text: "Waiting for email confirmation...",
+    //     icon: "info",
+    //     confirmButtonText: "OK",
+    //   });
+    //   return;
+    // }
 
     try {
       // Simulate saving data
@@ -154,19 +154,27 @@ export default function Settings() {
     validationSchema,
     onSubmit: async (values) => {
       if (!user || !user?.uid) {
-        console.error("User ID is missing");
+        console.error("User  ID is missing");
         return;
       }
 
       try {
         let imageUrl = values.image;
 
-        if (values.email !== userDetails?.email) {
-          await updateUserEmail(values.email);
-        }
+        // Check if the email has changed
+        // if (values.email !== userDetails?.email) {
+        //   const userPassword = prompt("Please enter your password to confirm the email change:");
+        //   await updateUserEmail(values.email, userPassword);
+        //   console.log("Verification email sent to new email");
+        //   return; // Stop form submission until email is verified
+        // }
+
+        // if (!emailConfirmed) {
+        //   console.error("Email not verified yet.");
+        //   return;
+        // }
 
         const updatedFormData = { ...values, image: imageUrl };
-        // const userRef = dbRef(db, `Users/${userDetails?.uid}`);
 
         await savePortfolioDataToFirebase(updatedFormData, userDetails.uid);
         setUserDetails((prevDetails) => ({
@@ -174,12 +182,64 @@ export default function Settings() {
           ...updatedFormData,
         }));
         console.log("Form submitted successfully:", updatedFormData);
-        // await handleSave();
+        await handleSave();
       } catch (error) {
         console.error("Form submission failed:", error);
       }
     },
   });
+
+  const reauthenticateUser  = async (password) => {
+    const user = getAuth().currentUser ;
+    const credential = EmailAuthProvider.credential(user.email, password);
+    return await user.reauthenticateWithCredential(credential);
+  };
+
+  const updateUserEmail = async (newEmail, userPassword) => {
+    const auth = getAuth();
+    const user = auth.currentUser ;
+
+    if (user) {
+      try {
+        // Reauthenticate the user
+        await reauthenticateUser (userPassword);
+
+        // Update the user's email first
+        await updateEmail(user, newEmail);
+        console.log("Email updated to the new email address.");
+
+        // Now send a verification email to the new email address
+        await sendEmailVerification(user);
+        console.log("Verification email sent to the new email address. Please verify your new email address.");
+
+        // Wait for the user to verify the email
+        const interval = setInterval(async () => {
+          await user.reload();
+          if (user.emailVerified) {
+            clearInterval(interval);
+            setEmailConfirmed(true); // Set emailConfirmed to true
+            console.log("Email successfully verified.");
+          }
+        }, 3000);
+      } catch (error) {
+        handleEmailUpdateError(error);
+      }
+    } else {
+      console.log("No user is signed in.");
+    }
+  };
+
+  const handleEmailUpdateError = (error) => {
+    if (error.code === "auth/email-already-in-use") {
+      console.error("This email address is already in use.");
+    } else if (error.code === "auth/invalid-email") {
+      console.error("The email address is not valid.");
+    } else if (error.code === "auth/operation-not-allowed") {
+      console.error("Email/password accounts are not enabled.");
+    } else {
+      console.error("Error updating email: ", error.message);
+    }
+  };
 
   useEffect(() => {
     console.log("userDetails: ", userDetails);
@@ -230,6 +290,16 @@ export default function Settings() {
     }
 
     try {
+      // Show waiting alert
+      Swal.fire({
+      title: "Uploading...",
+      text: "Please wait while your resume is being uploaded.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
       const storageRef = ref(storage, `resumes/${user.uid}/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -242,6 +312,7 @@ export default function Settings() {
           console.log(`Upload is ${progress}% done`);
         },
         (error) => {
+          Swal.fire("Error", "Resume upload failed.", "error");
           console.error("Resume upload failed:", error);
         },
         async () => {
@@ -259,17 +330,19 @@ export default function Settings() {
             ...prevDetails,
             resume: fileURL,
           }));
-
+// Show success alert
+Swal.fire("Success", "Resume uploaded successfully!", "success");
           console.log("Resume uploaded and saved successfully!");
         }
       );
     } catch (error) {
+      Swal.fire("Error", "Error uploading resume.", "error");
       console.error("Error uploading resume:", error);
     }
   };
 
+  
   // download file from firebase url
-
   const downloadResume = async () => {
     if (!formik.values.resume) {
       console.error("No Resume Found");
@@ -296,6 +369,7 @@ export default function Settings() {
 
       // Trigger download
       const link = document.createElement("a");
+      link.target ="_blank"
       link.href = downloadUrl;
       link.setAttribute("download", getFileNameFromURL(formik?.values?.resume));
       document.body.appendChild(link);
@@ -326,37 +400,7 @@ export default function Settings() {
     }
   }
 
-  const updateUserEmail = async (newEmail) => {
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (user) {
-      try {
-        // Update the user's email
-        await updateEmail(user, newEmail);
-        console.log("Email updated successfully");
-
-        // Send a verification email to the new email address
-        await sendEmailVerification(user);
-        console.log(
-          "Verification email sent. Please verify your new email address."
-        );
-      } catch (error) {
-        // Handle specific error cases
-        if (error.code === "auth/email-already-in-use") {
-          console.error("This email address is already in use.");
-        } else if (error.code === "auth/invalid-email") {
-          console.error("The email address is not valid.");
-        } else if (error.code === "auth/operation-not-allowed") {
-          console.error("Email/password accounts are not enabled.");
-        } else {
-          console.error("Error updating email: ", error.message);
-        }
-      }
-    } else {
-      console.log("No user is signed in.");
-    }
-  };
+  
 
   const handleSocialLinkChange = (index, field, value) => {
     const updatedLinks = [...formik.values.socialLink];
@@ -390,7 +434,7 @@ export default function Settings() {
       onSubmit={formik.handleSubmit}
     >
       {portfolioLink && (
-        <strong className="flex w-full border-2 justify-center items-center">
+        <strong className="flex w-full border-2 justify-center items-center gap-2">
           {portfolioLink}
           <button onClick={handleCopy}>
             <Copy /> {/* Replace with your copy icon */}
@@ -548,6 +592,8 @@ export default function Settings() {
             </div>
           )}
         </div>
+
+        {/* <Button onClick={}>Verify</Button> */}
       </div>
 
       <div className="space-y-4">
@@ -684,6 +730,7 @@ export default function Settings() {
           className="w-2/4 md-max:w-full bg-button text-button-textColor hover:bg-button-hover relative overflow-hidden flex items-center justify-center"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          // onClick={handleSave}
         >
           <span className="relative z-10">Save</span>
           <Send
