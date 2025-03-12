@@ -430,7 +430,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
   return (
     <form
       data-aos="fade-left"
-      className="space-y-8 max-w-2xl mx-auto p-5"
+      className="space-y-8 max-w-2xl mx-auto p-5 rounded-md"
       onSubmit={formik.handleSubmit}
     >
       {portfolioLink && (

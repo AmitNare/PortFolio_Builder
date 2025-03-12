@@ -35,6 +35,11 @@ export default function SetProjects({ userDetails }) {
 
   return (
     <section >
+      <div className="mb-6 text-center">
+        <h1 className="text-3xl font-semibold ">
+         Projects
+        </h1>
+      </div>
       <AnimatePresence>
         {active && typeof active === "object" && (
           <motion.div

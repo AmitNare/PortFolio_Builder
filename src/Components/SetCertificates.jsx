@@ -33,6 +33,11 @@ export default function SetCertificates({ userDetails }) {
   }));
 
   return (<>
+  <div className="mb-6 text-center">
+        <h1 className="text-3xl font-semibold ">
+          Certificates
+        </h1>
+      </div>
     <AnimatePresence>
       {active && typeof active === "object" && (
         <motion.div

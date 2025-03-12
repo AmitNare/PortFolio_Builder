@@ -53,10 +53,10 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
   ];
 
   return (
-    <div className="flex h-full w-full gap-2">
+    <div className="flex h-full w-full gap-2 ">
       {/* Sidebar */}
       <aside
-        className={`inset-y-0 left-0 w-64 border flex flex-col justify-between items-baseline rounded-md h-full px-3 py-4 bg-background transition-transform md-max:absolute md-max:z-[99] sm-max:w-[100%] ${
+        className={`inset-y-0 left-0 w-64 border flex flex-col justify-between items-baseline rounded-md h-auto px-3 py-4 bg-background transition-transform md-max:absolute md-max:z-[99] sm-max:w-[100%] ${
           isSidebarOpen ? "translate-x-0 " : "-translate-x-full"
         } md:translate-x-0`}
       >
@@ -144,8 +144,8 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
       </div>
 
       {/* Main Content Area */}
-      <main  className="flex-1 gap-2 rounded-md  bg-lightBg dark:bg-darkBg md-max:w-full relative flex">
-        <div className="flex-1 border bg-background rounded-md">{children}</div>
+      <main  className="flex-1 gap-2 rounded-md  bg-lightBg dark:bg-darkBg md-max:w-full relative flex min-h-[calc(100svh-88px)]">
+        <div className="flex-1 border rounded-md h-full bg-background">{children}</div>
         {isChatbotOpen && (
           <div className="w-1/4 md-max:absolute md-max:z-50 md-max:h-full md-max:w-full border rounded-md  bg-background p-4">
             <ChatGPT />

@@ -943,7 +943,7 @@ const removeSkillEntry = (index) => {
 
   
   return (
-    <div data-aos="fade-left" className="w-full flex flex-col  text-foreground bg-background p-5 gap-10">
+    <div data-aos="fade-left" className="w-full flex flex-col  text-foreground bg-background p-5 gap-10 rounded-md ">
      
       {/* education info */}
       <div className="w-full border-2 p-3 rounded-md relative">

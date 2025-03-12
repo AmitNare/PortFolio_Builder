@@ -33,7 +33,7 @@ export default function UserAuthProtector() {
   return user ? (
     <div className="w-full flex flex-col text-foreground overflow-x-hidden">
       <UserHeader toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
-      <div className="flex w-full min-h-[calc(100svh-72px)] p-2 text-foreground">
+      <div className="flex w-full min-h-[calc(100svh-72px)] p-2 text-foreground bg-lightBg dark:bg-darkBg">
         {/* Main Content Area */}
         <div className="w-full h-full flex text-foreground z-50">
           {/* Navbar */}

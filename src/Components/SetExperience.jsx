@@ -5,22 +5,24 @@ import { Textarea } from "./ui/textarea";
 export default function SetExperience({ userDetails }) {
   return (
     <div className="text-foregound bg-background">
-      <div className="w-full border-2 border-green-500 p-5 relative">
-        <div className="absolute -top-4 left-4 bg-background px-2">
-          <h1 className="text-lg font-bold">Professional Info</h1>
-        </div>
+      <div className="w-full p-5 relative">
+      <div className="mb-6 text-center">
+        <h1 className="text-3xl font-semibold ">
+          Professional Information
+        </h1>
+      </div>
 
-        <div className="flex flex-wrap gap-5 w-full border-2">
+        <div className="flex flex-wrap gap-5 w-full ">
           {userDetails?.experience?.map((exp, index) => (
             <div
               key={index}
-              className="w-2/5 flex flex-col gap-2 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md"
+              className="w-2/5 flex border flex-col gap-2  p-3 rounded-md bg-background shadow-lg hover:shadow-2xl transition-shadow duration-300"
             >
               {/* Company Name and Address */}
                 <div className="flex justify-between">
                   
               <div className="flex flex-col gap-1">
-                <Label className="border-2 text-foreground bg-background p-2">
+                <Label className=" text-foreground bg-background p-2">
                   {exp.companyName || "N/A"}
                 </Label>
               </div>
@@ -28,7 +30,7 @@ export default function SetExperience({ userDetails }) {
                 {/* <Label className="text-sm font-medium text-foreground">
                   Company Address
                   </Label> */}
-                <Label className="border-2 text-foreground bg-background p-2">
+                <Label className=" text-foreground bg-background p-2">
                   {exp.companyAddress || "N/A"}
                 </Label>
                   </div>
@@ -39,7 +41,7 @@ export default function SetExperience({ userDetails }) {
                 {/* <Label className="text-sm font-medium text-foreground">
                   Job Role
                 </Label> */}
-                <Label className="border-2 text-foreground bg-background p-2 ">
+                <Label className=" text-foreground bg-background p-2 ">
                 <span>{exp.jobRole || "N/A"}</span>
                 <span className="ml-5">{`${exp.jobExperience || "0"} years`}</span> </Label>
               </div>
@@ -47,7 +49,7 @@ export default function SetExperience({ userDetails }) {
                 <Label className="text-sm font-medium text-foreground">
                   Years of Experience
                 </Label>
-                <Label className="border-2 text-foreground bg-background p-2">
+                <Label className=" text-foreground bg-background p-2">
                   {`${exp.jobExperience || "0"} years`}
                 </Label>
               </div> */}
@@ -57,7 +59,7 @@ export default function SetExperience({ userDetails }) {
                 {/* <Label className="text-sm font-medium text-foreground">
                   Job Description
                 </Label> */}
-                <Textarea className="border-2 text-foreground bg-background p-2 w-full resize-none">
+                <Textarea className=" text-foreground bg-background w-full resize-none">
                   {exp.jobDescription || "N/A"}
                 </Textarea>
               </div>
