@@ -34,7 +34,7 @@ export default function SetProjects({ userDetails }) {
   );
 
   return (
-    <section >
+    <section className="w-full flex-col justify-evenly items-center">
       <div className="mb-6 text-center">
         <h1 className="text-3xl font-semibold ">
          Projects
@@ -113,7 +113,7 @@ export default function SetProjects({ userDetails }) {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-3">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center place-content-evenly gap-4 p-3">
         {projectArray.map((project) => (
           <motion.div
             layoutId={`card-${project.projectName}-${id}`}
