@@ -208,8 +208,8 @@ export default function SignUp() {
     <div className="w-full flex justify-center items-center py-16 ">
       <div className="lg:w-1/4 lg:min-w-[600px] md:w-3/4  sm-max:w-full flex justify-evenly items-center w-full bg-background text-foreground px-10 sm-max:p-2 gap-8 md:flex-col-reverse ">
         <CardTemplete
-          title="Contact Form"
-          description="Enter your information to connect with me"
+          title="Sign Up"
+          description="Enter your information to connect with us"
           content={content}
         />
       </div>

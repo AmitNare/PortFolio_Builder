@@ -30,7 +30,7 @@ export const PersonalInfo = ({
 }) => (
   <div className="flex flex-col items-center p-0 w-full  bg-background text-foreground">
     {/* <h3>Personal Information</h3> */}
-    <div className="w-full px-4 py-2 bg-background text-foreground flex flex-col justify-between items rounded-md border gap-4 lg-max:w-full">
+    <div className="w-full px-4 py-4 bg-background text-foreground flex flex-col justify-between items rounded-md border gap-4 lg-max:w-full">
       <div className="flex justify-between gap-10 relative">
         <span className="flex flex-col  w-2/4">
           <Label className="text-lg">Name</Label>

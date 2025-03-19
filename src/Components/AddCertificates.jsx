@@ -186,7 +186,6 @@ export default function AddCertificates({ fetchCertificates }) {
                 name="certificateUrl"
                 value={formData.certificateUrl}
                 onChange={handleInputChange}
-                required
                 placeholder="Certificate URL"
                 className="w-full bg-background"
               />
