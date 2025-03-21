@@ -4,7 +4,7 @@ import { Textarea } from "./ui/textarea";
 
 export default function SetEducation({ userDetails }) {
   return (
-    <div className="w-full p-6  bg-background text-foreground">
+    <div className="w-full p-6 bg-background text-foreground sm-max:p-2">
       {/* Section Header */}
       <div className="mb-6 text-center">
         <h1 className="text-3xl font-semibold ">Educational Information</h1>
@@ -15,9 +15,9 @@ export default function SetEducation({ userDetails }) {
         {userDetails?.colleges?.map((college, index) => (
           <div
             key={index}
-            className="w-fit flex flex-col items-center justify-center gap-4 border rounded-lg  shadow-lg hover:shadow-2xl transition-shadow duration-300"
+            className="w-96 flex flex-col items-center justify-center gap-4 border rounded-lg  shadow-lg hover:shadow-2xl transition-shadow duration-300"
           >
-            <div class="w-96 shadow-[0px_0px_15px_rgba(0,0,0,0.09)] rounded-lg p-9 space-y-3 relative overflow-hidden">
+            <div class="min-w-56 shadow-[0px_0px_15px_rgba(0,0,0,0.09)] rounded-lg p-5 space-y-3 relative overflow-hidden">
               <div class="w-24 h-24 bg-violet-500 rounded-full absolute -right-5 -top-7">
                 <p
                   class={`w-12 absolute bottom-4 left-5 text-center text-wrap text-white text-sm ${
@@ -44,7 +44,7 @@ export default function SetEducation({ userDetails }) {
                 {/* Description Textarea */}
                 <div
                   //  className="w-full flex items-center justify-center"
-                  className="resize-none w-full mt-2 flex justify-center h-20 overflow-auto border border-gray-300 rounded-lg text-gray-500"
+                  className="resize-none w-full mt-2 flex justify-center h-32 p-2 custom-scrollbar overflow-auto text-sm border border-gray-300 rounded-sm text-gray-500"
                 >
                   {college.description}
                 </div>

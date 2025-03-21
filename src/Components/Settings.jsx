@@ -428,19 +428,22 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
   };
 
   return (
-    <form
-      data-aos="fade-left"
-      className="space-y-8 max-w-2xl mx-auto p-5 rounded-md"
-      onSubmit={formik.handleSubmit}
-    >
-      {portfolioLink && (
-        <strong className="flex w-full border-2 justify-center items-center gap-2">
+    <>
+    {portfolioLink && (
+        <strong className="flex w-fit m-auto px-5 py-1 border-2 rounded-md border-green-500 justify-center items-center gap-2">
           {portfolioLink}
           <button onClick={handleCopy}>
             <Copy /> {/* Replace with your copy icon */}
           </button>
         </strong>
       )}
+
+    <form
+      data-aos="fade-left"
+      className="space-y-5 max-w-2xl mx-auto p-5 rounded-md"
+      onSubmit={formik.handleSubmit}
+    >
+      
       <div className="flex flex-col items-center space-y-4">
         <div className="relative">
           {profileImage ? (
@@ -596,7 +599,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
         {/* <Button onClick={}>Verify</Button> */}
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-2">
         <h2 className="text-xl font-semibold">Social Links</h2>
         {formik.values.socialLink.map((link, index) => (
           <div key={index} className="grid gap-4 sm:grid-cols-2 mb-4">
@@ -741,5 +744,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
         </Button>
       </div>
     </form>
+    </>
+
   );
 }

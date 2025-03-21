@@ -122,20 +122,22 @@ export default function UserProjects() {
           {projects.map((project) => (
             <li
               key={project.id}
-              className="border relative p-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
+              className="border relative p-2 gap-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
             >
               {project.projectImage && (
-                <AspectRatio ratio={16 / 9} className="bg-muted">
+                <span className="mt-1">
+                <AspectRatio ratio={16 / 9} className="bg-muted ">
                   <img
                     src={project.projectImage}
                     alt={project.projectName}
                     loading="lazy"
                     className="h-full w-full rounded-md object-cover "
-                  />
+                    />
                 </AspectRatio>
+                    </span>
               )}
               <h2 className="text-xl font-semibold">{project.projectName}</h2>
-              <p className="mb-2 text-sm">{project.projectDescription}</p>
+              <p className="  text-sm h-48 custom-scrollbar overflow-auto">{project.projectDescription}</p>
               {/* <h2 className="text-xl font-semibold">{project.languages}</h2> */}
               <a
                 href={project.projectUrl}

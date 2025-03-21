@@ -81,7 +81,7 @@ export default function SetProjects({ userDetails }) {
               </motion.div>
 
               <div>
-                <div className="flex justify-between items-start p-4">
+                <div className="flex flex-col justify-between items-start p-4">
                   <div>
                     <motion.h3
                       layoutId={`title-${active.projectName}-${id}`}
@@ -113,32 +113,22 @@ export default function SetProjects({ userDetails }) {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center place-content-evenly gap-4 p-3">
+      <ul className="flex justify-center flex-wrap gap-10 sm-max:gap-4">
         {projectArray.map((project) => (
           <motion.div
             layoutId={`card-${project.projectName}-${id}`}
             key={project.id}
             onClick={() => setActive(project)}
-            className="border rounded-lg shadow-lg p-4 cursor-pointer"
+            className="border rounded-lg shadow-lg p-2 cursor-pointer"
           >
             <motion.div layoutId={`image-${project.projectName}-${id}`}>
               <img
                 src={project.projectImage}
                 alt={project.projectName}
                 loading="lazy"
-                className="w-full h-full object-cover rounded-md"
+                className="w-96 aspect-video object-cover rounded-md "
               />
             </motion.div>
-            {/* <motion.h3
-            layoutId={`title-${project.projectName}-${id}`}
-            className="text-xl font-bold mb-2">
-            {project.projectName}
-          </motion.h3>
-          <motion.p
-            layoutId={`description-${project.projectDescription}-${id}`}
-            className="text-gray-700 mb-3">
-            {project.projectDescription}
-          </motion.p> */}
           </motion.div>
         ))}
       </ul>

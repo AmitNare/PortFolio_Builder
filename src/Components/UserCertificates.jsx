@@ -8,6 +8,7 @@ import DataLoader from "./DataLoader";
 import Swal from "sweetalert2"; // Import SweetAlert2
 import { PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
+import { AspectRatio } from "./ui/aspect-ratio";
 
 export default function UserCertificates() {
   const [certificates, setCertificates] = useState([]);
@@ -121,27 +122,32 @@ export default function UserCertificates() {
             return (
               <li
                 key={certificate.id}
-                className="border relative p-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
+                className="border relative py-3 px-2 gap-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4  flex flex-col"
               >
                 {/* Adjust the field name if necessary */}
                 {certificate.certificateImage && (
-                  <img
-                    src={certificate.certificateImage}
-                    alt={certificate.certificateName}
-                    className="h-full w-full rounded-md object-cover"
-                  />
+                  <span className="mt-1">
+                  <AspectRatio ratio={16 / 9} className="bg-muted ">
+                    <img
+                      src={certificate.certificateImage}
+                      alt={certificate.certificateName}
+                      loading="lazy"
+                      className="h-full w-full rounded-md object-cover "
+                      />
+                  </AspectRatio>
+                      </span>
                 )}
                 <h2 className="text-xl font-semibold">
                   {certificate.certificateName}
                 </h2>{" "}
                 {/* Display the certificate type */}
-                <p className="mb-2 text-sm text-foreground">
+                <p className=" text-sm text-foreground">
                   Type:{" "}
                   {certificate.certificateType
                     ? certificate.certificateType
                     : "Not specified"}
                 </p>
-                <p className="mb-2 text-sm">
+                <p className="text-sm h-32 custom-scrollbar overflow-auto">
                   {certificate.certificateDescription}
                 </p>{" "}
                 <span className="flex justify-between">

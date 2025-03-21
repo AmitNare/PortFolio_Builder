@@ -104,19 +104,19 @@ export default function SetCertificates({ userDetails }) {
         </div>
       ) : null}
     </AnimatePresence>
-    <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+    <ul className="flex justify-center flex-wrap gap-10 sm-max:gap-4">
       {certificateArray.map((certificate) => (
         <motion.div
           layoutId={`card-${certificate.certificateName}-${id}`}
           key={certificate.id}
           onClick={() => setActive(certificate)}
-          className="border rounded-lg shadow-lg p-4 cursor-pointer">
+          className="border rounded-lg shadow-lg p-2 cursor-pointer">
           <motion.div layoutId={`image-${certificate.certificateName}-${id}`}>
             <img
               src={certificate.certificateImage}
               alt={certificate.certificateName}
               loading="lazy"
-              className="w-full h-40 object-cover rounded-md mb-3" />
+              className="w-96 aspect-video object-cover rounded-md " />
           </motion.div>
           {/* <motion.h3
             layoutId={`title-${certificate.certificateName}-${id}`}

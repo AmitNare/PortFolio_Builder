@@ -9,10 +9,10 @@ export default {
     	extend: {
     		screens: {
     			'sm-max': {
-    				max: '599px'
+    				max: '640px'
     			},
     			'md-max': {
-    				max: '769px'
+    				max: '767px'
     			},
     			'lg-max': {
     				max: '1024px'

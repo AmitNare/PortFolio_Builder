@@ -66,6 +66,27 @@
   /* transform-origin: 50% 0%; Adjust the pivot point to the top */
 }
 
-/* section {
-  scroll-margin-top: 4rem; 
-} */
+/* scrollbar */
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px; /* Width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  /* background: #f0f0f0;  */
+  fill: 1px solid red; 
+  /* border-bottom-right-radius: 3px; */
+  /* box-shadow: inset 0 0 0 2px #ccc;  */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #4A90E2; /* Thumb color */
+  border-radius: 2px;
+  /* border-bottom-right-radius: 3px;  */
+  /* box-shadow: inset 0 0 0 2px #ccc;  */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #357ABD; /* Thumb color on hover */
+}

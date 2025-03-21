@@ -99,18 +99,18 @@ export default function SetHero({ userDetails }) {
   }, [displayedText, isDeleting, typingSpeed, currentRoleIndex, roles]);
 
   return (
-    <div  className="w-full lg:p-20 flex md:gap-1 bg-background justify-evenly items-center md-max:flex-col md-max:p-5 md:p-10">
+    <div  className="w-full  flex mx-auto justify-evenly  bg-background items-center md-max:flex-col ">
       {/* Profile Image Section */}
-      <div  className=" lg-max:min-w-2/4 lg-max:min-h-[350px] xl:w-fit">
+      <div  className=" lg-max:min-w-2/4 lg-max:min-h-[350px] xl:w-fit ">
         <img
           src={imageUrl}
           alt="Profile"
-          className="lg:w-[450px] lg-max:max-w-[350px] lg:h-[400px] lg-max:min-h-[340px] object-cover md-max:w-full md-max:mx-auto rounded-[50%] "
+          className="lg:w-[450px] lg-max:max-w-[350px] lg:h-[450px] lg-max:min-h-[340px] object-cover md-max:w-full md-max:mx-auto rounded-full "
         />
       </div>
 
       {/* Text Section */}
-      <div  className=" pb-20 text-foreground  flex flex-col items-center text-2xl my-auto md-max:w-full md:w-2/4">
+      <div  className=" pb-20 text-foreground pr-20 flex flex-col items-center text-2xl my-auto md-max:max-w-96 md-max:w-80 md-max:pr-0">
         <section className="w-full ">
           <div className="flex items-center ">
             <span > 

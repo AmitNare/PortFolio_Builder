@@ -10,8 +10,8 @@ import logo from "../assets/Images/logo7.webp";
 export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logOut } = useUserAuth(); // Access logOut from context
-  const [userName, setUserName] = useState(isPortfolioPage || "");
+  const { logOut,user } = useUserAuth(); // Access logOut from context
+  const [userName, setUserName] = useState(isPortfolioPage || "" );
 
   // Retrieve userName from localStorage on mount
   useEffect(() => {
@@ -48,9 +48,9 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   };
 
   return (
-    <div className="sticky top-2 z-50 w-[99%] h-16 bg-slate-400/10 rounded-xl backdrop-blur-lg bg-opacity-70 flex items-center">
-      <header className=" flex h-full w-full px-12 items-center justify-between gap-4  rounded-xl bg-transparent md:px-20 ">
-        <span className="flex my-2 items-center justify-between gap-1 md-max:ml-12 ">
+    <div className="sticky top-2 z-50 w-[99%] h-16 bg-slate-400/10 rounded-xl backdrop-blur-lg bg-opacity-70 flex items-center  ">
+      <header className=" relative flex h-full w-full px-12 items-center justify-between gap-4  rounded-xl bg-transparent md:px-20 ">
+        <span className="flex my-2 items-center justify-between gap-1 sm-max:ml-4 sm:ml-4">
           <div className="w-12 h-12 rounded-md overflow-hidden">
             <img
               src={logo}
@@ -163,14 +163,14 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
         </section>
 
         {/* Mobile Navbar */}
-        <Sheet>
+        <Sheet className=" border-2 border-red-500">
           <SheetTrigger asChild>
             <Button
               variant="outline"
               size="icon"
-              className="shrink-0 md:hidden bg-background text-foreground"
+              className="shrink-0 md:hidden bg-background text-foreground absolute left-2"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-5 w-5  " />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
