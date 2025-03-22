@@ -12,8 +12,8 @@ import {
   Moon,
   Sun,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "./ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Link, useNavigate } from "react-router-dom";
 import Theme from "./Theme";
 import logo from "../assets/Images/logo7.webp";

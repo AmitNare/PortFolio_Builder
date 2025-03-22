@@ -13,7 +13,7 @@ import {
   AwardIcon,
   Boxes,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "./UserAuthentication";
 import Chatbot from "./Chatbot"; // Assuming you have a Chatbot component

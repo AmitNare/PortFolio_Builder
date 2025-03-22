@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "./ui/card";
 import { Target, TrendingUp, Rocket, Lightbulb } from "lucide-react";
 import { motion } from "framer-motion";
 

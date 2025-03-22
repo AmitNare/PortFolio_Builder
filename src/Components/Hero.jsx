@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
 import { Sparkles, Rocket } from "lucide-react";
 
 export default function Hero() {
