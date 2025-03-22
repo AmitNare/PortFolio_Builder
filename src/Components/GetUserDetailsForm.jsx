@@ -5,8 +5,8 @@ import { Button } from "./ui/button";
 import { PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import LocationSearch from "./LocationSearch";
-import { Label } from "./ui/Label";
-import { Input } from "./ui/Input";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
 import FileUpload from "./FileUpload";
 
 export const PersonalInfo = ({
