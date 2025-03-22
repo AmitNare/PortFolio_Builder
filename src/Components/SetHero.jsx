@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, get } from "firebase/database";
-import whatsApp from "../assets/Images/whatsApp.png";
+import whatsApp from "../assets/Images/whatsapp.png";
 import instagram from "../assets/Images/instagram.png";
 import gmail from "../assets/Images/gmail.png";
 import github from "../assets/Images/github.png";
