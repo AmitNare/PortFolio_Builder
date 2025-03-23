@@ -928,10 +928,10 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   return (
     <div
       data-aos="fade-left"
-      className="w-full flex flex-col  text-foreground bg-background p-5 gap-10 rounded-lg "
+      className="w-full flex flex-col  text-foreground bg-background p-5 md-max:p-0 md-max:mt-5 gap-10 rounded-lg "
     >
       {/* education info */}
-      <div className="w-full border border-green-500 px-3 py-5 rounded-md relative">
+      <div className="w-full  border border-green-500 px-3 py-5 md-max:px-0 rounded-md relative">
         <div className="flex justify-between items-center mb-3 ">
           {isCardEditing ? (
             <button
@@ -1154,9 +1154,9 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
             {userDetails?.colleges?.map((college, index) => (
               <div
                 key={index}
-                className="w-fit flex flex-col items-center justify-center gap-4 border rounded-lg  shadow-lg hover:shadow-2xl transition-shadow duration-300"
+                className="w-full sm:w-96 flex flex-col items-center justify-center gap-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
               >
-                <div className="w-96 shadow-[0px_0px_15px_rgba(0,0,0,0.09)] rounded-lg p-9 space-y-3 relative overflow-hidden">
+                <div className="w-full shadow-[0px_0px_15px_rgba(0,0,0,0.09)] rounded-lg p-9 space-y-3 relative overflow-hidden">
                   <div className="w-24 h-24 bg-violet-500 rounded-full absolute -right-5 -top-7">
                     <p
                       className={`w-12 absolute bottom-4 left-5 text-center text-wrap text-white text-sm ${
@@ -1194,160 +1194,6 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           </div>
         )}
 
-        {/* <div className="flex gap-5 justify-around items-center flex-wrap">
-          {userDetails?.colleges?.map((college, index) => (
-            <div
-              key={index}
-              className="min-w-[400px] w-[400px] max-w-[500px] flex flex-col flex-wrap gap-5 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md relative"
-            >
-              {collegeEditingStates[index] && (
-                <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
-                  <button
-                    onClick={() => removeCollege("colleges", index)}
-                    className="bg-red-500 text-white p-1 rounded-sm "
-                    title="delete"
-                  >
-                    <X size={15} />
-                  </button>
-
-                  <button
-                    onClick={() => saveAllEducation(index)}
-                    className="bg-green-500 text-white p-1 rounded-sm "
-                    title="save"
-                  >
-                    <Check size={15} />
-                  </button>
-                </div>
-              )}
-
-              <div className="flex gap-2 flex-col ">
-                <label className="text-sm font-medium text-foreground min-w-fit">
-                  College Name:
-                </label>
-                <Input
-                  type="text"
-                  value={college.collegeName}
-                  onChange={(e) =>
-                    handleInputChange(e, "colleges", index, "collegeName")
-                  }
-                  disabled={!collegeEditingStates[index]}
-                  className="border-2 text-foreground bg-background p-2"
-                  placeholder="College Name"
-                />
-                {errors.colleges?.[index]?.collegeName && (
-                  <span className="text-red-500 text-sm">
-                    {errors.colleges[index].collegeName}
-                  </span>
-                )}
-              </div>
-
-              <div className="flex gap-2">
-                <div className="flex flex-col gap-2 ">
-                  <label className="text-sm font-medium text-foreground min-w-fit">
-                    Course:
-                  </label>
-                  <Input
-                    type="text"
-                    value={college.course}
-                    onChange={(e) => handleInputChange(e, "colleges", index, "course")}
-                    disabled={!collegeEditingStates[index]}
-                    className="border-2 text-foreground bg-background p-2"
-                    placeholder="Course"
-                  />
-                  {errors.colleges?.[index]?.course && (
-                    <span className="text-red-500 text-sm">
-                      {errors.colleges[index].course}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-2 ">
-                  <label className="text-sm font-medium text-foreground min-w-fit">
-                    Grade:
-                  </label>
-                  <div className="flex flex-col" >
-                  <div className="flex gap-2 ">
-                    {collegeEditingStates[index] ? (
-                      <>
-                        <Input
-                          type="text"
-                          value={college.grade}
-                          onChange={(e) => {
-                            const { value } = e.target;
-                            if (college.gradeType === "CGPA" && value > 10) {
-                              alert("CGPA must be less than or equal to 10");
-                              return;
-                            }
-                            if (college.gradeType === "Percentage" && value > 100) {
-                              alert("Percentage must be less than or equal to 100");
-                              return;
-                            }
-                            handleInputChange(e, "colleges", index, "grade");
-                          }}className="border-2 text-foreground bg-background p-2 w-16"
-                          placeholder="Grade"
-                        />
-                        <select
-                          value={college.gradeType}
-                          onChange={(e) => handleInputChange(e, "colleges", index, "gradeType")}
-                          className="border-2 text-foreground bg-background p-2 w-32"
-                        >
-                          <option value="%">%</option>
-                          <option value="CGPA">CGPA</option>
-                        </select>
-                      </>
-                    ) : (
-                      <Input
-                        type="text"
-                        value={`${college.grade} ${college.gradeType}`}
-                        disabled={!collegeEditingStates[index]}
-                        className="border-2 text-foreground bg-background p-2 w-32"
-                        placeholder="Grade"
-                      />
-                    )}
-                    </div>
-                    {errors.colleges?.[index]?.grade && (
-                      <span className="text-red-500 text-sm">
-                        {errors.colleges[index].grade}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-2 flex-col ">
-                <label className="text-sm font-medium text-foreground min-w-fit">
-                  College Description:
-                </label>
-                <Textarea
-                  type="text"
-                  value={college.description}
-                  onChange={(e) =>
-                    handleInputChange(e, "colleges", index, "description")
-                  }
-                  disabled={!collegeEditingStates[index]}
-                  className="border-2 text-foreground bg-background p-2"
-                  placeholder="College Name"
-                />
-                {errors.colleges?.[index]?.description && (
-                  <span className="text-red-500 text-sm">
-                    {errors.colleges[index].description}
-                  </span>
-                )}
-              </div>
-
-              {isCardEditing && !collegeEditingStates[index] && (
-                <div className="mt-3">
-                  <button
-                    onClick={() => handleCollegeCardEdit(index)}
-                    className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
-                  >
-                    <Pencil size={15} />
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div> */}
       </div>
 
       {/* professional info */}
@@ -1592,20 +1438,20 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         </div>
 
         ) : (
-          <div className="flex flex-wrap gap-5 w-full justify-evenly items-center">
+          <div className="flex flex-wrap sm-max:flex-col gap-5 w-full justify-evenly items-center">
                     {userDetails?.experience?.map((exp, index) => (
                       <div
                         key={index}
-                        className="w-fit flex border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
+                        className="w-full sm:w-96 flex  border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
                       >
-                        <div className=" w-96 group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300  hover:shadow-2xl sm:mx-auto sm:max-w-sm sm:rounded-lg ">
+                        <div className=" w-full  group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300  hover:shadow-2xl sm:mx-auto  sm:rounded-lg ">
                           <span className="absolute top-[14px] z-0 h-10 w-40 rounded-r-md bg-violet-500 text-button-textColor hover:bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
-                          <div className=" relative z-10 mx-auto max-w-md ">
+                          <div className=" relative w-full z-10 justify-between flex items-end sm:max-w-md">
                             <span className=" grid mt-3 h-10 w-40 place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
                               <h1 className=" text-balance tracking-wide ">{exp.jobRole || "N/A"}</h1>
                             </span>
                             {/* <div className="flex justify-between"> */}
-                            <div className="absolute top-[8px] right-0">
+                            <div className="mb-2 top-[8px] right-0">
                               <Label className=" text-sm px-2 text-gray-500 group-hover:text-white dark:text-white dark:group-hover:text-foreground tracking-wide">
                                 {exp.companyAddress || "N/A"}
                               </Label>
