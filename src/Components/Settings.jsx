@@ -430,7 +430,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
   return (
     <>
     {portfolioLink && (
-        <strong className="flex w-fit m-auto px-5 py-1 border-2 rounded-md border-green-500 justify-center items-center gap-2">
+        <strong className="flex w-fit m-auto px-5 py-1 border-2 rounded-lg border-green-500 justify-center items-center gap-2">
           {portfolioLink}
           <button onClick={handleCopy}>
             <Copy /> {/* Replace with your copy icon */}

@@ -132,9 +132,9 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
               {!userName && (
                 <>
                   <Button
-                    variant="outline"
+                    // variant="outline"
                     onClick={() => navigate("/signin")}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="bg-button tracking-wider text-button-textColor hover:bg-button-hover hover:text-button-textColor"
                   >
                     Login
                   </Button>
@@ -142,7 +142,7 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
                   <Button
                     variant="outline"
                     onClick={() => navigate("/signup")}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="border-button tracking-wider text-foreground transition-all duration-300"
                   >
                     Register
                   </Button>
@@ -163,7 +163,7 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
         </section>
 
         {/* Mobile Navbar */}
-        <Sheet className=" border-2 border-red-500">
+        <Sheet className="">
           <SheetTrigger asChild>
             <Button
               variant="outline"

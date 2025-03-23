@@ -31,11 +31,11 @@ export default function UserAuthProtector() {
   }, [isDarkTheme]);
 
   return user ? (
-    <div className="w-full flex flex-col text-foreground overflow-x-hidden">
+    <div className="w-full max-h-svh flex flex-col bg-lightBg dark:bg-darkBg text-foreground overflow-x-hidden overflow-auto custom-scrollbar">
       <UserHeader toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
-      <div className="flex w-full min-h-[calc(100svh-72px)] p-2 text-foreground bg-lightBg dark:bg-darkBg">
+      <div className="flex w-full min-h-[calc(100svh-72px)] p-2 text-foreground bg-lightBg dark:bg-darkBg overflow-x-hidden overflow-auto custom-scrollbar">
         {/* Main Content Area */}
-        <div className="w-full h-full flex text-foreground z-50">
+        <div className="w-full h-full flex text-foreground z-50 overflow-x-hidden overflow-auto custom-scrollbar">
           {/* Navbar */}
           <UserNavbar toggleTheme={toggleTheme} isDarkTheme={isDarkTheme}>
             <Outlet />

@@ -928,7 +928,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   return (
     <div
       data-aos="fade-left"
-      className="w-full flex flex-col  text-foreground bg-background p-5 gap-10 rounded-md "
+      className="w-full flex flex-col  text-foreground bg-background p-5 gap-10 rounded-lg "
     >
       {/* education info */}
       <div className="w-full border border-green-500 px-3 py-5 rounded-md relative">
@@ -1170,20 +1170,20 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   </div>
                   <div className="fill-violet-500 w-full">
                     <div className="w-full flex items-center justify-center">
-                      <Label className="text-2xl font-semibold ">
+                      <Label className="text-2xl font-semibold tracking-wide">
                         {college.collegeName || "N/A"}
                       </Label>
                     </div>
                     {/* Course */}
                     <div className="w-full flex items-center justify-center">
-                      <Label className="text-lg text-gray-400">
+                      <Label className="text-lg text-gray-500 tracking-wide">
                         Course: {college.course || "N/A"}
                       </Label>
                     </div>
                     {/* Description Textarea */}
                     <div
                       //  className="w-full flex items-center justify-center"
-                      className="resize-none w-full mt-2 p-2 text-sm flex justify-center h-32 overflow-auto border border-gray-300 rounded-sm text-gray-500 custom-scrollbar"
+                      className="resize-none w-full mt-2 p-2 text-sm tracking-wide flex justify-center h-32 overflow-auto border border-gray-300 rounded-sm text-gray-500 custom-scrollbar"
                     >
                       {college.description}
                     </div>
@@ -1602,33 +1602,33 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                           <span className="absolute top-[14px] z-0 h-10 w-40 rounded-r-md bg-violet-500 text-button-textColor hover:bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
                           <div className=" relative z-10 mx-auto max-w-md ">
                             <span className=" grid mt-3 h-10 w-40 place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
-                              <h1 className=" text-balance ">{exp.jobRole || "N/A"}</h1>
+                              <h1 className=" text-balance tracking-wide ">{exp.jobRole || "N/A"}</h1>
                             </span>
                             {/* <div className="flex justify-between"> */}
                             <div className="absolute top-[8px] right-0">
-                              <Label className=" text-foreground text-sm px-2">
+                              <Label className=" text-sm px-2 text-gray-500 group-hover:text-white dark:text-white dark:group-hover:text-foreground tracking-wide">
                                 {exp.companyAddress || "N/A"}
                               </Label>
                             </div>
                           </div>
-                          <div className="mt-5 text-forground group relative cursor-pointer overflow-hidden transition-all duration-300 ">
+                          <div className="text-forground group relative cursor-pointer overflow-hidden transition-all duration-300 ">
                             <div className="flex flex-col gap-1">
-                              <Label className=" text-foreground  p-2">
+                              <Label className="p-2 mt-1 text-lg text-foreground tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
                                 {exp.companyName || "N/A"}
                               </Label>
                             </div>
                             <div className="flex flex-col gap-1 w-fit">
                              
-                              <Label className=" text-foreground  p-2 ">
+                              <Label className="px-2 text-gray-500 tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
                                 <span>Duration:</span>
                                 <span className="ml-1">{`${
                                   exp.jobExperience || "0"
                                 } years`}</span>{" "}
                               </Label>
                             </div>
-                            <div className="space-y-6 text-base leading-7 text-gray-600 transition-all duration-300 group-hover:text-white/90">
-                              <div className="col-span-2 flex flex-col gap-1 p-1 pb-4">
-                                <Textarea className="custom-scrollbar overflow-auto text-foreground bg-transparent w-full h-32 resize-none group-hover:border-violet-600 ">
+                            <div className="space-y-6 mt-1 text-base leading-7 tracking-wide text-gray-600 transition-all duration-300 group-hover:text-white/90">
+                              <div className="col-span-2 flex flex-col gap-1 p-1 pb-2">
+                                <Textarea className="custom-scrollbar overflow-auto  group-hover:text-white dark:text-white dark:group-hover:text-foreground bg-transparent w-full h-32 resize-none group-hover:border-violet-600 ">
                                   {exp.jobDescription || "N/A"}
                                 </Textarea>
                               </div>

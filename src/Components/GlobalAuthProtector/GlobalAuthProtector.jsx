@@ -46,9 +46,9 @@ export default function GlobalAuthProtector() {
     <div
       className={`${
         isDarkTheme ? "dark" : "light"
-      } relative min-h-screen bg-lightBg dark:bg-darkBg flex w-full text-foreground`}
+      } relative max-h-svh bg-lightBg dark:bg-darkBg flex w-full text-foreground tracking-wide overflow-auto custom-scrollbar`}
     >
-      <div className="w-full flex flex-col items-center bg-background text-foreground">
+      <div className="w-full flex flex-col items-center bg-background text-foreground overflow-x-hidden overflow-auto custom-scrollbar">
         <Navbar
           toggleTheme={toggleTheme}
           isDarkTheme={isDarkTheme}

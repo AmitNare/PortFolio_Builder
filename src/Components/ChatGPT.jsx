@@ -53,7 +53,7 @@ export default function ChatGPT() {
 
   return (
     <div  className="flex justify-center h-fit w-full ">
-      <div className="flex flex-col justify-start gap-3 p-2 rounded-xl w-full relative">
+      <div className="flex flex-col justify-start gap-3 p-2 rounded-lg w-full relative">
         {/* <label htmlFor="content" className="block">
           Enter Content:{" "}
         </label> */}
