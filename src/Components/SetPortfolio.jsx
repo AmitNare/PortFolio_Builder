@@ -111,15 +111,16 @@ export default function SetPortfolio() {
   // Scroll to the section specified in the hash
   useEffect(() => {
     const scrollToSection = () => {
-      if (location.hash) {
-        const element = document.querySelector(location.hash);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => {
+        if (window.location.hash) {
+          const element = document.querySelector(window.location.hash);
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }
-      } else {
-        // Scroll to top if no hash is present
-        window.scrollTo(0, 0);
-      }
+      }, 500);
     };
 
     scrollToSection();
