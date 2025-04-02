@@ -99,7 +99,7 @@ export default function SetHero({ userDetails }) {
   }, [displayedText, isDeleting, typingSpeed, currentRoleIndex, roles]);
 
   return (
-    <div  className="w-full  flex mx-auto justify-evenly  bg-background items-center md-max:flex-col ">
+    <div  className="w-full flex mx-auto justify-evenly  bg-background items-center md-max:flex-col md:flex-col gap-2 lg:gap-5 xl:gap-28 lg:flex-row">
       {/* Profile Image Section */}
       <div  className=" lg-max:min-w-2/4 lg-max:min-h-[350px] xl:w-fit ">
         <img
@@ -110,9 +110,9 @@ export default function SetHero({ userDetails }) {
       </div>
 
       {/* Text Section */}
-      <div  className=" pb-20 text-foreground pr-20 flex flex-col items-center text-2xl my-auto md-max:max-w-96 md-max:w-80 md-max:pr-0">
-        <section className="w-full ">
-          <div className="flex items-center ">
+      <div className=" pb-20 text-foreground pr-20 flex flex-col items-center text-2xl my-auto md-max:max-w-96 md-max:w-80 md-max:pr-0">
+        <section className="w-full md-max:flex md-max:flex-col md-max:items-center md-max:justify-center ">
+          <div className="flex ">
             <span > 
             Hello
             </span> 

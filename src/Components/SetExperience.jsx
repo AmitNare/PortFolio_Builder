@@ -14,18 +14,18 @@ export default function SetExperience({ userDetails }) {
           {userDetails?.experience?.map((exp, index) => (
             <div
               key={index}
-              className="w-96 flex border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
+              className="w-full sm:w-96 flex border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
             >
               <div class=" min-w-full group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300  hover:shadow-2xl sm:mx-auto sm:max-w-sm sm:rounded-lg ">
-                <span class="absolute top-[14px] z-0 h-10 w-40 rounded-r-md bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
-                <div class=" relative z-10 mx-auto max-w-md ">
-                  <span className=" grid mt-3 h-10 w-40 place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
-                    <h1 className=" text-balance tracking-wide ">
+                <span class="absolute top-[12px] z-0 h-10 sm-max:w-44 md:w-40 rounded-r-md bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
+                <div class=" relative z-10 flex justify-between items-center pr-5 sm-max:p-0">
+                  <span className=" grid mt-3 h-10 sm-max:w-44 md:w-40  place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
+                    <h1 className="w-full text-balance tracking-wide">
                       {exp.jobRole || "N/A"}
                     </h1>
                   </span>
                   {/* <div className="flex justify-between"> */}
-                  <div className="absolute top-[8px] right-0">
+                  <div className="absolute top-5 sm-max:top-5 right-0">
                     <Label className="text-sm px-2 text-gray-500 group-hover:text-white dark:text-white dark:group-hover:text-foreground tracking-wide">
                       {exp.companyAddress || "N/A"}
                     </Label>

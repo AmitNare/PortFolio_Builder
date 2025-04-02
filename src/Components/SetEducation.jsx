@@ -15,7 +15,7 @@ export default function SetEducation({ userDetails }) {
         {userDetails?.colleges?.map((college, index) => (
           <div
             key={index}
-            className="w-96 flex flex-col items-center justify-center gap-4 border rounded-lg  shadow-lg hover:shadow-2xl transition-shadow duration-300"
+            className="w-full sm:w-96 flex flex-col items-center justify-center gap-4 border rounded-lg  shadow-lg hover:shadow-2xl transition-shadow duration-300"
           >
             <div class="min-w-56 shadow-[0px_0px_15px_rgba(0,0,0,0.09)] rounded-lg p-5 space-y-3 relative overflow-hidden">
               <div class="w-24 h-24 bg-violet-500 rounded-full absolute -right-5 -top-7">

@@ -37,8 +37,8 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
   };
 
   const handleSettings = () => {
-    navigate('/user/settings');
-  }
+    navigate("/user/settings");
+  };
 
   const toggleChatbot = () => {
     setIsChatbotOpen(!isChatbotOpen);
@@ -56,7 +56,7 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
     <div className="flex h-full w-full gap-2 bg-lightBg dark:bg-darkBg">
       {/* Sidebar */}
       <aside
-        className={`inset-y-0 left-0 w-64 border flex flex-col justify-between items-baseline rounded-lg h-auto px-3 py-4 bg-background transition-transform md-max:absolute md-max:z-[99] sm-max:w-[100%] ${
+        className={`inset-y-0 left-0 w-64 sm-max:w-[100%] border flex flex-col justify-between items-baseline rounded-lg h-auto px-3 py-4 bg-background transition-transform md-max:absolute md-max:z-[99] ${
           isSidebarOpen ? "translate-x-0 " : "-translate-x-full"
         } md:translate-x-0`}
       >
@@ -65,9 +65,11 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
             <X size={28} />
           </button>
         </div> */}
-        <nav className={`flex-auto flex flex-col text-lg font-semibold gap-4 w-full mt-2 ${
-          isSidebarOpen ? "mt-20 " : ""
-        }`}>
+        <nav
+          className={`flex-auto flex flex-col text-lg font-semibold gap-4 w-full mt-2 ${
+            isSidebarOpen ? "mt-20 " : ""
+          }`}
+        >
           {navItems.map(({ label, path, icon: Icon }) => (
             <button
               key={path}
@@ -89,48 +91,51 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
           </button>
         </nav>
         <Button variant="ghost" onClick={toggleTheme} className="mt-6">
-          {isDarkTheme ? <Sun className="mr-2" /> : <Moon className="mr-2" />} {" "}
+          {isDarkTheme ? <Sun className="mr-2" /> : <Moon className="mr-2" />}{" "}
           {isDarkTheme ? "Light Mode" : "Dark Mode"}
         </Button>
 
-      {userDetails && 
-        <span className="flex my-2 items-center justify-between gap-1">
-      <div className="w-12 h-12 rounded-md overflow-hidden">
-        {userDetails ? (
-          <img
-            src={userDetails.image || ""}
-            alt="User Avatar"
-            loading="lazy"
-            className="w-full h-full object-cover scale-110 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-            <span className="text-gray-500">Loading...</span>
-          </div>
+        {userDetails && (
+          <span className="flex w-full my-2 items-center justify-between gap-1">
+            <div className="flex gap-2 items-center">
+            <div className="w-16 h-16 rounded-md overflow-hidden">
+              {userDetails ? (
+                <img
+                  src={userDetails.image || ""}
+                  alt="User Avatar"
+                  loading="lazy"
+                  className="w-full h-full object-cover scale-110 transition-transform duration-300"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-500">Loading...</span>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col">
+              {userDetails ? (
+                <>
+                  <h1 className="text-xl text-foreground ">
+                    {userDetails.name} {userDetails.surname}
+                  </h1>
+                  <p className="text-sm text-gray-500">
+                    {userDetails.currentJobRole}
+                  </p>
+                </>
+              ) : (
+                <span className="text-gray-500">Loading details...</span>
+              )}
+            </div>
+            </div>
+            <button
+              onClick={handleSettings} // Replace with your settings function
+              className="ml-4 p-2 rounded-md hover:bg-gray-200 transition-colors"
+              aria-label="Settings"
+            >
+              <Settings className="w-6 h-6 text-gray-700" />
+            </button>
+          </span>
         )}
-      </div>
-      <div className="flex flex-col">
-        {userDetails ? (
-          <>
-            <h1 className="text-xl text-foreground ">
-              {userDetails.name} {userDetails.surname}
-            </h1>
-            <p className="text-sm text-gray-500">{userDetails.currentJobRole}</p>
-          </>
-        ) : (
-          <span className="text-gray-500">Loading details...</span>
-        )}
-      </div>
-      <button
-        onClick={handleSettings} // Replace with your settings function
-        className="ml-4 p-2 rounded-md hover:bg-gray-200 transition-colors"
-        aria-label="Settings"
-      >
-        <Settings className="w-6 h-6 text-gray-700"  />
-      </button>
-    </span>
-  }
-
       </aside>
 
       {/* Hamburger Button */}
@@ -144,8 +149,10 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
       </div>
 
       {/* Main Content Area */}
-      <main  className="flex-1 gap-2 rounded-lg  bg-lightBg dark:bg-darkBg md-max:w-full relative flex min-h-[calc(100svh-92px)]">
-        <div className="flex-1 border rounded-lg h-full bg-background">{children}</div>
+      <main className="flex-1 border gap-2 rounded-lg md-max:rounded-none  bg-lightBg dark:bg-darkBg md-max:w-full relative flex h-full overflow-x-hidden overflow-auto custom-scrollbar ">
+        <div className="flex-1 rounded-lg md-max:rounded-none md-max:px-2 h-full bg-background overflow-x-hidden overflow-auto custom-scrollbar">
+          {children}
+        </div>
         {isChatbotOpen && (
           <div className="w-1/4 md-max:absolute md-max:z-50 md-max:h-full md-max:w-full border rounded-lg  bg-background p-4">
             <ChatGPT />
@@ -153,7 +160,7 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
         )}
         <button
           onClick={toggleChatbot}
-          className="absolute right-10 bottom-10 z-50 flex items-center p-2 w-fit bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
+          className="fixed right-10 bottom-10 z-50 flex items-center p-2 w-fit bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"
         >
           <Sparkles className="text-button hover:text-button" />
         </button>

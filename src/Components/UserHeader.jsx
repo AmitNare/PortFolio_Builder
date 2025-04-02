@@ -24,7 +24,7 @@ export default function UserHeader({ toggleTheme, isDarkTheme, name }) {
   return (
     <>
       <div className="flex w-full flex-col items-center justify-between bg-lightBg dark:bg-darkBg">
-        <header className="bg-background sticky w-[99%] mt-2 flex h-16 bg-white-400/10 rounded-lg backdrop-blur-lg bg-opacity-70 items-center justify-between gap-4 border px-4 md:px-10">
+        <header className="bg-background sticky w-[99%] md-max:w-full mt-2 md-max:m-0 flex h-16 bg-white-400/10 rounded-lg md-max:rounded-none backdrop-blur-lg bg-opacity-70 items-center justify-between gap-4 border md-max:border-b-slate-700 px-4 md:px-10">
           {/* <h1 className="text-4xl font-bold text-foreground">{name}</h1> */}
 
           <span className="flex my-2 items-center justify-between gap-1 md-max:ml-12 ">

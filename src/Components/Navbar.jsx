@@ -10,8 +10,8 @@ import logo from "../assets/Images/logo7.webp";
 export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logOut,user } = useUserAuth(); // Access logOut from context
-  const [userName, setUserName] = useState(isPortfolioPage || "" );
+  const { logOut, user } = useUserAuth(); // Access logOut from context
+  const [userName, setUserName] = useState(isPortfolioPage || "");
 
   // Retrieve userName from localStorage on mount
   useEffect(() => {
@@ -40,6 +40,9 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
     }
   }, [location]);
 
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
+
   const handleLogOut = () => {
     logOut(); // Call the logOut function
     localStorage.removeItem("userName"); // Clear userName from localStorage
@@ -48,10 +51,10 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   };
 
   return (
-    <div className="sticky top-2 z-50 w-[99%] h-16 bg-slate-400/10 rounded-xl backdrop-blur-lg bg-opacity-70 flex items-center  ">
-      <header className=" relative flex h-full w-full px-12 items-center justify-between gap-4  rounded-xl bg-transparent md:px-20 ">
-        <span className="flex my-2 items-center justify-between gap-1 sm-max:ml-4 sm:ml-4">
-          <div className="w-12 h-12 rounded-md overflow-hidden">
+    <div className="sticky top-2 sm-max:top-0 z-50 w-[99%] h-16 bg-slate-400/10 rounded-xl sm-max:rounded-none backdrop-blur-lg bg-opacity-70 flex items-center  ">
+      <header className="  relative flex h-full w-full px-12 items-center justify-between gap-2 2md-min:gap-4  rounded-xl bg-transparent md:px-5 lg:px-20 ">
+        <span className="flex my-2 items-center justify-between gap-1 sm-max:ml-4 2md-min:ml-4">
+          <div className="w-12 h-12 rounded-md overflow-hidden ">
             <img
               src={logo}
               alt="logo"
@@ -65,53 +68,97 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
         </span>
 
         {/* Desktop navbar */}
-        <nav className=" hidden flex-col gap-8 text-xl font-medium md:flex md:flex-row md:items-center md:gap-8 md:text-lg lg:gap-10">
-          <ul className="flex space-x-4">
-            <li>
-              <Link
-                to={userName ? `/${userName}#SetHero` : `/#Hero`}
-                className="hover:text-foreground text-xl"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={userName ? `/${userName}#SetProjects` : `/#About`}
-                className="hover:text-foreground text-xl"
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={userName ? `/${userName}#SetCertificates` : `/#Features`}
-                className="hover:text-foreground text-xl"
-              >
-                Features
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={userName ? `/${userName}#SetEducation` : `/#Feedback`}
-                className="hover:text-foreground text-xl"
-              >
-                Contact
-              </Link>
-            </li>
-            {/* <li>
-              <Link
-                to={`/${userName}#SetExperience `}
-                className="hover:text-foreground text-xl"
-              >
-                Experience
-              </Link>
-            </li> */}
+        <nav className=" hidden flex-col text-xl font-medium md:flex md:flex-row md:items-center md:text-lg gap-0 2md-min:gap-8 md:gap-0 lg:gap-10">
+          <ul className="flex md:space-x-2 lg:space-x-4">
+            {userName ? (
+              <>
+                <li>
+                  <Link
+                    to={`/${userName}#SetHero`}
+                    className="hover:text-foreground text-xl"
+                  >
+                    Hero
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/${userName}#SetProjects`}
+                    className="hover:text-foreground text-xl"
+                  >
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/${userName}#SetEducation`}
+                    className="hover:text-foreground text-xl"
+                  >
+                    Education
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/${userName}#SetExperience`}
+                    className="hover:text-foreground text-xl"
+                  >
+                    Experience
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/${userName}#SetCertificates`}
+                    className="hover:text-foreground text-xl"
+                  >
+                    Skills
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/${userName}#SetContact`}
+                    className="hover:text-foreground text-xl"
+                  >
+                    Contact
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to={`/#Hero`} className="hover:text-foreground text-xl">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/#About`}
+                    className="hover:text-foreground text-xl"
+                  >
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/#Features`}
+                    className="hover:text-foreground text-xl"
+                  >
+                    Features
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/#Feedback`}
+                    className="hover:text-foreground text-xl"
+                  >
+                    Contact
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
 
         {/* Action Buttons */}
-        <section className="flex items-center gap-4">
+        <section className="flex items-center gap-1 md-max:hidden 2md-min:gap-3 lg:gap-4">
           {/* Theme Toggle Button */}
           <Button
             variant="ghost"
@@ -128,13 +175,13 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
 
           {/* No Buttons on Portfolio Page */}
           {!isPortfolioPage && (
-            <>
+            <div className="flex">
               {!userName && (
-                <>
+                <div className="flex md:gap-1 2md-min:gap-3 lg:gap-4">
                   <Button
-                    // variant="outline"
+                    // variant="default"
                     onClick={() => navigate("/signin")}
-                    className="bg-button tracking-wider text-button-textColor hover:bg-button-hover hover:text-button-textColor"
+                    className="bg-button tracking-wider text-button-textColor hover:bg-button-hover hover:text-button-textColor rounded-md"
                   >
                     Login
                   </Button>
@@ -142,11 +189,11 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
                   <Button
                     variant="outline"
                     onClick={() => navigate("/signup")}
-                    className="border-button tracking-wider text-foreground transition-all duration-300"
+                    className="border-button tracking-wider text-foreground transition-all duration-300 rounded-md"
                   >
                     Register
                   </Button>
-                </>
+                </div>
               )}
 
               {userName && (
@@ -158,17 +205,18 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
                   Logout
                 </Button>
               )}
-            </>
+            </div>
           )}
         </section>
 
         {/* Mobile Navbar */}
-        <Sheet className="">
+        <Sheet open={open} onOpenChange={setOpen} className="">
           <SheetTrigger asChild>
             <Button
               variant="outline"
               size="icon"
               className="shrink-0 md:hidden bg-background text-foreground absolute left-2"
+              onClick={() => setOpen(true)}
             >
               <Menu className="h-5 w-5  " />
               <span className="sr-only">Toggle navigation menu</span>
@@ -176,44 +224,129 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
           </SheetTrigger>
           <SheetContent side="left">
             <nav className="grid gap-6 text-lg font-medium">
-              <ul>
-                <li>
-                  <Link to={`/${userName}#SetHero`} className="text-blue-500">
-                    Hero
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={`/${userName}#SetProjects`}
-                    className="text-blue-500"
-                  >
-                    Projects
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={`/${userName}#SetCertificates`}
-                    className="text-blue-500"
-                  >
-                    Certificates
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={`/${userName}#SetEducation`}
-                    className="text-blue-500"
-                  >
-                    Education
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={`/${userName}#SetExperience`}
-                    className="text-blue-500"
-                  >
-                    Experience
-                  </Link>
-                </li>
+              <ul className="mt-10">
+                {userName ? (
+                  <span >
+                    <li>
+                      <Link
+                        to={`/${userName}#SetHero`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        Hero
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`/${userName}#SetProjects`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        About
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`/${userName}#SetEducation`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        Education
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`/${userName}#SetExperience`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        Experience
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`/${userName}#SetCertificates`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        Skills
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`/${userName}#SetContact`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        Contact
+                      </Link>
+                    </li>
+                  </span>
+                ) : (
+                  <span className=" flex flex-col gap-5">
+                    <li>
+                      <Link
+                        to={`/#Hero`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        Home
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`/#About`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        About
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`/#Features`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        Features
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to={`/#Feedback`}
+                        className="hover:text-foreground text-xl"
+                        onClick={handleClose}
+                      >
+                        Contact
+                      </Link>
+                    </li>
+                    {!userName && (
+                      <div className="flex flex-col md:gap-1 2md-min:gap-3 lg:gap-4">
+                        <Button
+                          // variant="default"
+                          onClick={() => {
+                            navigate("/signin");
+                            handleClose();
+                          }}
+                          className="bg-button tracking-wider text-button-textColor hover:bg-button-hover hover:text-button-textColor rounded-md"
+                        >
+                          Login
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            navigate("/signup");
+                            handleClose();
+                          }}
+                          className="border-button tracking-wider text-foreground transition-all duration-300 rounded-md"
+                        >
+                          Register
+                        </Button>
+                      </div>
+                    )}
+                  </span>
+                )}
               </ul>
             </nav>
           </SheetContent>

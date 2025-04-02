@@ -136,7 +136,7 @@ export default function SetPortfolio() {
   }
 
   return (
-    <div className="mt-5 flex flex-col w-full gap-5">
+    <div className="mt-5 flex flex-col justify-center items-center w-full gap-5">
       {/* Portfolio Sections */}
       <section id="SetHero">
         <SetHero userDetails={userDetails} />
