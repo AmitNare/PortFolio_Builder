@@ -28,11 +28,11 @@ export const PersonalInfo = ({
   setFormData,
   setErrors,
 }) => (
-  <div className="flex flex-col items-center p-0 w-full  bg-background text-foreground">
+  <div className="flex flex-col items-center p-0 w-full bg-background text-foreground">
     {/* <h3>Personal Information</h3> */}
-    <div className="w-full px-4 py-4 bg-background text-foreground flex flex-col justify-between items rounded-md border gap-4 lg-max:w-full">
-      <div className="flex justify-between gap-10 relative">
-        <span className="flex flex-col  w-2/4">
+    <div className="w-full px-4 py-4 bg-background text-foreground flex flex-col justify-between items rounded-md border border-green-500 gap-4 lg-max:w-full">
+      <div className="flex justify-between sm-max:flex-col md:flex-col gap-1 lg:flex-row md:gap-2 lg:gap-10 relative">
+        <span className="flex flex-col md:w-full lg:w-2/4">
           <Label className="text-lg">Name</Label>
           <Input
             type="text"
@@ -52,7 +52,7 @@ export const PersonalInfo = ({
             </span>
           )}
         </span>
-        <span className="flex flex-col relative  w-2/4">
+        <span className="flex flex-col relative md:w-full lg:w-2/4">
           <Label className="text-lg">Surname</Label>
           <Input
             type="text"
@@ -74,8 +74,8 @@ export const PersonalInfo = ({
         </span>
       </div>
 
-      <div className="flex justify-between items-center relative gap-10">
-        <span className="flex flex-col relative w-2/4">
+      <div className="flex justify-between relative gap-1 sm-max:flex-col md:flex-col lg:flex-row md:gap-2 lg:gap-10">
+        <span className="flex flex-col relative md:w-full lg:w-2/4">
           <Label className="text-lg">Email</Label>
           <Input
             type="text"
@@ -95,7 +95,7 @@ export const PersonalInfo = ({
             </span>
           )}
         </span>
-        <span className="flex flex-col relative w-2/4">
+        <span className="flex flex-col relative md:w-full lg:w-2/4 ">
           <Label className="text-lg">PhoneNo</Label>
           <Input
             type="text"
@@ -118,14 +118,14 @@ export const PersonalInfo = ({
         </span>
       </div>
 
-      <div className="flex w-full gap-10">
-        <span className="flex flex-col relative w-2/4   ">
+      <div className="flex justify-between w-full gap-1 sm-max:flex-col md:flex-col lg:flex-row md:gap-2 lg:gap-10">
+        <span className="flex flex-col relative w-2/4 sm-max:w-full md:w-full lg:w-2/4 ">
 
         <Label className="text-lg">Gender</Label>
-        <div className="flex gap-3">
-          <div>
+        <div className="flex gap-3 lg:flex border-2 border-red-500">
+          <div className="w-full ">
             <Input
-              className="peer sr-only"
+              className="peer sr-only w-full"
               value="male"
               name="gender"
               id="male"
@@ -133,9 +133,9 @@ export const PersonalInfo = ({
               checked={formData.gender === "male"}
               onChange={(e) => handleInputChange(e)}
             />
-            <div className="bg-background text-foreground flex h-fit w-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
+            <div className="bg-background text-foreground border flex h-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 md:p-0 lg:p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
               <Label
-                className=" flex cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
+                className=" flex flex-col text-balance cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
                 htmlFor="male"
               >
                 <svg
@@ -155,7 +155,7 @@ export const PersonalInfo = ({
             </div>
           </div>
 
-          <div>
+          <div className="w-full">
             <Input
               className="peer sr-only"
               value="female"
@@ -165,9 +165,9 @@ export const PersonalInfo = ({
               checked={formData.gender === "female"}
               onChange={(e) => handleInputChange(e)}
             />
-            <div className="flex h-fit w-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
+            <div className="flex border h-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 md:p-0 lg:p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
               <Label
-                className="flex cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
+                className="flex flex-col  whitespace-nowrap cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
                 htmlFor="female"
               >
                 <svg
@@ -194,9 +194,9 @@ export const PersonalInfo = ({
             </div>
           </div>
 
-          <div>
+          <div className="w-full">
             <Input
-              className="peer sr-only"
+              className="peer sr-only w-full "
               value="other"
               name="gender"
               id="other"
@@ -204,9 +204,9 @@ export const PersonalInfo = ({
               checked={formData.gender === "other"}
               onChange={(e) => handleInputChange(e)}
             />
-            <div className="flex h-fit w-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
+            <div className="flex border h-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 md:p-0 lg:p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
               <Label
-                className="flex cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
+                className="flex flex-col text-balance cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
                 htmlFor="other"
               >
                 <svg
@@ -241,7 +241,7 @@ export const PersonalInfo = ({
         )}
         </span>
 
-        <span className="flex flex-col relative w-2/4  ">
+        <span className="flex flex-col relative  md:w-full lg:w-2/4 ">
           <Label className="text-lg">Job Role</Label>
           <Input
             type="text"
@@ -476,7 +476,7 @@ export const EducationAndSkills = ({
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                className="px-2  h-10 rounded-md"
+                className="px-2 h-16 rounded-md resize-none custom-scrollbar overflow-auto"
               />
               {errors.description && (
                 <span className="absolute text-red-500 text-xs mt-[98px] py-1">
@@ -541,14 +541,14 @@ export const ProfessionalInfo = ({
   handleInputChange,
 }) => {
   return (
-    <div className="flex justify-center border-4 w-full">
-      <div className="border-4 w-3/4">
-        <h3 className="text-xl font-semibold mb-4">Professional Info</h3>
+    <div className="flex justify-center border w-full p-4 rounded-md">
+      <div className="w-full sm-max:w-full lg:w-full">
+        <h3 className="text-xl font-semibold mb-4 px-4">Professional Info</h3>
 
         {/* Render Experiences (Newest First) */}
         {formData.experience.map((exp, index) => (
-          <div key={index} className="flex flex-col mb-4  p-4 gap-5">
-            <div className="w-full flex justify-between gap-6">
+          <div key={index} className="flex flex-col mb-4 p-4 gap-5">
+            <div className="w-full flex justify-between md:gap-2 lg:gap-6">
               <span className="w-2/4 relative">
                 <Label htmlFor="CompanyName">Company Name</Label>
                 <Input
@@ -622,7 +622,7 @@ export const ProfessionalInfo = ({
                     </span>
                   )}
                   <select
-  className="bg-background text-foreground w-2/4 h-10 text-center appearance-auto rounded-md"
+  className="bg-background border text-foreground w-2/4 h-10 text-center appearance-auto rounded-md"
   value={exp.jobDuration } // Bind value to formData
   onChange={(e) => handleInputChange(e, "experience", index)} // Update state
   name="jobDuration" // Ensure name matches the formData key
@@ -833,11 +833,11 @@ export const SocialLinks = ({
   errors,
 }) => {
   return (
-    <div className="flex justify-center border-4 w-full text-foreground bg-background">
-      <div className="border-4 w-3/4 text-foreground bg-background">
+    <div className="flex justify-center border rounded-md p-2 py-4 w-full text-foreground bg-background">
+      <div className="sm-max:w-full w-4/5 px-2 text-foreground bg-background">
         {formData.socialLink.map((link, index) => (
-          <div key={index} className="flex flex-col gap-4 text-foreground">
-            <div className="flex gap-2 items-center">
+          <div key={index} className="flex flex-col gap-5 text-foreground">
+            <div className="flex gap-1 items-center relative">
               <label htmlFor={`linkedIn-${index}`} className="font-medium">
                 LinkedIn:
               </label>
@@ -849,14 +849,14 @@ export const SocialLinks = ({
                 placeholder="Enter your LinkedIn URL"
                 className="w-full h-10 p-2 border rounded text-foreground bg-background"
               />
-              {errors[`socialLink[${index}].linkedIn`] && (
-                <p className="text-red-500 text-sm">
-                  {errors[`socialLink[${index}].linkedIn`]}
+              {errors.linkedIn && (
+                <p className="text-red-500 text-xs absolute mt-14 right-0">
+                  {errors.linkedIn}
                 </p>
               )}
             </div>
 
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-1 items-center relative">
               <label htmlFor={`instagram-${index}`} className="font-medium">
                 Instagram:
               </label>
@@ -868,14 +868,14 @@ export const SocialLinks = ({
                 placeholder="Enter your instagram URL"
                 className="w-full h-10 p-2 border rounded text-foreground bg-background"
               />
-              {errors[`socialLink[${index}].instagram`] && (
-                <p className="text-red-500 text-sm">
-                  {errors[`socialLink[${index}].instagram`]}
+              {errors.instagram && (
+                <p className="text-red-500 text-xs absolute mt-14 right-0">
+                  {errors.instagram}
                 </p>
               )}
             </div>
 
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-1 items-center relative">
               <label htmlFor={`gitHub-${index}`} className="font-medium">
                 GitHub:
               </label>
@@ -887,14 +887,14 @@ export const SocialLinks = ({
                 placeholder="Enter your gitHub URL"
                 className="w-full h-10 p-2 border rounded text-foreground bg-background"
               />
-              {errors[`socialLink[${index}].gitHub`] && (
-                <p className="text-red-500 text-sm">
-                  {errors[`socialLink[${index}].gitHub`]}
+              {errors.gitHub && (
+                <p className="text-red-500 text-xs absolute mt-14 right-0">
+                  {errors.gitHub}
                 </p>
               )}
             </div>
-
-            <div className="flex gap-2 items-center">
+ 
+            <div className="flex gap-1 items-center relative">
               <label htmlFor={`twitter-${index}`} className="font-medium">
                 Twitter:
               </label>
@@ -906,9 +906,9 @@ export const SocialLinks = ({
                 placeholder="Enter your twitter URL"
                 className="w-full h-10 p-2 border rounded text-foreground bg-background"
               />
-              {errors[`socialLink[${index}].twitter`] && (
-                <p className="text-red-500 text-sm">
-                  {errors[`socialLink[${index}].twitter`]}
+              {errors.twitter && (
+                <p className="text-red-500 text-xs absolute mt-14 right-0">
+                  {errors.twitter}
                 </p>
               )}
             </div>

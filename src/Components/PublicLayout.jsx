@@ -5,15 +5,17 @@ import SetExperience from "./SetExperience";
 import SetEducation from "./SetEducation";
 import SetProjects from "./SetProjects";
 import SetCertificates from "./SetCertificates";
-import { useLocation, useParams, Link } from "react-router-dom";
+import { useLocation, useParams, Link, Navigate } from "react-router-dom";
 import Hero from "./Hero";
 import About from "./About";
 import Features from "./Features";
 import Feedback from "./Feedback";
 import Footer from "./Footer";
 import FooterS from "./Footer";
+import useUserAuth from "./UserAuthentication";
 
 export default function PublicLayout() {
+  const { user } = useUserAuth();
   const location = useLocation(); // Get the current location
   const [loading, setLoading] = useState(true); // Show loading state
 
@@ -44,7 +46,10 @@ export default function PublicLayout() {
   //     return <div className="text-red-500">{error}</div>;
   //   }
 
-  return (
+  return user ? (
+    <Navigate to='/user/profile' />
+  )
+  : (
     <div className="p-2  w-full min-h-screen flex flex-col text-foreground bg-background">
       <section id="Hero">
         <Hero />
@@ -58,8 +63,7 @@ export default function PublicLayout() {
       <section id="Feedback" className="">
         <Feedback />
       </section>
-
-      <section id="SetExperience" className="">
+      <section className="">
         <FooterS />
       </section>
     </div>

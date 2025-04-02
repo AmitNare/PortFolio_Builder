@@ -24,15 +24,15 @@ import { Button } from "./ui/button";
 function MultiStepForm({ setHasPortfolio, setProfileData }) {
   const { user, userDetails, setUserDetails } = useUserAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(3);
 
   // Define steps array properly
   const steps = [
     { label: "Personal details", stepName: "Personal Information" },
     { label: "Education & Skills", stepName: "Education & Skills" },
     { label: "Professional details", stepName: "Professional Information" },
-    // { label: "Additional details", stepName: "Additional Information" },
     { label: "Social links", stepName: "Social Links" },
+    // { label: "Additional details", stepName: "Additional Information" },
   ];
 
   // seperate name field into fname, lname
@@ -91,9 +91,9 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
     });
 
     // Wait for state update before validating
-    setTimeout(async () => {
+    // setTimeout(async () => {
       await validateStep(activeStep, name, value);
-    }, 100);
+    // }, 100);
   };
 
   const SUPPORTED_FORMATS = ["application/pdf"]; // ✅ Allowed file types
@@ -146,18 +146,15 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
         (value) => value && value.size <= MAX_FILE_SIZE
       ),
 
-    grade: Yup.number()
+      grade: Yup.number()
       .typeError("Grade must be a number")
       .required("Grade is required")
-      .when("gradeType", {
-        is: "CGPA",
-        then: Yup.number()
-          .max(10, "CGPA cannot exceed 10")
-          .min(0, "CGPA cannot be less than 0"),
-        otherwise: Yup.number()
-          .max(100, "Percentage cannot exceed 100")
-          .min(0, "Percentage cannot be less than 0"),
+      .when("gradeType", (gradeType, schema) => {
+        return gradeType === "CGPA"
+          ? schema.max(10, "CGPA cannot exceed 10").min(0, "CGPA cannot be less than 0")
+          : schema.max(100, "Percentage cannot exceed 100").min(0, "Percentage cannot be less than 0");
       }),
+    
     gradeType: Yup.string().required("Grade type is required"),
 
     jobExperience: Yup.number()
@@ -299,7 +296,6 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
             abortEarly: false,
           });
 
-          // ✅ Validation successful
           setErrors({}); // Clear all errors
           return true;
         } catch (stepError) {
@@ -309,6 +305,7 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
             stepError.inner.forEach((err) => {
               newErrors[err.path] = err.message;
             });
+            console.log("Validation Error:", stepError.message, name, value);
             setErrors(newErrors); // Update errors for all invalid fields
           } else {
             console.error("Unexpected validation error:", stepError); // Debugging info
@@ -331,16 +328,42 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
       setErrors({});
       return true;
     } catch (error) {
+      console.log("Validation Failed - Raw Error Details:", error); // 🔍 Debug
+  
       if (error.inner) {
         const newErrors = {};
         error.inner.forEach((err) => {
           newErrors[err.path] = err.message;
         });
+  
+        console.log("Parsed Validation Errors:", newErrors); // 🔍 Debug before state update
         setErrors(newErrors);
       }
       return false;
     }
   };
+  
+  
+
+  const handleFormSubmit = async () => {
+    const isValidStep3 = await validateStep(3);
+
+    // 🚀 Debug validation result before proceeding
+    console.log("Step 3 validation status:", isValidStep3);
+    console.log("Current Errors State:", errors);
+
+    if (!isValidStep3) {
+        console.log("Form validation failed. Please fix the errors.");
+        return; // 🚨 STOP form submission if Step 3 has errors
+    }
+
+    console.log("Form is valid, submitting...");
+    // 📝 Proceed with form submission logic here
+};
+
+  
+  
+  
 
   const handleNextStep = async () => {
     let newErrors = { ...errors }; // Keep previous errors
@@ -731,37 +754,12 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
     await set(formRef, formData); // Save the form data
   };
 
-  // Handle form submission
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-  //     console.log(user.uid);
-
-  //     // Validate the form data first
-  //     // const isValid = await validateForm();
-  //     // if (!isValid) {
-  //     //     console.log("Form validation failed:", errors);
-  //     //     return;
-  //     // }
-
-  //     // Proceed with form submission after validation
-  //     try {
-  //         // Save form data to Firebase
-  //         // await saveFormDataToFirebase();
-
-  //         // Reset form state or show success message
-  //         console.log("Form submitted successfully!",formData);
-
-  //     } catch (error) {
-  //         console.error("Error saving data to Firebase:", error);
-  //     }
-  // };
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
+    // handleFormSubmit();
     try {
       const db = getDatabase();
       const portfolioRef = dbRef(db, `portfolioId/${user.uid}`);
@@ -800,16 +798,6 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
       console.log("Uploaded Image URL:", imageUrl);
       console.log("Uploaded Resume URL:", resumeUrl);
 
-      // **Step 3: Update formData with the correct URLs**
-      const updatedFormData = {
-        ...formData,
-        image: imageUrl,
-        resume: resumeUrl,
-      };
-
-      // Update the formData state with the new URLs
-      setFormData(updatedFormData);
-
       // **Step 4: Generate Portfolio Link**
       const uniqueLink = generatePortfolioLink(formData.name, formData.surname);
 
@@ -818,6 +806,18 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
         uniqueLink: uniqueLink,
         createdAt: Date.now(),
       };
+
+      // **Step 3: Update formData with the correct URLs**
+      const updatedFormData = {
+        ...formData,
+        image: imageUrl,
+        resume: resumeUrl,
+        portfolioLink: uniqueLink,
+      };
+
+      // Update the formData state with the new URLs
+      setFormData(updatedFormData);
+
 
       // **Step 6: Save to Firebase**
       await set(portfolioRef, portfolioData); // use to store unique link
@@ -926,7 +926,7 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
       {isLoading ? (
         <DataLoader /> // Use the DataLoader component
       ) : (
-        <div className="stepper-container w-3/4 p-2">
+        <div className="stepper-container w-3/4 p-2 sm-max:w-full ">
           <Stepper
             activeStep={activeStep}
             styleConfig={{
@@ -959,13 +959,13 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
           setErrors={setErrors}
           handleInputChange={handleInputChange}
         /> */}
-            <div className="w-full  mt-8 flex justify-center items-center">
-              <div className="flex justify-between w-3/4 ">
+            <div className="w-full mt-8 flex justify-center items-center">
+              <div className="flex justify-between w-3/4 sm-max:w-full gap-5">
                 <Button
                   variant="outline"
                   onClick={() => setActiveStep(activeStep - 1)}
                   disabled={activeStep === 0}
-                  className="border-button text-foreground hover:border-button-hover rounded-md px-2 py-2 w-1/4"
+                  className="border-button text-foreground hover:border-button-hover rounded-md px-2 py-2 w-1/4 sm-max:w-2/4"
                   // style={styles.button}
                 >
                   Previous
@@ -975,14 +975,14 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
                   <button
                     onClick={handleNextStep} // Navigate to the next step
                     // style={styles.button}
-                    className="bg-button text-button-textColor hover:bg-button-hover rounded-md px-2 py-2 w-1/4"
+                    className="bg-button text-button-textColor hover:bg-button-hover rounded-md px-2 py-2 w-1/4 sm-max:w-2/4"
                   >
                     Next
                   </button>
                 ) : (
                   <button
-                    onClick={handleSubmit} // Submit the form on the last step
-                    className="bg-button text-button-textColor hover:bg-button-hover rounded-md px-2 py-2 w-1/4"
+                    onClick={handleFormSubmit} // Submit the form on the last step
+                    className="bg-button text-button-textColor hover:bg-button-hover rounded-md px-2 py-2 w-1/4 sm-max:w-2/4"
 
                     // style={styles.button}
                   >

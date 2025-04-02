@@ -103,7 +103,7 @@ const LocationSearch = ({ handleInputChange, errors, fieldsToShow, fieldPass, in
       {errors.address && <p className="absolute text-red-500 text-sm ">{errors.address || "Address is required"}</p>}
 
       {locations.length > 0 && (
-        <div className="absolute bg-slate-200 w-full z-10 ">
+        <div className="absolute bg-slate-500 w-full z-10 ">
 
         <ul className=" ">
           {locations.map((location, index) => (

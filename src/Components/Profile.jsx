@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import LocationSearch from "./LocationSearch";
 
 export default function Profile({ userId, userDetails, setUserDetails }) {
   // const { userDetails,setUserDetails } = useUserAuth();
@@ -411,9 +412,9 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         collegeName: "",
         course: "",
         grade: "",
-        gradeType: "",
+        gradeType: "%",
         description: "",
-        isEditable: true,
+        // isEditable: true,
       };
 
       return {
@@ -455,22 +456,39 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   };
 
   const saveAllEducation = (index) => {
-    // const handleCardSave = (index) => {
     setUserDetails((prevDetails) => {
       const updatedColleges = [...prevDetails.colleges];
       const currentEntry = updatedColleges[index];
-
+  
       // Initialize an object to store errors
       const errors = {};
-
+  
       // Validate required fields
-      if (!currentEntry.collegeName?.trim())
+      if (!currentEntry.collegeName?.trim()) {
         errors.collegeName = "College name is required.";
-      if (!currentEntry.course?.trim()) errors.course = "Address is required.";
-      if (!currentEntry.grade?.trim()) errors.grade = "Grade is required.";
-      if (!currentEntry.description?.trim())
+      }
+      if (!currentEntry.course?.trim()) {
+        errors.course = "Course is required.";
+      }
+      if (!currentEntry.grade?.trim()) {
+        errors.grade = "Grade is required.";
+      } else {
+        const numericGrade = parseFloat(currentEntry.grade);
+        // Validate grade based on gradeType
+        if (currentEntry.gradeType === "CGPA") {
+          if (numericGrade <= 0 || numericGrade > 10) {
+            errors.grade = "CGPA must be 0 > 10.";
+          }
+        } else if (currentEntry.gradeType === "%") {
+          if (numericGrade <= 0 || numericGrade > 100) {
+            errors.grade = "Percentage must be 0 > 100.";
+          }
+        }
+      }
+      if (!currentEntry.description?.trim()) {
         errors.description = "College Description is required.";
-
+      }
+  
       // If validation fails, set errors and prevent saving
       if (Object.keys(errors).length > 0) {
         setErrors((prevErrors) => ({
@@ -479,21 +497,24 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         }));
         return prevDetails; // Stop the update
       }
-
+  
       // Clear errors for the saved entry
       setErrors((prevErrors) => ({
         ...prevErrors,
         colleges: { ...prevErrors.colleges, [index]: {} },
       }));
-
+  
       // Disable editing for the specific card after successful validation
       const updatedStates = [...cardEditingStates];
-      updatedStates[index] = false;
+      updatedStates[index] = false; // Set editing state to false
       setCollegeEditingStates(updatedStates);
-
-      return prevDetails; // Ensure state is updated correctly
+  
+      // Return the updated details (if any changes were made)
+      return {
+        ...prevDetails,
+        colleges: updatedColleges, // Ensure the updated colleges are returned
+      };
     });
-    // };
   };
 
   const [skillOptions, setSkillOptions] = useState([
@@ -556,9 +577,9 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         companyAddress: "",
         jobRole: "",
         jobExperience: "",
-        jobDuration: "",
+        jobDuration: "Month",
         jobDescription: "",
-        isEditable: true,
+        // isEditable: true,
       };
 
       return {
@@ -576,7 +597,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     setAllCollegeCardsSaved(collegeEditingStates.every((state) => !state));
   }, [collegeEditingStates]);
 
-  const saveCollegeChanges = () => {
+  const saveCollegeChanges = async () => {
     let hasErrors = false;
     const newErrors = {};
 
@@ -621,11 +642,19 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
       ...prevDetails,
       colleges: prevDetails.colleges.map((entry) => ({
         ...entry,
-        isEditable: false, // Disable editing for all entries
+        // isEditable: false, // Disable editing for all entries
       })),
     }));
 
+    
+  try {
+    await handleSubmit();
     console.log("All changes saved");
+  } catch (error) {
+    console.error("Error saving changes:", error);
+    alert("An error occurred while saving changes. Please try again.");
+  }
+
 
     setIsCardEditing(false);
     setCollegeEditingStates((prev) => prev.map(() => false)); // Reset all cards to non-editing state
@@ -633,7 +662,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   };
 
   // save and check experience changes
-  const saveChanges = () => {
+  const saveChanges = async () => {
     let hasErrors = false;
     const newErrors = {};
 
@@ -680,12 +709,17 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
       ...prevDetails,
       experience: prevDetails.experience.map((entry) => ({
         ...entry,
-        isEditable: false, // Disable editing for all entries
+        // isEditable: false, // Disable editing for all entries
       })),
     }));
 
-    console.log("All changes saved");
-
+    try {
+      await handleSubmit();
+      console.log("All changes saved");
+    } catch (error) {
+      console.error("Error saving changes:", error);
+      alert("An error occurred while saving changes. Please try again.");
+    }
     setIsEditing(false);
     setCardEditingStates((prev) => prev.map(() => false)); // Reset all cards to non-editing state
     setErrors({}); // Clear errors after successful save
@@ -712,7 +746,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
 
       // Initialize an object to store errors
       const errors = {};
-
+console.log(errors)
       // Validate required fields
       if (!currentEntry.companyName?.trim())
         errors.companyName = "Company name is required.";
@@ -721,7 +755,20 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
       if (!currentEntry.jobRole?.trim())
         errors.jobRole = "Job role is required.";
       if (!currentEntry.jobExperience?.trim())
-        errors.jobExperience = "Experience is required.";
+        {errors.jobExperience = "Experience is required."}
+        else {
+          const duration = parseFloat(currentEntry.jobExperience);
+          // Validate grade based on gradeType
+          if (currentEntry.jobDuration === "Month") {
+            if (duration <= 0 || duration > 12) {
+              errors.jobExperience = "Month must be 1 to 12.";
+            }
+          } else if (currentEntry.jobDuration === "Year") {
+            if (duration <= 0) {
+              errors.jobExperience = "Year must at least 1.";
+            }
+          }
+        }
       if (!currentEntry.jobDescription?.trim())
         errors.jobDescription = "Description is required.";
 
@@ -733,6 +780,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         }));
         return prevDetails; // Stop the update
       }
+      console.log("Errors cleared for index:", index); 
 
       // Clear errors for the saved entry
       setErrors((prevErrors) => ({
@@ -753,7 +801,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     // Save changes for a specific card
     setUserDetails((prevDetails) => {
       const updatedExperience = prevDetails.experience.map((entry, i) =>
-        i === index ? { ...entry, isEditable: false } : entry
+        i === index ? { ...entry } : entry
       );
 
       return { ...prevDetails, experience: updatedExperience };
@@ -852,86 +900,31 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    setIsLoading(true);
-    console.log(formData.image);
+    // e.preventDefault(); // Prevent default form submission behavior
+    // setIsLoading(true);
+   
     console.log("userDetails UID:", userDetails.uid);
 
-    try {
-      const db = getDatabase(); // Initialize Firebase Realtime Database
+    // savePortfolioDataToFirebase(userDetails, userDetails.uid);
 
-      // Reference to the userDetails's portfolio node
-      const portfolioRef = dbRef(db, `portfolioId/${userDetails.uid}`);
-
-      // Check if the userDetails already has a portfolio
-      const snapshot = await get(portfolioRef);
-      if (snapshot.exists()) {
-        console.log("userDetails already has a portfolio:", snapshot.val());
-        alert(
-          "You already have a portfolio link. You cannot create another one."
-        );
-        return; // Exit if the portfolio already exists
-      }
-
-      // Upload the image to Firebase Storage
-      let imageUrl = null;
-      if (formData.image) {
-        const storageRef = ref(storage, `images/${formData.image.name}`);
-        const uploadTask = await uploadBytesResumable(
-          storageRef,
-          formData.image
-        );
-        imageUrl = await getDownloadURL(uploadTask.ref);
-
-        // Save the image URL to formData
-        setFormData((prev) => ({
-          ...prev,
-          image: imageUrl, // Store the URL of the image in formData
-        }));
-      }
-
-      // Generate a unique portfolio link
-      const uniqueLink = generatePortfolioLink(formData.name, formData.surname);
-
-      // Portfolio data to be saved
-      const portfolioData = {
-        userDetailsId: userDetails.uid,
-        image: imageUrl, // Store the image URL in portfolio data
-        uniqueLink: `${window.location.origin}/${uniqueLink}`, // Full unique link
-        createdAt: Date.now(), // Timestamp for when the portfolio was created
-      };
-
-      // Save the portfolio data to Firebase under the userDetails's UID
-      await set(portfolioRef, portfolioData);
 
       // Save the userDetails data to Firebase under the userDetails's UID
-      await savePortfolioDataToFirebase(formData, userDetails.uid);
+      await savePortfolioDataToFirebase(userDetails, userDetails.uid);
 
-      // Reset form state or show a success message
-      console.log("Portfolio data saved successfully!", portfolioData);
-      alert("Portfolio created successfully!");
-
-      console.log(formData);
+      console.log('Data Saved');
 
       // await new Promise((resolve) => setTimeout(resolve, 5000)); // 2 seconds delay
-
-      setHasPortfolio(true);
-      navigate(location.pathname, { replace: true }); // Refresh the current route
-    } catch (error) {
-      console.error("Error saving portfolio data to Firebase:", error);
-    } finally {
-      setIsLoading(false);
-      navigate(location.pathname, { replace: true });
-    }
+      // setIsLoading(false);
+    
   };
 
   return (
     <div
       data-aos="fade-left"
-      className="w-full flex flex-col  text-foreground bg-background p-5 md-max:p-0 md-max:mt-5 gap-10 rounded-lg "
+      className="w-full flex flex-col h-full text-foreground bg-background p-5 md-max:p-0 md-max:mt-5 gap-10 rounded-lg "
     >
       {/* education info */}
-      <div className="w-full  border border-green-500 px-3 py-5 md-max:px-0 rounded-md relative">
+      <div className="w-full  border border-green-500 px-3 md-max:px-1 py-5 md-max:px-0 rounded-md relative">
         <div className="flex justify-between items-center mb-3 ">
           {isCardEditing ? (
             <button
@@ -974,7 +967,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
             {userDetails?.colleges?.map((college, index) => (
               <div
                 key={index}
-                className="min-w-[400px] w-[400px] max-w-[500px] flex flex-col flex-wrap gap-5 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md relative"
+                className="w-full sm:w-96 flex flex-col flex-wrap gap-5 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md relative"
               >
                 {collegeEditingStates[index] && (
                   <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
@@ -996,7 +989,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   </div>
                 )}
 
-                <div className="flex gap-2 flex-col ">
+                <div className="flex gap-1 flex-col relative">
                   <label className="text-sm font-medium text-foreground min-w-fit">
                     College Name:
                   </label>
@@ -1011,14 +1004,14 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                     placeholder="College Name"
                   />
                   {errors.colleges?.[index]?.collegeName && (
-                    <span className="text-red-500 text-sm">
+                    <span className="text-red-500 text-xs absolute mt-16">
                       {errors.colleges[index].collegeName}
                     </span>
                   )}
                 </div>
 
-                <div className="flex gap-2">
-                  <div className="flex flex-col gap-2 ">
+                <div className="flex gap-2 sm-max:flex-col">
+                  <div className="flex flex-col gap-1 relative">
                     <label className="text-sm font-medium text-foreground min-w-fit">
                       Course:
                     </label>
@@ -1033,13 +1026,13 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                       placeholder="Course"
                     />
                     {errors.colleges?.[index]?.course && (
-                      <span className="text-red-500 text-sm">
+                      <span className="text-red-500 text-xs absolute mt-16">
                         {errors.colleges[index].course}
                       </span>
                     )}
                   </div>
 
-                  <div className="flex flex-col gap-2 ">
+                  <div className="flex flex-col gap-1 relative ">
                     <label className="text-sm font-medium text-foreground min-w-fit">
                       Grade:
                     </label>
@@ -1048,28 +1041,9 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                         {collegeEditingStates[index] ? (
                           <>
                             <Input
-                              type="text"
+                              type="number"
                               value={college.grade}
                               onChange={(e) => {
-                                const { value } = e.target;
-                                if (
-                                  college.gradeType === "CGPA" &&
-                                  value > 10
-                                ) {
-                                  alert(
-                                    "CGPA must be less than or equal to 10"
-                                  );
-                                  return;
-                                }
-                                if (
-                                  college.gradeType === "Percentage" &&
-                                  value > 100
-                                ) {
-                                  alert(
-                                    "Percentage must be less than or equal to 100"
-                                  );
-                                  return;
-                                }
                                 handleInputChange(
                                   e,
                                   "colleges",
@@ -1077,7 +1051,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                                   "grade"
                                 );
                               }}
-                              className="border-2 text-foreground bg-background p-2 w-16"
+                              className="border-2 text-foreground bg-background p-2 w-16 sm-max:w-2/5"
                               placeholder="Grade"
                             />
                             <select
@@ -1090,7 +1064,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                                   "gradeType"
                                 )
                               }
-                              className="border-2 text-foreground bg-background p-2 w-32"
+                              className="border-2 text-foreground bg-background p-2 w-18 sm-max:w-2/5"
                             >
                               <option value="%">%</option>
                               <option value="CGPA">CGPA</option>
@@ -1107,7 +1081,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                         )}
                       </div>
                       {errors.colleges?.[index]?.grade && (
-                        <span className="text-red-500 text-sm">
+                        <span className="text-red-500 text-xs absolute mt-10">
                           {errors.colleges[index].grade}
                         </span>
                       )}
@@ -1115,7 +1089,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   </div>
                 </div>
 
-                <div className="flex gap-2 flex-col ">
+                <div className="flex gap-1 flex-col ralative mb-3">
                   <label className="text-sm font-medium text-foreground min-w-fit">
                     College Description:
                   </label>
@@ -1126,11 +1100,11 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                       handleInputChange(e, "colleges", index, "description")
                     }
                     disabled={!collegeEditingStates[index]}
-                    className="border-2 text-foreground bg-background p-2 w-full h-32 custom-scrollbar overflow-auto"
+                    className="border-2 resize-none text-foreground bg-background p-2 w-full h-32 custom-scrollbar overflow-auto"
                     placeholder="College Name"
                   />
                   {errors.colleges?.[index]?.description && (
-                    <span className="text-red-500 text-sm">
+                    <span className="text-red-500 text-xs absolute mt-[153px] ">
                       {errors.colleges[index].description}
                     </span>
                   )}
@@ -1197,7 +1171,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
       </div>
 
       {/* professional info */}
-      <div className="w-full border border-green-500 px-3 py-5 rounded-md relative">
+      <div className="w-full border border-green-500 px-3 md-max:px-1 py-5 rounded-md relative">
         {/* Parent Container Edit/Save Buttons */}
         <div className="flex justify-between items-center mb-3 ">
           {isEditing ? (
@@ -1244,7 +1218,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           {userDetails?.experience?.map((exp, index) => (
             <div
               key={index}
-              className=" grid grid-cols-2 md-max:grid-cols-1 gap-2 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
+              className=" grid grid-cols-2 md-max:grid-cols-1 gap-3 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
             >
               {cardEditingStates[index] && (
                 <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
@@ -1269,7 +1243,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
               )}
 
               {/* Company Name and Address */}
-              <div className="flex flex-col gap-1 col-span-2">
+              <div className="flex flex-col gap-1 col-span-2 relative">
                 <label className="text-sm font-medium text-foreground">
                   Company Name
                 </label>
@@ -1284,17 +1258,25 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   placeholder="Company Name"
                 />
                 {errors.experience?.[index]?.companyName && (
-                  <span className="text-red-500 text-xs">
+                  <span className="text-red-500 text-xs absolute mt-16">
                     {errors.experience[index].companyName}
                   </span>
                 )}
               </div>
 
-              <div className="flex flex-col gap-1 col-span-2">
+              <div className="flex flex-col gap-1 col-span-2 relative">
                 <label className="text-sm font-medium text-foreground">
                   Company Address
                 </label>
-                <Input
+                <LocationSearch
+                                  handleInputChange={(e) => handleInputChange(e, "experience", index)}
+                                  errors={errors}
+                                  // experienceErrors={experienceErrors}
+                                  fieldsToShow={["city"]}
+                                  fieldPass="address"
+                                  // index={index} // Pass index properly
+                                />
+                {/* <Input
                   type="text"
                   value={exp.companyAddress || ""}
                   onChange={(e) =>
@@ -1303,16 +1285,16 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   disabled={!cardEditingStates[index]}
                   className="border-2 text-foreground bg-background p-2"
                   placeholder="Company Address"
-                />
-                {errors.experience?.[index]?.companyAddress && (
-                  <span className="text-red-500 text-xs">
+                /> */}
+                {/* {errors.experience?.[index]?.companyAddress && (
+                  <span className="text-red-500 text-xs absolute mt-16">
                     {errors.experience[index].companyAddress}
                   </span>
-                )}
+                )} */}
               </div>
 
               {/* Job Role and Years of Experience */}
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 sm-max:col-span-2 lg:col-span-2 xl:col-span-1 relative">
                 <label className="text-sm font-medium text-foreground">
                   Job Role
                 </label>
@@ -1327,31 +1309,23 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   placeholder="Job Role"
                 />
                 {errors.experience?.[index]?.jobRole && (
-                  <span className="text-red-500 text-xs">
+                  <span className="text-red-500 text-xs absolute mt-16">
                     {errors.experience[index].jobRole}
                   </span>
                 )}
               </div>
 
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 relative">
                 <label className="text-sm font-medium text-foreground">
                   Years of Experience
                 </label>
                 {cardEditingStates[index] ? (
-                  <span className={`flex gap-2 flex-wrap`}>
+                  <span className={`flex gap-2`}>
                     <Input
-                      type="text"
+                      type="number"
                       value={exp.jobExperience}
                       onChange={(e) => {
                         const { value } = e.target;
-                        // if (college.gradeType === "CGPA" && value > 10) {
-                        //   alert("CGPA must be less than or equal to 10");
-                        //   return;
-                        // }
-                        // if (college.gradeType === "Percentage" && value > 100) {
-                        //   alert("Percentage must be less than or equal to 100");
-                        //   return;
-                        // }
                         handleInputChange(
                           e,
                           "experience",
@@ -1359,7 +1333,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                           "jobExperience"
                         );
                       }}
-                      className="border-2 text-foreground bg-background p-2 w-14"
+                      className="border-2 text-foreground bg-background p-2 w-1/4 md:w-20 lg:w-20 xl:w-18"
                       placeholder="Grade"
                     />
                     <select
@@ -1376,32 +1350,22 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                 ) : (
                   <Input
                     type="text"
-                    value={`${exp.jobExperience} ${exp.jobDuration}`}
+                    value={`${exp.jobExperience}  ${exp.jobDuration}`}
                     disabled={!cardEditingStates[index]}
                     className="border-2 text-foreground bg-background p-2 w-32"
                     placeholder="Grade"
                   />
                 )}
 
-                {/* <Input
-                  type="text"
-                  value={exp.jobExperience || ""}
-                  onChange={(e) =>
-                    handleInputChange(e, "experience", index, "jobExperience")
-                  }
-                  disabled={!cardEditingStates[index]}
-                  className="border-2 text-foreground bg-background p-2"
-                  placeholder="Years of Experience"
-                /> */}
                 {errors.experience?.[index]?.jobExperience && (
-                  <span className="text-red-500 text-xs">
+                  <span className="text-red-500 text-xs absolute mt-16">
                     {errors.experience[index].jobExperience}
                   </span>
                 )}
               </div>
 
               {/* Job Description */}
-              <div className="col-span-2 flex flex-col gap-1">
+              <div className="col-span-2 flex flex-col gap-1 relative mb-3">
                 <label className="text-sm font-medium text-foreground">
                   Job Description
                 </label>
@@ -1416,7 +1380,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   rows={4}
                 />
                 {errors.experience?.[index]?.jobDescription && (
-                  <span className="text-red-500 text-xs">
+                  <span className="text-red-500 text-xs absolute mt-[152px] ">
                     {errors.experience[index].jobDescription}
                   </span>
                 )}

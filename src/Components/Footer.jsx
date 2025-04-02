@@ -20,7 +20,7 @@ import logo from '../assets/Images/logo3.webp'
 export default function FooterS() {
   return (
     <Footer container>
-      <div className="w-full mb-16 border-4 border-red-500 ">
+      <div className="w-full mb-16 ">
         <div className="grid w-full justify-between sm:flex sm:justify-between md:flex md:grid-cols-1">
           <span className="flex my-2">
             <div className="w-12 h-12 rounded-full border-2 overflow-hidden">

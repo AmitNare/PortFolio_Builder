@@ -14,6 +14,9 @@ export default {
     			'md-max': {
     				max: '767px'
     			},
+				'2md-min': {
+    				min: '900px'
+    			},
     			'lg-max': {
     				max: '1024px'
     			},
