@@ -16,9 +16,9 @@ export default function SetExperience({ userDetails }) {
               key={index}
               className="w-full sm:w-96 flex border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
             >
-              <div class=" min-w-full group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300  hover:shadow-2xl sm:mx-auto sm:max-w-sm sm:rounded-lg ">
-                <span class="absolute top-[12px] z-0 h-10 sm-max:w-44 md:w-40 rounded-r-md bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
-                <div class=" relative z-10 flex justify-between items-center pr-5 sm-max:p-0">
+              <div className=" min-w-full group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300  hover:shadow-2xl sm:mx-auto sm:max-w-sm sm:rounded-lg ">
+                <span className="absolute top-[12px] z-0 h-10 sm-max:w-44 md:w-40 rounded-r-md bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
+                <div className=" relative z-10 flex justify-between items-center pr-5 sm-max:p-0">
                   <span className=" grid mt-3 h-10 sm-max:w-44 md:w-40  place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
                     <h1 className="w-full text-balance tracking-wide">
                       {exp.jobRole || "N/A"}
@@ -45,11 +45,12 @@ export default function SetExperience({ userDetails }) {
                       } years`}</span>{" "}
                     </Label>
                   </div>
-                  <div class="space-y-6 mt-1 text-base leading-7 text-gray-600 transition-all duration-300 group-hover:text-white/90">
+                  <div className="space-y-6 mt-1 text-base leading-7 text-gray-600 transition-all duration-300 group-hover:text-white/90">
                     <div className="col-span-2 flex flex-col gap-1 p-1 pb-2">
-                      <Textarea className="bg-transparent w-full h-32 resize-none group-hover:border-violet-600 custom-scrollbar overflow-auto text-gray-500 group-hover:text-white dark:text-white dark:group-hover:text-foreground tracking-wide">
-                        {exp.jobDescription || "N/A"}
-                      </Textarea>
+                      <Textarea
+                        defaultValue={exp.jobDescription || "N/A"}
+                        className="bg-transparent w-full h-32 resize-none group-hover:border-violet-600 custom-scrollbar overflow-auto text-gray-500 group-hover:text-white dark:text-white dark:group-hover:text-foreground tracking-wide"
+                      />
                     </div>
                   </div>
                 </div>
