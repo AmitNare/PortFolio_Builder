@@ -2,7 +2,14 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun, Menu } from "lucide-react";
 import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useUserAuth from "./UserAuthentication";
 import logo from "../assets/Images/logo7.webp";
@@ -223,10 +230,16 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
             </Button>
           </SheetTrigger>
           <SheetContent side="left">
+            <SheetHeader className="hidden">
+              <SheetTitle>Edit profile</SheetTitle>
+              <SheetDescription>
+                Make changes to your profile here. Click save when you're done.
+              </SheetDescription>
+            </SheetHeader>
             <nav className="grid gap-6 text-lg font-medium">
               <ul className="mt-10">
                 {userName ? (
-                  <span >
+                  <span>
                     <li>
                       <Link
                         to={`/${userName}#SetHero`}

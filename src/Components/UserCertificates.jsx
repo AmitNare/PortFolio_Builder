@@ -47,17 +47,17 @@ export default function UserCertificates() {
   // Delete a certificate
   const certificateDelete = async (certificateId) => {
     const result = await Swal.fire({
-              title: "Are you sure?",
-              text: "Do you really want to delete this certificate?",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#d33",
-              cancelButtonColor: "#3085d6",
-              confirmButtonText: "Yes, delete it!",
-              cancelButtonText: "Cancel",
-            });
-          
-            if (!result.isConfirmed) return;
+      title: "Are you sure?",
+      text: "Do you really want to delete this certificate?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
 
     setDeleting(true);
     try {
@@ -72,11 +72,11 @@ export default function UserCertificates() {
         )
       );
       Swal.fire({
-                    icon: "success",
-                    title: "Certificate Deleted",
-                    text: "The Certificate has been deleted successfully.",
-                    confirmButtonText: "Okay",
-                  });
+        icon: "success",
+        title: "Certificate Deleted",
+        text: "The Certificate has been deleted successfully.",
+        confirmButtonText: "Okay",
+      });
     } catch (error) {
       console.error("Error deleting certificate:", error);
       alert("Failed to delete the certificate. Please try again.");
@@ -99,7 +99,10 @@ export default function UserCertificates() {
 
   return (
     <Dialog>
-      <div data-aos="fade-left" className="w-full h-full bg-background p-5 text-foreground rounded-lg">
+      <div
+        data-aos="fade-left"
+        className="w-full h-full bg-background p-5 text-foreground rounded-lg"
+      >
         <span className="flex justify-between px-5 items-center">
           <h1 className="text-2xl font-bold ">All Certificates</h1>
           <DialogTrigger asChild>
@@ -127,15 +130,15 @@ export default function UserCertificates() {
                 {/* Adjust the field name if necessary */}
                 {certificate.certificateImage && (
                   <span className="mt-1">
-                  <AspectRatio ratio={16 / 9} className="bg-muted ">
-                    <img
-                      src={certificate.certificateImage}
-                      alt={certificate.certificateName}
-                      loading="lazy"
-                      className="h-full w-full rounded-md object-cover "
+                    <AspectRatio ratio={16 / 9} className="bg-muted ">
+                      <img
+                        src={certificate.certificateImage}
+                        alt={certificate.certificateName}
+                        loading="lazy"
+                        className="h-full w-full rounded-md object-cover "
                       />
-                  </AspectRatio>
-                      </span>
+                    </AspectRatio>
+                  </span>
                 )}
                 <h2 className="text-xl font-semibold">
                   {certificate.certificateName}
@@ -153,9 +156,9 @@ export default function UserCertificates() {
                 <span className="flex justify-between">
                   {/* <Button className=" w-2/5">Edit</Button> */}
                   <TrashIcon
-                      className="absolute bg-background text-red-500 cursor-pointer right-2 -top-4"
-                      onClick={() => certificateDelete(certificate.id)}
-              />
+                    className="absolute bg-background text-red-500 cursor-pointer right-2 -top-4"
+                    onClick={() => certificateDelete(certificate.id)}
+                  />
                 </span>
               </li>
             );
