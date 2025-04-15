@@ -99,18 +99,18 @@ export default function SetHero({ userDetails }) {
   }, [displayedText, isDeleting, typingSpeed, currentRoleIndex, roles]);
 
   return (
-    <div  className="w-full flex mx-auto justify-evenly  bg-background items-center md-max:flex-col md:flex-col gap-2 lg:gap-5 xl:gap-28 lg:flex-row">
+    <div  className="w-full flex mx-auto justify-center items-center bg-background md-max:flex-col gap-2 md:gap-16 lg:flex-row ">
       {/* Profile Image Section */}
-      <div  className=" lg-max:min-w-2/4 lg-max:min-h-[350px] xl:w-fit ">
+      <div  className="w-fit sm-max:p-5">
         <img
           src={imageUrl}
           alt="Profile"
-          className="lg:w-[450px] lg-max:max-w-[350px] lg:h-[450px] lg-max:min-h-[340px] object-cover md-max:w-full md-max:mx-auto rounded-full "
+          className="w-96 object-cover rounded-full "
         />
       </div>
 
       {/* Text Section */}
-      <div className=" pb-20 text-foreground pr-20 flex flex-col items-center text-2xl my-auto md-max:max-w-96 md-max:w-80 md-max:pr-0">
+      <div className=" pb-20 text-foreground flex flex-col items-center text-2xl my-auto md-max:max-w-96 md:w-[400px] md-max:w-80 ">
         <section className="w-full md-max:flex md-max:flex-col md-max:items-center md-max:justify-center ">
           <div className="flex ">
             <span > 
@@ -137,8 +137,8 @@ export default function SetHero({ userDetails }) {
           <div className="flex items-center mt-1">
             <img
               src={Address}
-              alt=""
-              className="w-6 h-6 object-contain border-2 -ml-1 "
+              alt="address"
+              className="w-6 h-6 object-contain -ml-1 "
             />
             <Label>{userDetails.address} </Label>
           </div>

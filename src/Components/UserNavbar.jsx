@@ -50,6 +50,8 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
     { label: "Achivement", path: "/user/certificates", icon: AwardIcon },
     { label: "Features", path: "/user/features", icon: Boxes },
     { label: "Preview", path: "/user/preview", icon: Home },
+    { label: "Svg", path: "/user/IconSearch", icon: Home },
+
   ];
 
   return (
@@ -153,11 +155,13 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
         <div className="flex-1 rounded-lg md-max:rounded-none md-max:px-2 h-full bg-background overflow-x-hidden overflow-auto custom-scrollbar">
           {children}
         </div>
+        
         {isChatbotOpen && (
           <div className="w-1/4 md-max:absolute md-max:z-50 md-max:h-full md-max:w-full border rounded-lg  bg-background p-4">
             <ChatGPT />
           </div>
         )}
+
         <button
           onClick={toggleChatbot}
           className="fixed right-10 bottom-10 z-50 flex items-center p-2 w-fit bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600"

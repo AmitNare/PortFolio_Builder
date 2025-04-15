@@ -8,6 +8,7 @@ import SetCertificates from "./SetCertificates";
 import { useLocation, useParams } from "react-router-dom";
 import useUserAuth from "./UserAuthentication";
 import SetFeatures from "./SetFeatures";
+import SetSkills from "./SetSkills";
 
 export default function SetPortfolio() {
   const { userName } = useParams(); // Extract dynamic username
@@ -137,10 +138,13 @@ export default function SetPortfolio() {
   }
 
   return (
-    <div className="mt-5 flex flex-col justify-center items-center w-full gap-5">
+    <div className="mt-10 flex flex-col justify-center items-center w-full gap-5">
       {/* Portfolio Sections */}
-      <section id="SetHero">
+      <section id="SetHero" className="w-full">
         <SetHero userDetails={userDetails} />
+      </section>
+      <section id="SetSkills" className="w-full flex justify-center items-center">
+        <SetSkills userDetails={userDetails} />
       </section>
       {userDetails.projects && (
         <section id="SetProjects">

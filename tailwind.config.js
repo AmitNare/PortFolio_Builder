@@ -47,7 +47,7 @@ export default {
     			background: 'hsl(var(--background))',
     			foreground: 'hsl(var(--foreground))',
 				lightBg: 'hsl(231, 14%, 96%)',
-        		darkBg: 'hsl(231, 12%, 12%)',
+        		darkBg: 'hsl(225,40%,18%)',
     			card: {
     				DEFAULT: 'hsl(var(--card))',
     				foreground: 'hsl(var(--card-foreground))'

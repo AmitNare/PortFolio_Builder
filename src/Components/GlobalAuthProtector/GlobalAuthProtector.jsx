@@ -46,15 +46,18 @@ export default function GlobalAuthProtector() {
     <div
       className={`${
         isDarkTheme ? "dark" : "light"
-      } relative max-h-svh bg-lightBg dark:bg-darkBg flex w-full text-foreground tracking-wide overflow-auto custom-scrollbar`}
+      } relative max-h-svh bg-lightBg dark:bg-darkBg flex w-full text-foreground tracking-wide `}
     >
-      <div className="w-full flex flex-col items-center bg-background text-foreground overflow-x-hidden overflow-auto custom-scrollbar">
+      <div className="w-full flex flex-col items-center bg-background text-foreground sm:overflow-x-hidden sm:overflow-auto custom-scrollbar">
         <Navbar
           toggleTheme={toggleTheme}
           isDarkTheme={isDarkTheme}
           isPortfolioPage={userName}
         />
+        <div className="w-full sm-max:overflow-x-hidden sm-max:overflow-auto custom-scrollbar">
+
         <Outlet />
+        </div>
       </div>
     </div>
   );
