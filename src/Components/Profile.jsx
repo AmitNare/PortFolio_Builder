@@ -924,7 +924,7 @@ console.log(errors)
       className="w-full flex flex-col h-full text-foreground bg-background p-5 md-max:p-0 md-max:mt-5 gap-10 rounded-lg "
     >
       {/* education info */}
-      <div className="w-full  border border-green-500 px-3 md-max:px-1 py-5 md-max:px-0 rounded-md relative">
+      <div className="w-full  border border-green-500 px-3 md-max:px-1 py-5 rounded-md relative">
         <div className="flex justify-between items-center mb-3 ">
           {isCardEditing ? (
             <button

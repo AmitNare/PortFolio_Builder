@@ -260,7 +260,6 @@ export default function AddProjects({ fetchProjects }) {
                 name="projectUrl"
                 value={formData.projectUrl}
                 onChange={handleInputChange}
-                required
                 placeholder="Hosting URL"
                 className="w-full bg-background"
               />

@@ -51,7 +51,6 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
     { label: "Features", path: "/user/features", icon: Boxes },
     { label: "Preview", path: "/user/preview", icon: Home },
     { label: "Customization", path: "/user/CustomizeSections", icon: Home },
-
   ];
 
   return (
@@ -100,34 +99,34 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
         {userDetails.portfolioLink && (
           <span className="flex w-full my-2 items-center justify-between gap-1">
             <div className="flex gap-2 items-center">
-            <div className="w-16 h-16 rounded-md overflow-hidden">
-              {userDetails ? (
-                <img
-                  src={userDetails.image || ""}
-                  alt="User Avatar"
-                  loading="lazy"
-                  className="w-full h-full object-cover scale-110 transition-transform duration-300"
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-500">Loading...</span>
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col">
-              {userDetails ? (
-                <>
-                  <h1 className="text-xl text-foreground ">
-                    {userDetails.name} {userDetails.surname}
-                  </h1>
-                  <p className="text-sm text-gray-500">
-                    {userDetails.currentJobRole}
-                  </p>
-                </>
-              ) : (
-                <span className="text-gray-500">Loading details...</span>
-              )}
-            </div>
+              <div className="w-16 h-16 rounded-md overflow-hidden">
+                {userDetails ? (
+                  <img
+                    src={userDetails.image || ""}
+                    alt="User Avatar"
+                    loading="lazy"
+                    className="w-full h-full object-cover scale-110 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-500">Loading...</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col">
+                {userDetails ? (
+                  <>
+                    <h1 className="text-xl text-foreground ">
+                      {userDetails.name} {userDetails.surname}
+                    </h1>
+                    <p className="text-sm text-gray-500">
+                      {userDetails.currentJobRole}
+                    </p>
+                  </>
+                ) : (
+                  <span className="text-gray-500">Loading details...</span>
+                )}
+              </div>
             </div>
             <button
               onClick={handleSettings} // Replace with your settings function
@@ -155,7 +154,7 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
         <div className="flex-1 rounded-lg md-max:rounded-none md-max:px-2 h-full bg-background overflow-x-hidden overflow-auto custom-scrollbar">
           {children}
         </div>
-        
+
         {isChatbotOpen && (
           <div className="w-1/4 md-max:absolute md-max:z-50 md-max:h-full md-max:w-full border rounded-lg  bg-background p-4">
             <ChatGPT />

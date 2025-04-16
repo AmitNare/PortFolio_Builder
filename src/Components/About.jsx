@@ -26,7 +26,7 @@ export default function About() {
           <Card className="hover:shadow-2xl transition-shadow duration-300 border border-gray-200 rounded-2xl h-64 w-full">
             <CardContent className="flex flex-col items-center space-y-4 p-5 h-full justify-center">
               {icon}
-              <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
+              <h3 className="text-2xl font-bold text-gray-300 sm-max:text-xl text-center">{title}</h3>
               <p className="text-center text-base text-gray-500">{description}</p>
             </CardContent>
           </Card>

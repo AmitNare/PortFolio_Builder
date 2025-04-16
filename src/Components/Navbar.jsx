@@ -57,14 +57,12 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
       document.documentElement.classList.remove("overflow-hidden");
       document.body.classList.remove("overflow-hidden");
     }
-  
+
     return () => {
       document.documentElement.classList.remove("overflow-hidden");
       document.body.classList.remove("overflow-hidden");
     };
   }, [open]);
-  
-  
 
   // const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
@@ -137,7 +135,7 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
                   >
                     Experience
                   </Link>
-                </li>                           
+                </li>
               </>
             ) : (
               <>
@@ -229,115 +227,125 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
 
         {/* Mobile Navbar */}
         {/* Mobile Sidebar Button */}
-<Button
-  variant="outline"
-  size="icon"
-  className="shrink-0 md:hidden bg-background text-foreground absolute left-2"
-  onClick={() => setOpen(true)}
->
-  <Menu className="h-5 w-5" />
-  <span className="sr-only">Toggle navigation menu</span>
-</Button>
+        <Button
+          variant="outline"
+          size="icon"
+          className="shrink-0 md:hidden bg-background text-foreground absolute left-2"
+          onClick={() => setOpen(true)}
+        >
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Toggle navigation menu</span>
+        </Button>
 
-{/* Sidebar Overlay */}
-{open && (
-  <div
-    className="fixed inset-0 z-40 bg-black bg-opacity-40 backdrop-blur-sm"
-    onClick={handleClose}
-  />
-)}
+        {/* Sidebar Overlay */}
+        {open && (
+          <div
+            className="fixed inset-0 z-40 bg-black bg-opacity-40 backdrop-blur-sm"
+            onClick={handleClose}
+          />
+        )}
 
+        {/* Sidebar Panel */}
+        <div
+          className={`fixed top-0 -left-1 h-svh w-full  bg-gray-500 z-50 shadow-lg transition-transform duration-300 md:hidden ${
+            open ? "translate-x-0 " : "-translate-x-full"
+          }`}
+        >
+          <nav className="w-full text-lg font-medium  bg-gray-500 ">
+            <X
+              size={28}
+              onClick={handleClose}
+              className="absolute top-5 right-5"
+            />
 
-{/* Sidebar Panel */}
-<div
-  className={`fixed top-0 -left-1 h-svh w-full  bg-gray-500 z-50 shadow-lg transition-transform duration-300 md:hidden ${
-    open ? "translate-x-0 " : "-translate-x-full"
-  }`}
->
-
-  <nav className="w-full text-lg font-medium  bg-gray-500 ">
-    <X size={28} onClick={handleClose} className="absolute top-5 right-5"/>
-
-    <ul className="flex flex-col mt-20 items-center">
-      {userName ? (
-        <>
-          <li>
-            <Link to={`/${userName}#SetHero`} onClick={handleClose}>
-              Hero
-            </Link>
-          </li>
-          <li>
-            <Link to={`/${userName}#SetProjects`} onClick={handleClose}>
-              Projects
-            </Link>
-          </li>
-          <li>
-            <Link to={`/${userName}#SetCertificates`} onClick={handleClose}>
-              Certificates
-            </Link>
-          </li>
-          <li>
-            <Link to={`/${userName}#SetEducation`} onClick={handleClose}>
-              Education
-            </Link>
-          </li>
-          <li>
-            <Link to={`/${userName}#SetExperience`} onClick={handleClose}>
-              Experience
-            </Link>
-          </li>          
-        </>
-      ) : (
-        <>
-          <li>
-            <Link to={`/#Hero`} onClick={handleClose}>
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to={`/#About`} onClick={handleClose}>
-              About
-            </Link>
-          </li>
-          <li>
-            <Link to={`/#Features`} onClick={handleClose}>
-              Features
-            </Link>
-          </li>
-          <li>
-            <Link to={`/#Feedback`} onClick={handleClose}>
-              Contact
-            </Link>
-          </li>
-          <li className="mt-4">
-            <Button
-              onClick={() => {
-                navigate("/signin");
-                handleClose();
-              }}
-              className="w-full bg-button text-button-textColor"
-            >
-              Login
-            </Button>
-          </li>
-          <li>
-            <Button
-              variant="outline"
-              onClick={() => {
-                navigate("/signup");
-                handleClose();
-              }}
-              className="w-full"
-            >
-              Register
-            </Button>
-          </li>
-        </>
-      )}
-    </ul>
-  </nav>
-</div>
-
+            <ul className="flex flex-col mt-20 items-center">
+              {userName ? (
+                <>
+                  <li>
+                    <Link to={`/${userName}#SetHero`} onClick={handleClose}>
+                      Hero
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/${userName}#SetProjects`} onClick={handleClose}>
+                      Projects
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/${userName}#SetCertificates`}
+                      onClick={handleClose}
+                    >
+                      Certificates
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/${userName}#SetEducation`}
+                      onClick={handleClose}
+                    >
+                      Education
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/${userName}#SetExperience`}
+                      onClick={handleClose}
+                    >
+                      Experience
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link to={`/#Hero`} onClick={handleClose}>
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/#About`} onClick={handleClose}>
+                      About
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/#Features`} onClick={handleClose}>
+                      Features
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to={`/#Feedback`} onClick={handleClose}>
+                      Contact
+                    </Link>
+                  </li>
+                  <li className="mt-4">
+                    <Button
+                      onClick={() => {
+                        navigate("/signin");
+                        handleClose();
+                      }}
+                      className="w-full bg-button text-button-textColor"
+                    >
+                      Login
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        navigate("/signup");
+                        handleClose();
+                      }}
+                      className="w-full"
+                    >
+                      Register
+                    </Button>
+                  </li>
+                </>
+              )}
+            </ul>
+          </nav>
+        </div>
       </header>
     </div>
   );

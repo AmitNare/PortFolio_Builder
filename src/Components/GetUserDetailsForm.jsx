@@ -344,7 +344,7 @@ export const EducationAndSkills = ({
 }) => {
   return (
     <>
-      <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center border border-green-500 rounded-md">
         <div className="w-3/4">
           <div className="mb-5">
             <Label>Skills</Label>
@@ -530,7 +530,7 @@ export const ProfessionalInfo = ({
   handleInputChange,
 }) => {
   return (
-    <div className="flex justify-center border w-full p-4 rounded-md">
+    <div className="flex justify-center w-full p-4 border border-green-500 rounded-md">
       <div className="w-full sm-max:w-full lg:w-full">
         <h3 className="text-xl font-semibold mb-4 px-4">Professional Info</h3>
 
@@ -824,7 +824,7 @@ export const SocialLinks = ({
   errors,
 }) => {
   return (
-    <div className="flex justify-center border rounded-md p-2 py-4 w-full text-foreground bg-background">
+    <div className="flex justify-center border border-green-500 rounded-md p-2 py-4 w-full text-foreground bg-background">
       <div className="sm-max:w-full w-4/5 px-2 text-foreground bg-background">
         {formData.socialLink.map((link, index) => (
           <div key={index} className="flex flex-col gap-5 text-foreground">

@@ -7,7 +7,7 @@ export default function SetEducation({ userDetails }) {
     <div className="w-full p-6 bg-background text-foreground sm-max:p-2">
       {/* Section Header */}
       <div className="mb-6 text-center">
-        <h1 className="text-3xl font-semibold ">Educational Information</h1>
+        <h1 className="text-3xl font-semibold ">Academic Journey</h1>
       </div>
 
       {/* Responsive Grid Layout for Colleges */}

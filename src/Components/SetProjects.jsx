@@ -1,6 +1,7 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
+import Aos from "aos";
 
 export default function SetProjects({ userDetails }) {
   const [active, setActive] = useState(null);
@@ -37,7 +38,7 @@ export default function SetProjects({ userDetails }) {
     <section className="w-full flex-col justify-evenly items-center">
       <div className="mb-6 text-center">
         <h1 className="text-3xl font-semibold ">
-         Projects
+          Creations
         </h1>
       </div>
       <AnimatePresence>

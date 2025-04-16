@@ -7,7 +7,7 @@ export default function SetExperience({ userDetails }) {
     <div className="text-foregound bg-background ">
       <div className="w-full p-5 relative sm-max:p-2">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-semibold ">Professional Information</h1>
+          <h1 className="text-3xl font-semibold ">Career Journey</h1>
         </div>
 
         <div className="flex flex-wrap gap-5 w-full justify-evenly items-center ">

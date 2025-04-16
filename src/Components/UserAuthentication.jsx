@@ -9,6 +9,7 @@ import {
 import { getDatabase, ref, get } from "firebase/database";
 import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import GlobalLoader from "./GlobalLoader";
 
 const userAuthentication = createContext();
 
@@ -96,10 +97,6 @@ export function UserAuthContextProvider({ children }) {
       setUserRole(role);
       setUserDetails(details);
 
-      // if (redirectPath) {
-      //   navigate(redirectPath);
-      // }
-
       return userCredential;
     } catch (error) {
       console.error("Error during login:", error.message);
@@ -128,13 +125,6 @@ export function UserAuthContextProvider({ children }) {
         setUserRole(role);
         setUserDetails(details); // Store user details in state
 
-        // Only navigate if the role or details have changed
-        // if (role !== userRole) {
-        //   if (redirectPath) {
-        //     console.log("Bug here: ", redirectPath);
-        //     navigate(redirectPath);
-        //   }
-        // }
       } else {
         setUser(null);
         setUserRole(null);
@@ -146,7 +136,7 @@ export function UserAuthContextProvider({ children }) {
     return () => unsubscribe();
   }, []);
 
-  if (isLoading) return <div>Loading...</div>; // Prevents unwanted redirects during state changes
+  if (isLoading) return <div><GlobalLoader/></div>; // Prevents unwanted redirects during state changes
 
   return (
     <userAuthentication.Provider

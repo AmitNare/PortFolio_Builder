@@ -31,11 +31,11 @@ export default function SetCertificates({ userDetails }) {
     id: key,
     ...value,
   }));
-
+    
   return (<>
-  <div className="mb-6 text-center">
+  <div  className="mb-6 text-center">
         <h1 className="text-3xl font-semibold ">
-          Certificates
+          Achievements
         </h1>
       </div>
     <AnimatePresence>
