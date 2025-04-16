@@ -50,7 +50,7 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
     { label: "Achivement", path: "/user/certificates", icon: AwardIcon },
     { label: "Features", path: "/user/features", icon: Boxes },
     { label: "Preview", path: "/user/preview", icon: Home },
-    { label: "Svg", path: "/user/IconSearch", icon: Home },
+    { label: "Customization", path: "/user/CustomizeSections", icon: Home },
 
   ];
 
@@ -97,7 +97,7 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
           {isDarkTheme ? "Light Mode" : "Dark Mode"}
         </Button>
 
-        {userDetails && (
+        {userDetails.portfolioLink && (
           <span className="flex w-full my-2 items-center justify-between gap-1">
             <div className="flex gap-2 items-center">
             <div className="w-16 h-16 rounded-md overflow-hidden">

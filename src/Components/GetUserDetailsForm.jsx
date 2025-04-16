@@ -121,7 +121,7 @@ export const PersonalInfo = ({
       <div className="flex justify-between w-full gap-1 sm-max:flex-col md:flex-col lg:flex-row md:gap-2 lg:gap-10">
         <span className="flex flex-col relative w-2/4 sm-max:w-full md:w-full lg:w-2/4 ">
           <Label className="text-lg">Gender</Label>
-          <div className="flex gap-3 lg:flex border-2 border-red-500">
+          <div className="flex gap-3 lg:flex ">
             <div className="w-full ">
               <Input
                 className="peer sr-only w-full"
@@ -132,9 +132,9 @@ export const PersonalInfo = ({
                 checked={formData.gender === "male"}
                 onChange={(e) => handleInputChange(e)}
               />
-              <div className="bg-background text-foreground border flex h-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 md:p-0 lg:p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
+              <div className="relative bg-background text-foreground border flex h-10 cursor-pointer flex-col items-center justify-end rounded-xl  border-gray-300 bg-gray-50 md:p-0 lg:p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
                 <Label
-                  className=" flex flex-col text-balance cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
+                  className=" flex flex-col text-balance cursor-pointer items-center justify-center text-xs uppercase text-gray-500 peer-checked:text-blue-500"
                   htmlFor="male"
                 >
                   <svg
@@ -144,7 +144,7 @@ export const PersonalInfo = ({
                     imageRendering="optimizeQuality"
                     clipRule="evenodd"
                     fillRule="evenodd"
-                    className="h-7 w-6 fill-current peer-checked:fill-blue-500"
+                    className="absolute -top-1 h-8 w-6 fill-current peer-checked:fill-blue-500"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M35927 32903c412,2646 927,5119 1312,6767 -1320,-1159 -6849,-6682 -6569,-1799 342,5954 5284,6851 5297,6853l826 176 0 841c0,18 -115,6164 5054,8983 2585,1411 5371,2117 8155,2117 2783,0 5567,-706 8152,-2117 5169,-2819 5054,-8965 5054,-8983l0 -841 826 -176c13,-2 4955,-899 5297,-6853 273,-4760 -5035,428 -6400,1585 466,-2425 1265,-6640 1627,-10534 -707,-1139 -1761,-2058 -3310,-2445 -5841,-1459 -12802,2359 -14487,-898 -1685,-3256 -4043,-5728 -4043,-5728 0,0 -1461,5389 -4266,7749 -1302,1095 -2073,3278 -2525,5303zm7891 26143c0,0 -2213,3386 -2734,5600 -521,2213 -16015,783 -16407,9375 -392,8593 -391,16666 -391,16666l51429 0c0,0 1,-8073 -391,-16666 -392,-8592 -15886,-7162 -16407,-9375 -520,-2214 -2734,-5600 -2734,-5600 89,59 -103,-469 -339,-1065 1123,-370 2228,-847 3303,-1433 5035,-2746 5946,-8013 6109,-10011 1747,-593 5810,-2604 6152,-8552 329,-5738 -2626,-5167 -4942,-3884 588,-3342 1229,-9312 59,-16047 -1797,-10330 -8310,-7860 -13363,-8645 -5054,-786 -11791,3480 -11791,3480 0,0 -6064,-785 -8872,4717 -1830,3589 -79,10904 1361,15557l178 1232c-2363,-1457 -5799,-2573 -5444,3590 341,5948 4404,7959 6151,8552 163,1998 1075,7265 6110,10011 1074,586 2179,1063 3302,1433 -236,596 -428,1124 -339,1065zm11413 -875c37,1566 129,3813 367,5042 391,2019 -326,4297 -326,4297l-5271 5389 -5272 -5389c0,0 -717,-2278 -326,-4297 238,-1229 330,-3475 367,-5042 1719,502 3476,753 5232,753 1755,0 3511,-251 5229,-753z"></path>
@@ -164,15 +164,15 @@ export const PersonalInfo = ({
                 checked={formData.gender === "female"}
                 onChange={(e) => handleInputChange(e)}
               />
-              <div className="flex border h-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 md:p-0 lg:p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
+              <div className="relative flex border h-10 cursor-pointer flex-col items-center justify-end rounded-xl  border-gray-300 bg-gray-50 md:p-0 lg:p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
                 <Label
-                  className="flex flex-col  whitespace-nowrap cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
+                  className="flex flex-col  whitespace-nowrap cursor-pointer items-center justify-center text-xs uppercase text-gray-500 peer-checked:text-blue-500"
                   htmlFor="female"
                 >
                   <svg
                     id="female"
                     viewBox="0 0 128 128"
-                    className="h-7 w-6 fill-gray-100"
+                    className="absolute -top-1 h-8 w-6 fill-gray-100"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
@@ -203,15 +203,15 @@ export const PersonalInfo = ({
                 checked={formData.gender === "other"}
                 onChange={(e) => handleInputChange(e)}
               />
-              <div className="flex border h-fit cursor-pointer flex-col items-center justify-center rounded-xl  border-gray-300 bg-gray-50 md:p-0 lg:p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
+              <div className="relative flex border h-10 cursor-pointer flex-col items-center justify-end rounded-xl  border-gray-300 bg-gray-50 md:p-0 lg:p-1 transition-transform duration-150 hover:border-blue-400 active:scale-95 peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-400">
                 <Label
-                  className="flex flex-col text-balance cursor-pointer items-center justify-center text-sm uppercase text-gray-500 peer-checked:text-blue-500"
+                  className="flex flex-col text-balance cursor-pointer items-center justify-center text-xs uppercase text-gray-500 peer-checked:text-blue-500"
                   htmlFor="other"
                 >
                   <svg
                     id="menu-dots-circle"
                     viewBox="0 0 24 24"
-                    className="h-7 w-6 fill-current"
+                    className="absolute -top-1 h-8 w-6 fill-current"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path

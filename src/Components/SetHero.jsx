@@ -99,7 +99,7 @@ export default function SetHero({ userDetails }) {
   }, [displayedText, isDeleting, typingSpeed, currentRoleIndex, roles]);
 
   return (
-    <div  className="w-full flex mx-auto justify-center items-center bg-background md-max:flex-col gap-2 md:gap-16 lg:flex-row ">
+    <div  className="w-full flex mx-auto justify-center items-center bg-background md-max:flex-col gap-2 md:gap-16 lg:flex-row md:flex-col px-5">
       {/* Profile Image Section */}
       <div  className="w-fit sm-max:p-5">
         <img
@@ -110,9 +110,9 @@ export default function SetHero({ userDetails }) {
       </div>
 
       {/* Text Section */}
-      <div className=" pb-20 text-foreground flex flex-col items-center text-2xl my-auto md-max:max-w-96 md:w-[400px] md-max:w-80 ">
-        <section className="w-full md-max:flex md-max:flex-col md-max:items-center md-max:justify-center ">
-          <div className="flex ">
+      <div className=" pb-0 text-foreground flex flex-col items-center justify-center text-2xl my-auto md-max:max-w-96 md:w-[400px] md-max:w-80 ">
+        <section className="w-full md-max:flex md-max:flex-col md-max:items-center md-max:justify-center md:text-center lg:text-start">
+          <div className="flex md:justify-center lg:justify-normal">
             <span > 
             Hello
             </span> 
@@ -134,7 +134,7 @@ export default function SetHero({ userDetails }) {
             I am a <span className="text-blue-600">{displayedText}</span>
           </h2>
 
-          <div className="flex items-center mt-1">
+          <div className="flex items-center mt-1 md:justify-center lg:justify-normal">
             <img
               src={Address}
               alt="address"
@@ -144,7 +144,7 @@ export default function SetHero({ userDetails }) {
           </div>
 
           {/* Social Links Section */}
-          <div className="flex space-x-4 mt-10 ml-1">
+          <div className="flex space-x-4 mt-10 ml-1 md:justify-center lg:justify-normal">
             {/* WhatsApp */}
             <a
               href={`https://wa.me/${userDetails.phoneNo.replace(/\s/g, "")}`}
@@ -155,7 +155,7 @@ export default function SetHero({ userDetails }) {
               <img
                 src={whatsApp}
                 alt="WhatsApp"
-                className="w-8 h-8 object-contain"
+                className="w-8 h-8 object-contain "
               />
             </a>
 
@@ -194,7 +194,7 @@ export default function SetHero({ userDetails }) {
                   <img
                     src={icon}
                     alt={key}
-                    className="w-8 h-8 object-contain border-2"
+                    className="w-8 h-8 object-contain "
                   />
                 </a>
               );
