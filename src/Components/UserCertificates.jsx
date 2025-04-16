@@ -101,7 +101,7 @@ export default function UserCertificates() {
     <Dialog>
       <div
         data-aos="fade-left"
-        className="w-full h-full bg-background p-5 text-foreground rounded-lg"
+        className="w-full h-full md-max:h-svh bg-background p-5 text-foreground rounded-lg"
       >
         <span className="flex justify-between px-5 items-center">
           <h1 className="text-2xl font-bold ">All Certificates</h1>

@@ -1,49 +1,55 @@
 import { useEffect, useState } from "react";
 import { getDatabase, ref, get } from "firebase/database";
+import { useLocation, useParams } from "react-router-dom";
+
 import SetHero from "./SetHero";
 import SetExperience from "./SetExperience";
 import SetEducation from "./SetEducation";
 import SetProjects from "./SetProjects";
 import SetCertificates from "./SetCertificates";
-import { useLocation, useParams } from "react-router-dom";
-import useUserAuth from "./UserAuthentication";
 import SetFeatures from "./SetFeatures";
 import SetSkills from "./SetSkills";
 
+import useUserAuth from "./UserAuthentication";
+import DataLoader from "./DataLoader";
+
 export default function SetPortfolio() {
-  const { userName } = useParams(); // Extract dynamic username
-  const location = useLocation(); // Get the current location
-  const [userDetails, setUserDetails] = useState(null); // Store user details
-  const [error, setError] = useState(null); // Handle errors
-  const [loading, setLoading] = useState(true); // Show loading state
+  const { userName } = useParams();
+  const location = useLocation();
+  const [userDetails, setUserDetails] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const { user, userDetails: userBaseDetails } = useUserAuth();
 
-  // Fetch user data from Firebase
+  // Component map
+  const sectionComponents = {
+    SetHero: SetHero,
+    SetSkills: SetSkills,
+    SetProjects: SetProjects,
+    SetFeatures: SetFeatures,
+    SetCertificates: SetCertificates,
+    SetEducation: SetEducation,
+    SetExperience: SetExperience,
+  };
+
+  // Fetch user data
   useEffect(() => {
-    // for direct visitors from base url
     const fetchUserDetails = async (usernameFromMethod = "") => {
-      const currentUrl = usernameFromMethod ? usernameFromMethod : userName;
-
+      const currentUrl = usernameFromMethod || userName;
       try {
-        const database = getDatabase();
+        const db = getDatabase();
 
-        // Step 1: Fetch portfolioId document
-        const portfolioRef = ref(database, "portfolioId");
+        const portfolioRef = ref(db, "portfolioId");
         const portfolioSnapshot = await get(portfolioRef);
 
         if (portfolioSnapshot.exists()) {
           const portfolios = portfolioSnapshot.val();
           let foundUserUid = null;
 
-          console.log("PP Data: ", portfolios);
-
-          // Step 2: Find the user whose link matches the current URL
           Object.entries(portfolios).forEach(([key, portfolio]) => {
-            console.log("Checking portfolio:", key);
             if (portfolio.uniqueLink === currentUrl) {
-              foundUserUid = key; // Extract the user's UID
-              console.log("foundUserUid : ", foundUserUid);
+              foundUserUid = key;
             }
           });
 
@@ -53,18 +59,12 @@ export default function SetPortfolio() {
             return;
           }
 
-          // Step 3: Use the UID to fetch user details from the 'users' document
-          const usersRef = ref(database, `Users/${foundUserUid}`);
+          const usersRef = ref(db, `Users/${foundUserUid}`);
           const userSnapshot = await get(usersRef);
 
           if (userSnapshot.exists()) {
-            // Merge the user details with the UID
             const userData = userSnapshot.val();
-            setUserDetails({
-              ...userData,
-              uid: foundUserUid, // Include the UID in the userDetails
-            });
-            console.log(userDetails);
+            setUserDetails({ ...userData, uid: foundUserUid });
           } else {
             setError("User details not found in the database.");
           }
@@ -75,32 +75,24 @@ export default function SetPortfolio() {
         console.error("Error fetching data:", err);
         setError("Failed to fetch user data. Please try again later.");
       } finally {
-        setLoading(false); // Stop loading after fetch
+        setLoading(false);
       }
     };
 
-    // for users who are logged in, from /user/preview route
     const fetchData = async () => {
-      if (userBaseDetails) {
-        console.log("User fetchData object:", user); // Log the user object
-
-        if (userBaseDetails?.uid) {
-          const db = getDatabase();
-          const portfolioRef = ref(db, `portfolioId/${user.uid}`);
-
-          // Check if the user already has a portfolio
-          const snapshot = await get(portfolioRef);
-          if (snapshot.exists()) {
-            const data = snapshot.val(); // Get the data object
-            fetchUserDetails(data.uniqueLink);
-          } else {
-            console.log("No user data available");
-          }
+      if (userBaseDetails?.uid) {
+        const db = getDatabase();
+        const portfolioRef = ref(db, `portfolioId/${user.uid}`);
+        const snapshot = await get(portfolioRef);
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          fetchUserDetails(data.uniqueLink);
+        } else {
+          console.log("No user data available");
         }
       }
     };
 
-    // check if user is logged in
     if (user && location?.pathname?.includes("/user")) {
       fetchData();
     } else {
@@ -109,7 +101,7 @@ export default function SetPortfolio() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  // Scroll to the section specified in the hash
+  // Scroll to section
   useEffect(() => {
     const scrollToSection = () => {
       setTimeout(() => {
@@ -127,50 +119,27 @@ export default function SetPortfolio() {
     scrollToSection();
   }, [location]);
 
-  // Handle loading state
+  // Loading & error
   if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  // Handle error state
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+      return <DataLoader />;
+    }
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="mt-10 flex flex-col justify-center items-center w-full gap-5">
-      {/* Portfolio Sections */}
-      <section id="SetHero" className="w-full">
-        <SetHero userDetails={userDetails} />
-      </section>
-      <section id="SetSkills" className="w-full flex justify-center items-center">
-        <SetSkills userDetails={userDetails} />
-      </section>
-      {userDetails.projects && (
-        <section id="SetProjects">
-          <SetProjects userDetails={userDetails} />
-        </section>
-      )}
-      {userDetails.features && (
-        <section id="SetFeatures">
-          <SetFeatures userDetails={userDetails} />
-        </section>
-      )}
-      {userDetails.certificates && (
-        <section id="SetCertificates">
-          <SetCertificates userDetails={userDetails} />
-        </section>
-      )}
-      {userDetails.colleges && (
-        <section id="SetEducation">
-          <SetEducation userDetails={userDetails} />
-        </section>
-      )}
-      {userDetails.experience && (
-        <section id="SetExperience">
-          <SetExperience userDetails={userDetails} />
-        </section>
-      )}
+      {userDetails?.sections?.filter(s => s.enabled)?.map((section) => {
+        const Component = sectionComponents[section.key];
+        if (!Component) return null;
+        return (
+          <section
+            key={section.key}
+            id={section.key}
+            className="w-full flex flex-col justify-center items-center"
+          >
+            <Component userDetails={userDetails} />
+          </section>
+        );
+      })}
     </div>
   );
 }

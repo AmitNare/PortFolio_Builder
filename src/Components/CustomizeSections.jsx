@@ -1,24 +1,24 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { GripVertical, Eye, EyeOff } from "lucide-react"; // You can use any icon library
-import { getDatabase, ref, set } from "firebase/database"; // Firebase imports
+import { GripVertical, Eye, EyeOff } from "lucide-react";
+import { getDatabase, ref, set, get, child } from "firebase/database";
 import useUserAuth from "./UserAuthentication";
-// import { useUserAuth } from "../Auth/UserAuthentication"; 
+import Swal from "sweetalert2";
 
 const type = "SECTION";
 
-// Section item component
 const SectionItem = ({ section, index, moveSection, toggleVisibility }) => {
-  const [, ref] = useDrag({
+  const [, dragRef] = useDrag({
     type,
     item: { index },
+    canDrag: !section.fixed,
   });
 
-  const [, drop] = useDrop({
+  const [, dropRef] = useDrop({
     accept: type,
     hover: (item) => {
-      if (item.index !== index) {
+      if (item.index !== index && !section.fixed) {
         moveSection(item.index, index);
         item.index = index;
       }
@@ -27,27 +27,34 @@ const SectionItem = ({ section, index, moveSection, toggleVisibility }) => {
 
   return (
     <div
-      ref={(node) => ref(drop(node))}
-      className="bg-white dark:bg-gray-800 p-3 border rounded flex justify-between items-center shadow-sm"
+      ref={(node) => dragRef(dropRef(node))}
+      className={`bg-white dark:bg-gray-800 p-3 border rounded flex justify-between items-center shadow-sm ${
+        section.fixed ? "opacity-80" : ""
+      }`}
     >
       <div className="flex items-center gap-3">
-        <GripVertical className="cursor-move text-gray-400" />
+        {!section.fixed ? (
+          <GripVertical className="cursor-move text-gray-400" />
+        ) : (
+          <span className="w-4" />
+        )}
         <span>{section.label}</span>
       </div>
-      <button
-        onClick={() => toggleVisibility(section.key)}
-        className="text-gray-500 hover:text-gray-700"
-      >
-        {section.enabled ? <Eye /> : <EyeOff />}
-      </button>
+      {!section.alwaysVisible && (
+        <button
+          onClick={() => toggleVisibility(section.key)}
+          className="text-gray-500 hover:text-gray-700"
+        >
+          {section.enabled ? <Eye /> : <EyeOff />}
+        </button>
+      )}
     </div>
   );
 };
 
-// Main component
-const CustomizeSections =  ({ onSave = () => {} }) => {
+const CustomizeSections = ({ onSave = () => {} }) => {
   const [sections, setSections] = useState([
-    { key: "SetHero", label: "Hero", enabled: true },
+    { key: "SetHero", label: "Hero", enabled: true, fixed: true, alwaysVisible: true },
     { key: "SetSkills", label: "Skills", enabled: true },
     { key: "SetProjects", label: "Projects", enabled: true },
     { key: "SetFeatures", label: "Features", enabled: true },
@@ -55,41 +62,71 @@ const CustomizeSections =  ({ onSave = () => {} }) => {
     { key: "SetEducation", label: "Education", enabled: true },
     { key: "SetExperience", label: "Experience", enabled: true },
   ]);
-  
-  const { user } = useUserAuth(); // User authentication context
+
+  const { user } = useUserAuth();
+
+  // Load previously saved sections from Firebase
+  useEffect(() => {
+    if (user?.uid) {
+      const db = getDatabase();
+      const sectionsRef = ref(db);
+      get(child(sectionsRef, `Users/${user.uid}/sections`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          const savedSections = snapshot.val();
+
+          // Ensure Hero is always on top and fixed
+          const hero = { key: "SetHero", label: "Hero", enabled: true, fixed: true, alwaysVisible: true };
+          const filtered = savedSections.filter((s) => s.key !== "SetHero");
+          setSections([hero, ...filtered]);
+        }
+      });
+    }
+  }, [user]);
 
   const moveSection = useCallback((fromIndex, toIndex) => {
     setSections((prev) => {
-      const updated = [...prev];
-      const [moved] = updated.splice(fromIndex, 1);
-      updated.splice(toIndex, 0, moved);
-      return updated;
+      const hero = prev.find((s) => s.fixed);
+      const movable = prev.filter((s) => !s.fixed);
+
+      const moved = [...movable];
+      const [dragged] = moved.splice(fromIndex - 1, 1); // -1 because Hero is always at index 0
+      moved.splice(toIndex - 1, 0, dragged);
+
+      return [hero, ...moved];
     });
   }, []);
 
   const toggleVisibility = (key) => {
     setSections((prev) =>
       prev.map((section) =>
-        section.key === key ? { ...section, enabled: !section.enabled } : section
+        section.key === key && !section.alwaysVisible
+          ? { ...section, enabled: !section.enabled }
+          : section
       )
     );
   };
 
   const handleSave = () => {
-    // Save the sections layout in Firebase
     if (user?.uid) {
       const db = getDatabase();
       const sectionsRef = ref(db, `Users/${user.uid}/sections`);
-      set(sectionsRef, sections);
+      set(sectionsRef, sections).then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Saved!",
+          text: "Customization saved successfully!",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      });
     }
 
-    // Trigger the callback if needed
     onSave(sections);
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="max-w-xl mx-auto space-y-4">
+      <div className="lg:w-3/5 mx-auto flex flex-col p-5 space-y-4 text-center md-max:h-svh">
         <h2 className="text-xl font-bold">Customize Portfolio Sections</h2>
         {sections.map((section, index) => (
           <SectionItem
