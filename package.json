@@ -36,7 +36,6 @@
     "groq-sdk": "^0.15.0",
     "lucide-react": "^0.479.0",
     "react": "^19.0.0",
-    "react-beautiful-dnd": "^13.1.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
@@ -46,14 +45,13 @@
     "react-router-dom": "^7.3.0",
     "react-stars": "^2.2.5",
     "styled-components": "^6.1.17",
-    "sweetalert2": "^11.17.2",
+    "sweetalert2": "^11.6.13",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
-    "@iconify/react": "^5.2.1",
     "@types/node": "^22.8.1",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
