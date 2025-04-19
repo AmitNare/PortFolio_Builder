@@ -24,7 +24,7 @@ import { Button } from "./ui/button";
 function MultiStepForm({ setHasPortfolio, setProfileData }) {
   const { user, userDetails, setUserDetails } = useUserAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
 
   // Define steps array properly
   const steps = [

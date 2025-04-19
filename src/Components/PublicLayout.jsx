@@ -13,6 +13,9 @@ import Feedback from "./Feedback";
 import Footer from "./Footer";
 import FooterS from "./Footer";
 import useUserAuth from "./UserAuthentication";
+import StepGuide from "./StepGuide";
+import RippleCursor from "@/cursor/RippleCursor";
+import CanvasCursor from "@/cursor/CanvasCursor";
 
 export default function PublicLayout() {
   const { user } = useUserAuth();
@@ -57,6 +60,9 @@ export default function PublicLayout() {
       <section id="About" className="">
         <About />
       </section>
+      <section className="">
+        <StepGuide />
+      </section>
       <section id="Features" className="">
         <Features />
       </section>
@@ -66,6 +72,7 @@ export default function PublicLayout() {
       <section className="">
         <FooterS />
       </section>
+      <CanvasCursor/>
     </div>
   );
 }

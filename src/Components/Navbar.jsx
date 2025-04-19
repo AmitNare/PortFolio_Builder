@@ -75,7 +75,7 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   };
 
   return (
-    <div className="sticky top-2 md-max:top-0 z-50 w-[99%] sm-max:w-full h-16 bg-slate-400/10 rounded-xl sm-max:rounded-none backdrop-blur-lg bg-opacity-70 flex items-center  ">
+    <div data-aos="fade-down"  className="sticky top-2 md-max:top-0 z-50 w-[99%] sm-max:w-full h-16 bg-slate-400/10 rounded-xl sm-max:rounded-none backdrop-blur-lg bg-opacity-70 flex items-center  ">
       <header className="  relative flex h-full w-full px-12 items-center justify-between gap-2 2md-min:gap-4  rounded-xl bg-transparent md:px-5 lg:px-20 ">
         <span className="flex my-2 items-center justify-between gap-1 sm-max:ml-4 2md-min:ml-4">
           <div className="w-12 h-12 rounded-md overflow-hidden ">

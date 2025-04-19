@@ -12,6 +12,7 @@ import SetSkills from "./SetSkills";
 
 import useUserAuth from "./UserAuthentication";
 import DataLoader from "./DataLoader";
+import GlobalLoader from "./GlobalLoader";
 
 export default function SetPortfolio() {
   const { userName } = useParams();
@@ -121,7 +122,7 @@ export default function SetPortfolio() {
 
   // Loading & error
   if (loading) {
-      return <DataLoader />;
+      return <GlobalLoader />;
     }
   if (error) return <div className="text-red-500">{error}</div>;
 

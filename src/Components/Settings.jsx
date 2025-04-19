@@ -44,6 +44,7 @@ export default function Settings() {
 
   const validationSchema = yup.object({
     name: yup.string().required("Name is required"),
+    gender: yup.string().required("Gender is required"),
     surname: yup.string().required("Surname is required"),
     phoneNo: yup
       .string()
@@ -491,7 +492,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
             placeholder="John"
           />
           {formik.touched.name && formik.errors.name && (
-            <div className="absolute text-red-500 text-sm mt-14">
+            <div className="absolute text-red-500 text-sm mt-16">
               {formik.errors.name}
             </div>
           )}
@@ -507,7 +508,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
             placeholder="Doe"
           />
           {formik.touched.surname && formik.errors.surname && (
-            <div className="absolute text-red-500 text-sm mt-14">
+            <div className="absolute text-red-500 text-sm mt-16">
               {formik.errors.surname}
             </div>
           )}
@@ -522,10 +523,11 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
             onBlur={formik.handleBlur}
             value={formik.values.gender}
             placeholder="John"
+            required
           />
-          {formik.touched.name && formik.errors.name && (
-            <div className="absolute text-red-500 text-sm mt-14">
-              {formik.errors.name}
+          {formik.touched.gender && formik.errors.gender && (
+            <div className="absolute text-red-500 text-sm mt-16">
+              {formik.errors.gender}
             </div>
           )}
         </div>
@@ -541,7 +543,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
             placeholder="+1 (555) 000-0000"
           />
           {formik.touched.phoneNo && formik.errors.phoneNo && (
-            <div className="absolute text-red-500 text-sm mt-14">
+            <div className="absolute text-red-500 text-sm mt-16">
               {formik.errors.phoneNo}
             </div>
           )}
@@ -557,7 +559,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
             fieldPass="address"
           />
           {formik.touched.address && formik.errors.address && (
-            <div className="absolute text-red-500 text-sm mt-14">
+            <div className="absolute text-red-500 text-sm mt-16">
               {formik.errors.address}
             </div>
           )}
@@ -573,7 +575,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
             placeholder="Manager, HR"
           />
           {formik.touched.currentJobRole && formik.errors.currentJobRole && (
-            <div className="absolute text-red-500 text-sm mt-14">
+            <div className="absolute text-red-500 text-sm mt-16">
               {formik.errors.currentJobRole}
             </div>
           )}
@@ -590,7 +592,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
             placeholder="johndoe@example.com"
           />
           {formik.touched.email && formik.errors.email && (
-            <div className="absolute text-red-500 text-sm mt-14">
+            <div className="absolute text-red-500 text-sm mt-16">
               {formik.errors.email}
             </div>
           )}
@@ -602,8 +604,8 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">Social Links</h2>
         {formik.values.socialLink.map((link, index) => (
-          <div key={index} className="grid gap-4 sm:grid-cols-2 mb-4">
-            <div className="flex items-center space-x-2">
+          <div key={index} className="grid gap-6 sm:grid-cols-2 mb-4">
+            <div className="relative flex items-center space-x-2">
               <BsGithub className="w-5 h-5 text-blue-600" />
               <Input
                 value={link.gitHub}
@@ -614,12 +616,12 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
               />
               {formik.errors.socialLink &&
               formik.errors.socialLink[index]?.gitHub ? (
-                <div className="text-red-500 text-sm">
+                <div className="absolute mt-16 left-5 text-red-500 text-sm">
                   {formik.errors.socialLink[index].gitHub}
                 </div>
               ) : null}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className=" relative flex items-center space-x-2">
               <Twitter className="w-5 h-5 text-sky-500" />
               <Input
                 value={link.twitter}
@@ -630,12 +632,12 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
               />
               {formik.errors.socialLink &&
               formik.errors.socialLink[index]?.twitter ? (
-                <div className="text-red-500 text-sm">
+                <div className="absolute mt-16 left-5 text-red-500 text-sm">
                   {formik.errors.socialLink[index].twitter}
                 </div>
               ) : null}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="relative flex items-center space-x-2">
               <Instagram className="w-5 h-5 text-pink-600" />
               <Input
                 value={link.instagram}
@@ -646,12 +648,12 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
               />
               {formik.errors.socialLink &&
               formik.errors.socialLink[index]?.instagram ? (
-                <div className="text-red-500 text-sm">
+                <div className="absolute mt-16 left-5 text-red-500 text-sm">
                   {formik.errors.socialLink[index].instagram}
                 </div>
               ) : null}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="relative flex items-center space-x-2">
               <Linkedin className="w-5 h-5 text-blue-700" />
               <Input
                 value={link.linkedIn}
@@ -662,7 +664,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
               />
               {formik.errors.socialLink &&
               formik.errors.socialLink[index]?.linkedIn ? (
-                <div className="text-red-500 text-sm">
+                <div className="absolute mt-16 left-5 text-red-500 text-sm">
                   {formik.errors.socialLink[index].linkedIn}
                 </div>
               ) : null}

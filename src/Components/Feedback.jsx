@@ -17,7 +17,13 @@ const schema = yup.object({
 });
 
 export default function Feedback() {
-  const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm({ resolver: yupResolver(schema) });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm({ resolver: yupResolver(schema) });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -47,34 +53,85 @@ export default function Feedback() {
   };
 
   return (
-    <div className="w-full flex flex-col lg:flex-row items-center justify-evenly gap-6 px-4 mb-20">
+    <div className="w-full flex flex-col mt-8 lg:flex-row items-center justify-evenly gap-6 px-4 mb-20">
       <div className="max-w-sm rounded-xl overflow-hidden shadow-lg">
-        <img src={feedback_img} alt="feedback" className="w-full object-cover" />
+        <img
+          src={feedback_img}
+          alt="feedback"
+          className="w-full object-cover"
+        />
       </div>
       <section className="border p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md w-full max-w-xl space-y-4">
-        <h2 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 text-center">Share Your Experience</h2>
-        <p className="text-center text-gray-600 dark:text-gray-400">We value your feedback to improve our services.</p>
-        <form onSubmit={handleSubmit(sendFeedback)} className="space-y-4">
-          <Input {...register("name")} placeholder="Name" className="dark:text-white" />
-          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+        <h2 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 text-center">
+          Share Your Experience
+        </h2>
+        <p className="text-center text-gray-600 dark:text-gray-400">
+          We value your feedback to improve our services.
+        </p>
+        <form onSubmit={handleSubmit(sendFeedback)} className=" flex flex-col space-y-4 gap-2">
+          <span className="relative">
+            <Input
+              {...register("name")}
+              placeholder="Name"
+              className="dark:text-white"
+            />
+            {errors.name && (
+              <p className="absolute text-red-500 text-sm">
+                {errors.name.message}
+              </p>
+            )}
+          </span>
 
-          <Input {...register("email")} placeholder="Email" type="email" className="dark:text-white" />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-
-          <Textarea {...register("message")} placeholder="Your Feedback" className="dark:text-white" />
-          {errors.message && <p className="text-red-500 text-sm">{errors.message.message}</p>}
+          <span className="relative">
+            <Input
+              {...register("email")}
+              placeholder="Email"
+              type="email"
+              className="dark:text-white"
+            />
+            {errors.email && (
+              <p className="absolute text-red-500 text-sm">
+                {errors.email.message}
+              </p>
+            )}
+          </span>
+          <span className="relative">
+            <Textarea
+              {...register("message")}
+              placeholder="Message"
+              className="dark:text-white"
+            />
+            {errors.message && (
+              <p className="absolute text-red-500 text-sm">
+                {errors.message.message}
+              </p>
+            )}
+          </span>
 
           <div className="flex flex-col items-center">
-            <span className="text-md text-gray-900 dark:text-gray-300">Rate Us:</span>
-            <ReactStars count={5} size={30} color2={"#ffd700"} onChange={(value) => setValue("rating", value)} />
-            {errors.rating && <p className="text-red-500 text-sm">{errors.rating.message}</p>}
+            <span className="text-md text-gray-900 dark:text-gray-300">
+              Rate Us:
+            </span>
+            <ReactStars
+              count={5}
+              size={30}
+              color2={"#ffd700"}
+              onChange={(value) => setValue("rating", value)}
+            />
+            {errors.rating && (
+              <p className="text-red-500 text-sm">{errors.rating.message}</p>
+            )}
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Submitting..." : "Submit Feedback"}
           </Button>
         </form>
-        {message && <p className="text-center text-green-600 dark:text-green-400 mt-4">{message}</p>}
+        {message && (
+          <p className="text-center text-green-600 dark:text-green-400 mt-4">
+            {message}
+          </p>
+        )}
       </section>
     </div>
   );

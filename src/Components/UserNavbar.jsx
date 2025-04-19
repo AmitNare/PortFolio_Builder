@@ -55,9 +55,9 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
   ];
 
   return (
-    <div className="flex h-full w-full gap-2 bg-lightBg dark:bg-darkBg">
+    <div  className="flex h-full w-full gap-2 bg-lightBg dark:bg-darkBg">
       {/* Sidebar */}
-      <aside
+      <aside  data-aos="fade-right"
         className={`inset-y-0 left-0 w-64 sm-max:w-[100%] border flex flex-col justify-between items-baseline rounded-lg h-auto px-3 py-4 bg-background transition-transform md-max:absolute md-max:z-[99] ${
           isSidebarOpen ? "translate-x-0 " : "-translate-x-full"
         } md:translate-x-0`}
@@ -151,7 +151,7 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 border gap-2 rounded-lg md-max:rounded-none  bg-lightBg dark:bg-darkBg md-max:w-full relative flex h-full overflow-x-hidden overflow-auto custom-scrollbar ">
+      <main  data-aos="fade-left" className="flex-1 border gap-2 rounded-lg md-max:rounded-none  bg-lightBg dark:bg-darkBg md-max:w-full relative flex h-full overflow-x-hidden overflow-auto custom-scrollbar ">
         <div className="flex-1 rounded-lg md-max:rounded-none md-max:px-2 h-full bg-background overflow-x-hidden overflow-auto custom-scrollbar">
           {children}
         </div>

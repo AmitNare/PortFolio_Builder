@@ -126,7 +126,7 @@ const CustomizeSections = ({ onSave = () => {} }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="lg:w-3/5 mx-auto flex flex-col p-5 space-y-4 text-center md-max:h-svh">
+      <div data-aos="fade-left" className="lg:w-3/5 mx-auto flex flex-col p-5 space-y-4 text-center md-max:min-h-[calc(100svh-72px)]">
         <h2 className="text-xl font-bold">Customize Portfolio Sections</h2>
         {sections.map((section, index) => (
           <SectionItem

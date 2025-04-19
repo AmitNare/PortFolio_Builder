@@ -370,10 +370,11 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     setIsSkillEdit(!isSkillEdit);
   };
 
-  const saveSkillChanges = () => {
+  const saveSkillChanges =  async () => {
     // Implement your save logic here
     // For example, you might want to send the updated skills to a server
     console.log("skillOptions: ", userDetails.skills);
+    await handleSubmit();
 
     toggleEdit(); // Switch back to view mode after saving
   };
@@ -911,7 +912,7 @@ console.log(errors)
       // Save the userDetails data to Firebase under the userDetails's UID
       await savePortfolioDataToFirebase(userDetails, userDetails.uid);
 
-      console.log('Data Saved');
+      console.log('Data Saved into Firebase');
 
       // await new Promise((resolve) => setTimeout(resolve, 5000)); // 2 seconds delay
       // setIsLoading(false);
@@ -1133,8 +1134,8 @@ console.log(errors)
                 <div className="w-full shadow-[0px_0px_15px_rgba(0,0,0,0.09)] rounded-lg p-9 space-y-3 relative overflow-hidden">
                   <div className="w-24 h-24 bg-violet-500 rounded-full absolute -right-5 -top-7">
                     <p
-                      className={`w-12 absolute bottom-4 left-5 text-center text-wrap text-white text-sm ${
-                        college.gradeType === "%" ? "mb-3" : ""
+                      className={`w-12 absolute bottom-4 left-5 flex justify-center text-center items-center text-wrap text-white text-sm ${
+                        college.gradeType === "%" ? "mb-0 " : ""
                       }`}
                     >
                       {`${college.grade || "N/A"} ${

@@ -109,7 +109,7 @@ export default function SignIn() {
 
   return (
     <div className="w-full  flex justify-center items-center  py-24 ">
-      <div className="lg:w-2/5 lg:min-w-[800px] flex flex-col md:flex-row justify-center items-center  lg:justify-center bg-background text-foreground p-5 gap-8 border-2 ">
+      <div className="lg:w-2/5 lg:min-w-[800px] flex flex-col md:flex-row justify-center items-center  lg:justify-center bg-background text-foreground p-5 gap-8 ">
         <CardTemplete title="Reset Your Password" content={loginContent} />
       </div>
     </div>

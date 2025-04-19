@@ -130,7 +130,7 @@ export default function UserFeatures() {
     <Dialog>
       <div
         data-aos="fade-left"
-        className="w-full h-full md-max:h-svh bg-background p-2 text-foreground rounded-lg"
+        className="w-full h-full md-max:min-h-[calc(100svh-72px)] bg-background p-2 text-foreground rounded-lg"
       >
         <div className="flex justify-center">
           <note className="w-fit bg-yellow-100 text-yellow-700 border-2 border-yellow-500 rounded-lg p-3 shadow-md">

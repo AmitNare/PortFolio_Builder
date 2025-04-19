@@ -238,7 +238,16 @@
   }
 }
 
-/* .custom-menu .ant-menu-item-selected {
-  background-color: button !important; /* Change to your preferred color */
-  /* color: white !important; */
-/* }  */
+/* Card hover effect of features */
+@keyframes glow-border {
+  0% {
+    box-shadow: 0 0 0px rgba(100, 181, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(100, 181, 246, 0.6);
+  }
+}
+
+.card-glow:hover {
+  animation: glow-border 0.2s ease-in-out forwards;
+}

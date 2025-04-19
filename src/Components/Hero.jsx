@@ -26,6 +26,7 @@ export default function Hero() {
         <Button
           variant="outline"
           className="border-button text-foreground px-8 sm-max:px-4 py-6 sm-max:py-2 rounded-full shadow-2xl  text-xl sm-max:text-lg hover:-translate-y-1 transition-all duration-300"
+          onClick={() => navigate("/#About")}
         >
           Learn More
         </Button>

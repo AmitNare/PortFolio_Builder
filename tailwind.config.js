@@ -7,6 +7,15 @@ export default {
 	],
 	theme: {
     	extend: {
+			keyframes: {
+				fillDown: {
+				  '0%': { transform: 'scaleY(0)' },
+				  '100%': { transform: 'scaleY(1)' },
+				},
+			  },
+			  animation: {
+				fillDown: 'fillDown 3s linear forwards',
+			  },
     		screens: {
     			'sm-max': {
     				max: '640px'
