@@ -364,7 +364,6 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
     console.log("Form is valid, submitting...");
     // 📝 Proceed with form submission logic here
 
-    // TODO: add form saving logic. WTF BRO
   };
 
   const handleNextStep = async () => {
@@ -761,7 +760,7 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    // handleFormSubmit();
+    handleFormSubmit();
     try {
       const db = getDatabase();
       const portfolioRef = dbRef(db, `portfolioId/${user.uid}`);
@@ -982,7 +981,7 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
                   </button>
                 ) : (
                   <button
-                    onClick={handleFormSubmit} // Submit the form on the last step
+                    onClick={handleSubmit} // Submit the form on the last step
                     className="bg-button text-button-textColor hover:bg-button-hover rounded-md px-2 py-2 w-1/4 sm-max:w-2/4"
 
                     // style={styles.button}

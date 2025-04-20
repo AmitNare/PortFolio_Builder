@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useUserAuth from "./UserAuthentication";
 import logo from "../assets/Images/logo7.webp";
+import { getDatabase, ref, onValue } from "firebase/database";
 
 const sections = [
   { id: "Hero", label: "Home" },
@@ -28,14 +29,43 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   const [userName, setUserName] = useState(isPortfolioPage || "");
   const [activeSection, setActiveSection] = useState("Hero");
   const [open, setOpen] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
 
   // Fetch user from localStorage
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
     if (storedUserName) {
-      setUserName(storedUserName);
+      console.log("Stored userName:", storedUserName);
+    }
+
+    if (isPortfolioPage) {
+      fetchUserByPortfolioLink(isPortfolioPage);
+      // console.log('userDetails',userDetails)
     }
   }, []);
+
+  const fetchUserByPortfolioLink = (portfolioLink) => {
+    const db = getDatabase();
+    const usersRef = ref(db, "Users/");
+
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const matchedUser = Object.values(data).find(
+          (user) => user.portfolioLink === portfolioLink
+        );
+
+        if (matchedUser) {
+          console.log("User found by portfolioLink:", matchedUser); // ✅ Show in console
+          setUserDetails(matchedUser); // Optional if you want to use in JSX
+        } else {
+          console.log("No user found with portfolioLink:", portfolioLink);
+        }
+      } else {
+        console.log("No users found in the database.");
+      }
+    });
+  };
 
   // Theme mode
   useEffect(() => {
@@ -99,7 +129,18 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
     return () => allSections.forEach((section) => observer.unobserve(section));
   }, []);
 
-  const navItems = userName ? portfolioSections : sections;
+  const navItems = userName
+  ? portfolioSections.filter((section) => {
+      if (!userDetails) return false;
+      if (section.id === "SetHero") return !userDetails.hero;
+      if (section.id === "SetProjects") return !!userDetails.projects;
+      if (section.id === "SetCertificates") return !!userDetails.certificates;
+      if (section.id === "SetEducation") return !!userDetails.colleges;
+      if (section.id === "SetExperience") return !!userDetails.experience;
+      return false;
+    })
+  : sections;
+
 
   return (
     <div

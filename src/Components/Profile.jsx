@@ -1339,7 +1339,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                           );
                         }}
                         className="border-2 text-foreground bg-background p-2 w-1/4 md:w-20 lg:w-20 xl:w-18"
-                        placeholder="Grade"
+                        placeholder="Duration"
                       />
                       <select
                         value={exp.jobDuration}
@@ -1353,8 +1353,8 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                         }
                         className="border-2 text-foreground bg-background p-2 w-fit"
                       >
-                        <option value="Year">Year</option>
                         <option value="Month">Month</option>
+                        <option value="Year">Year</option>
                       </select>
                     </span>
                   ) : (
