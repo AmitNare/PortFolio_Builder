@@ -96,10 +96,6 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
             <LogOut className="mr-2" /> Logout
           </button>
         </nav>
-        <Button variant="ghost" onClick={toggleTheme} className="mt-6 md:hidden">
-          {isDarkTheme ? <Sun className="mr-2" /> : <Moon className="mr-2" />}{" "}
-          {isDarkTheme ? "Light Mode" : "Dark Mode"}
-        </Button>
 
         {userDetails.portfolioLink && (
           <span className="flex w-full my-2 items-center justify-between gap-1">
