@@ -51,22 +51,26 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
     { label: "Achivement", path: "/user/certificates", icon: AwardIcon },
     { label: "Features", path: "/user/features", icon: Boxes },
     { label: "Preview", path: "/user/preview", icon: Home },
-    { label: "Customization", path: "/user/CustomizeSections", icon: ArrowUpDown },
+    {
+      label: "Customization",
+      path: "/user/CustomizeSections",
+      icon: ArrowUpDown,
+    },
   ];
 
   return (
-    <div  className="flex h-full w-full gap-2 bg-lightBg dark:bg-darkBg">
+    <div className="flex h-full w-full gap-2 bg-lightBg dark:bg-darkBg">
       {/* Sidebar */}
-      <aside  data-aos="fade-right"
+      <aside
         className={`inset-y-0 left-0 w-64 sm-max:w-[100%] border flex flex-col justify-between items-baseline rounded-lg h-auto px-3 py-4 bg-background transition-transform md-max:absolute md-max:z-[99] ${
           isSidebarOpen ? "translate-x-0 " : "-translate-x-full"
         } md:translate-x-0`}
       >
         {/* <div className="flex justify-between items-center">
-          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden">
-            <X size={28} />
-          </button>
-        </div> */}
+         <button onClick={() => setIsSidebarOpen(false)} className="md:hidden">
+           <X size={28} />
+         </button>
+       </div> */}
         <nav
           className={`flex-auto flex flex-col text-lg font-semibold gap-4 w-full mt-2 ${
             isSidebarOpen ? "mt-20 " : ""
@@ -92,7 +96,7 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
             <LogOut className="mr-2" /> Logout
           </button>
         </nav>
-        <Button variant="ghost" onClick={toggleTheme} className="mt-6">
+        <Button variant="ghost" onClick={toggleTheme} className="mt-6 md:hidden">
           {isDarkTheme ? <Sun className="mr-2" /> : <Moon className="mr-2" />}{" "}
           {isDarkTheme ? "Light Mode" : "Dark Mode"}
         </Button>
@@ -151,7 +155,7 @@ export default function UserNavbar({ toggleTheme, isDarkTheme, children }) {
       </div>
 
       {/* Main Content Area */}
-      <main  data-aos="fade-left" className="flex-1 border gap-2 rounded-lg md-max:rounded-none  bg-lightBg dark:bg-darkBg md-max:w-full relative flex h-full overflow-x-hidden overflow-auto custom-scrollbar ">
+      <main className="flex-1 border gap-2 rounded-lg md-max:rounded-none  bg-lightBg dark:bg-darkBg md-max:w-full relative flex h-full overflow-x-hidden overflow-auto custom-scrollbar ">
         <div className="flex-1 rounded-lg md-max:rounded-none md-max:px-2 h-full bg-background overflow-x-hidden overflow-auto custom-scrollbar">
           {children}
         </div>
