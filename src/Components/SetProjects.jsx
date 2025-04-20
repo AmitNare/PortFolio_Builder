@@ -2,6 +2,8 @@ import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import Aos from "aos";
+import { Link, Link2 } from "lucide-react";
+import www_img from "../assets/Images/internet_www.svg";
 
 export default function SetProjects({ userDetails }) {
   const [active, setActive] = useState(null);
@@ -37,9 +39,7 @@ export default function SetProjects({ userDetails }) {
   return (
     <section className="w-full flex-col justify-evenly items-center">
       <div className="mb-6 text-center">
-        <h1 className="text-3xl font-semibold ">
-          Creations
-        </h1>
+        <h1 className="text-3xl font-semibold ">Creations</h1>
       </div>
       <AnimatePresence>
         {active && typeof active === "object" && (
@@ -83,13 +83,25 @@ export default function SetProjects({ userDetails }) {
 
               <div>
                 <div className="flex flex-col justify-between items-start p-4">
-                  <div>
-                    <motion.h3
-                      layoutId={`title-${active.projectName}-${id}`}
-                      className="font-bold text-neutral-700 dark:text-neutral-200"
-                    >
-                      {active.projectName}
-                    </motion.h3>
+                  <div className="">
+                    <div className="flex gap-2 items-center">
+                      <motion.h3
+                        layoutId={`title-${active.projectName}-${id}`}
+                        className="font-bold text-xl text-neutral-700 dark:text-neutral-200"
+                      >
+                        {active.projectName}
+                      </motion.h3>
+                      {active.projectUrl && (
+                        <motion.a
+                          layoutId={`button-${active.projectName}-${id}`}
+                          href={active.projectUrl}
+                          target="_blank"
+                          className=" text-sm w-10 p-2 rounded-full font-bold bg-green-500 text-white"
+                        >
+                          <img src={www_img} alt="" />
+                        </motion.a>
+                      )}
+                    </div>
                     <motion.p
                       layoutId={`description-${active.projectDescription}-${id}`}
                       className="text-neutral-600 dark:text-neutral-400"
@@ -97,17 +109,6 @@ export default function SetProjects({ userDetails }) {
                       {active.projectDescription}
                     </motion.p>
                   </div>
-
-                  {active.projectUrl && (
-                    <motion.a
-                      layoutId={`button-${active.projectName}-${id}`}
-                      href={active.projectUrl}
-                      target="_blank"
-                      className="px-4 py-3 text-sm rounded-full font-bold bg-green-500 text-white"
-                    >
-                      View Project
-                    </motion.a>
-                  )}
                 </div>
               </div>
             </motion.div>

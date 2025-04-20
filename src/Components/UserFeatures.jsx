@@ -83,9 +83,9 @@ export default function UserFeatures() {
       confirmButtonText: "Yes, delete it!",
       cancelButtonText: "Cancel",
     });
-  
+
     if (!result.isConfirmed) return;
-  
+
     setDeleting(true);
     try {
       const featureRef = ref(db, `Users/${user.uid}/features/${featureId}`);
@@ -93,7 +93,7 @@ export default function UserFeatures() {
       setFeatures((prevFeatures) =>
         prevFeatures.filter((feature) => feature.id !== featureId)
       );
-  
+
       // SweetAlert2 success message
       Swal.fire({
         icon: "success",
@@ -112,7 +112,6 @@ export default function UserFeatures() {
       setDeleting(false);
     }
   };
-  
 
   useEffect(() => {
     fetchFeatures();
@@ -161,13 +160,15 @@ export default function UserFeatures() {
             return (
               <li
                 key={feature.id}
-                className="border relative p-2 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4 flex flex-col"
+                className="border relative p-2 gap-3 rounded-sm shadow w-full min-w-[300px] sm:w-1/2 lg:w-1/4 flex flex-col"
               >
                 <>
                   <h2 className="text-xl font-semibold">
                     {feature.featureName}
                   </h2>
-                  <p className="mb-2 text-sm">{feature.featureDescription}</p>
+                  <p className="mb-2 text-sm h-32 custom-scrollbar overflow-auto">
+                    {feature.featureDescription}
+                  </p>
                   <span className="flex justify-between">
                     <TrashIcon
                       className="absolute bg-background text-red-500 cursor-pointer right-2 -top-3"

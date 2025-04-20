@@ -99,9 +99,9 @@ export default function SetHero({ userDetails }) {
   }, [displayedText, isDeleting, typingSpeed, currentRoleIndex, roles]);
 
   return (
-    <div  className="w-full flex mx-auto justify-center items-center bg-background md-max:flex-col gap-2 md:gap-16 lg:flex-row md:flex-col px-5">
+    <div className="w-full flex mx-auto justify-center items-center bg-background md-max:flex-col gap-2 md:gap-16 lg:flex-row md:flex-col px-5">
       {/* Profile Image Section */}
-      <div  className="w-fit sm-max:p-5">
+      <div className="w-fit sm-max:p-5">
         <img
           src={imageUrl}
           alt="Profile"
@@ -113,25 +113,21 @@ export default function SetHero({ userDetails }) {
       <div className=" pb-0 text-foreground flex flex-col items-center justify-center text-2xl my-auto md-max:max-w-96 md:w-[400px] md-max:w-80 ">
         <section className="w-full md-max:flex md-max:flex-col md-max:items-center md-max:justify-center md:text-center lg:text-start">
           <div className="flex md:justify-center lg:justify-normal">
-            <span > 
-            Hello
-            </span> 
-           
+            <span>Hello</span>
             <img
               src={wave_hand}
-              // autoPlay
-              // loop
-              // muted
-              className="object-contain w-8 h-8 -rotate-[15deg] "
+              className="object-contain w-8 h-8 -rotate-[15deg] mx-1"
+              alt="wave hand"
             />
-            my name is
+            {userDetails?.features ? "our organization name is" : "my name is"}
           </div>
 
           <strong className="md:text-5xl text-green-500 font-bold md-max:text-5xl lg:text-6xl xl:text-7xl">
             {`${userDetails.name} ${userDetails.surname}`}
           </strong>
           <h2 className="text-2xl">
-            I am a <span className="text-blue-600">{displayedText}</span>
+            {userDetails?.features ? "We provide " : "I am "}
+            <span className="text-blue-600">{displayedText}</span>
           </h2>
 
           <div className="flex items-center mt-1 md:justify-center lg:justify-normal">
