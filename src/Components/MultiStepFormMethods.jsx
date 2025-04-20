@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Stepper, Step } from "react-form-stepper";
 import * as Yup from "yup";
-import { storage } from '../../firebase'; // Adjust the import according to your setup
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { set, ref as dbRef, get, getDatabase } from 'firebase/database';
+import { storage } from "../../firebase"; // Adjust the import according to your setup
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { set, ref as dbRef, get, getDatabase } from "firebase/database";
 
 import GetUserDetailsForm, {
   AdditionalInfo,
@@ -13,7 +13,10 @@ import GetUserDetailsForm, {
   SocialLinks,
 } from "./GetUserDetailsForm";
 import useUserAuth from "./UserAuthentication";
-import { generatePortfolioLink, savePortfolioDataToFirebase } from "./PortfolioMethods";
+import {
+  generatePortfolioLink,
+  savePortfolioDataToFirebase,
+} from "./PortfolioMethods";
 import DataLoader from "./DataLoader";
 import { useNavigate } from "react-router-dom";
 import MultiStepForm from "./MultiStepForm";
@@ -225,7 +228,9 @@ export const validateStep = async (step, name, value) => {
             ),
             jobRole: Yup.string().required("Job role is required."),
             jobExperience: Yup.string().required("Job experience is required."),
-            // companyAddress: Yup.string().required("Company address is required."),
+            companyAddress: Yup.string().required(
+              "Company address is required."
+            ),
           });
 
           try {
@@ -677,40 +682,35 @@ export const handleSubmit = async (e) => {
   }
 };
 
-
 export default function MultiStepFormMethods() {
   return (
     <div>
-        <MultiStepForm
-            image={image}
-            isDragOver={isDragOver}
-            imageName={imageName}
-            handleDrop={handleDrop}
-            handleDragLeave={handleDragLeave}
-            handleDragEnter={handleDragEnter}
-            handleFileChange={handleFileChange}
-            handleDragOver={handleDragOver}
-            handleRemoveImage={handleRemoveImage}
-            errors={errors}
-            setErrors={setErrors}
-            formData={formData}
-            setFormData={setFormData}
-            handleInputChange={handleInputChange}
-
-            gradeInput={gradeInput}
-            removeEntry={removeEntry}
-            searchTerm={searchTerm}
-            addSelection={addSelection}
-            handleSearchChange={handleSearchChange}
-            skillOptions={skillOptions}
-            addCollege={addCollege}
-            removeCollege={setFormData}
-
-            addEntry={addEntry}
-            handleSubmit={handleSubmit}
-
-        />
+      <MultiStepForm
+        image={image}
+        isDragOver={isDragOver}
+        imageName={imageName}
+        handleDrop={handleDrop}
+        handleDragLeave={handleDragLeave}
+        handleDragEnter={handleDragEnter}
+        handleFileChange={handleFileChange}
+        handleDragOver={handleDragOver}
+        handleRemoveImage={handleRemoveImage}
+        errors={errors}
+        setErrors={setErrors}
+        formData={formData}
+        setFormData={setFormData}
+        handleInputChange={handleInputChange}
+        gradeInput={gradeInput}
+        removeEntry={removeEntry}
+        searchTerm={searchTerm}
+        addSelection={addSelection}
+        handleSearchChange={handleSearchChange}
+        skillOptions={skillOptions}
+        addCollege={addCollege}
+        removeCollege={setFormData}
+        addEntry={addEntry}
+        handleSubmit={handleSubmit}
+      />
     </div>
-  )
+  );
 }
-

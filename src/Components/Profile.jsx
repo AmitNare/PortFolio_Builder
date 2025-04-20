@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Stepper, Step } from "react-form-stepper";
 import * as Yup from "yup";
-import { storage } from "../../firebase"; // Adjust the import according to your setup
+import { storage, db } from "../../firebase"; // Adjust the import according to your setup
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { set, ref as dbRef, get, getDatabase } from "firebase/database";
 import { Check, CheckSquare, Pencil, X, TrashIcon } from "lucide-react";
@@ -202,7 +202,9 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
               jobExperience: Yup.string().required(
                 "Job experience is required."
               ),
-              // companyAddress: Yup.string().required("Company address is required."),
+              companyAddress: Yup.string().required(
+                "Company address is required."
+              ),
             });
 
             try {
@@ -370,7 +372,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     setIsSkillEdit(!isSkillEdit);
   };
 
-  const saveSkillChanges =  async () => {
+  const saveSkillChanges = async () => {
     // Implement your save logic here
     // For example, you might want to send the updated skills to a server
     console.log("skillOptions: ", userDetails.skills);
@@ -460,10 +462,10 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
     setUserDetails((prevDetails) => {
       const updatedColleges = [...prevDetails.colleges];
       const currentEntry = updatedColleges[index];
-  
+
       // Initialize an object to store errors
       const errors = {};
-  
+
       // Validate required fields
       if (!currentEntry.collegeName?.trim()) {
         errors.collegeName = "College name is required.";
@@ -489,7 +491,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
       if (!currentEntry.description?.trim()) {
         errors.description = "College Description is required.";
       }
-  
+
       // If validation fails, set errors and prevent saving
       if (Object.keys(errors).length > 0) {
         setErrors((prevErrors) => ({
@@ -498,18 +500,18 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         }));
         return prevDetails; // Stop the update
       }
-  
+
       // Clear errors for the saved entry
       setErrors((prevErrors) => ({
         ...prevErrors,
         colleges: { ...prevErrors.colleges, [index]: {} },
       }));
-  
+
       // Disable editing for the specific card after successful validation
       const updatedStates = [...cardEditingStates];
       updatedStates[index] = false; // Set editing state to false
       setCollegeEditingStates(updatedStates);
-  
+
       // Return the updated details (if any changes were made)
       return {
         ...prevDetails,
@@ -647,15 +649,13 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
       })),
     }));
 
-    
-  try {
-    await handleSubmit();
-    console.log("All changes saved");
-  } catch (error) {
-    console.error("Error saving changes:", error);
-    alert("An error occurred while saving changes. Please try again.");
-  }
-
+    try {
+      await handleSubmit();
+      console.log("All changes saved");
+    } catch (error) {
+      console.error("Error saving changes:", error);
+      alert("An error occurred while saving changes. Please try again.");
+    }
 
     setIsCardEditing(false);
     setCollegeEditingStates((prev) => prev.map(() => false)); // Reset all cards to non-editing state
@@ -747,7 +747,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
 
       // Initialize an object to store errors
       const errors = {};
-console.log(errors)
+      console.log(errors);
       // Validate required fields
       if (!currentEntry.companyName?.trim())
         errors.companyName = "Company name is required.";
@@ -755,21 +755,21 @@ console.log(errors)
         errors.companyAddress = "Address is required.";
       if (!currentEntry.jobRole?.trim())
         errors.jobRole = "Job role is required.";
-      if (!currentEntry.jobExperience?.trim())
-        {errors.jobExperience = "Experience is required."}
-        else {
-          const duration = parseFloat(currentEntry.jobExperience);
-          // Validate grade based on gradeType
-          if (currentEntry.jobDuration === "Month") {
-            if (duration <= 0 || duration > 12) {
-              errors.jobExperience = "Month must be 1 to 12.";
-            }
-          } else if (currentEntry.jobDuration === "Year") {
-            if (duration <= 0) {
-              errors.jobExperience = "Year must at least 1.";
-            }
+      if (!currentEntry.jobExperience?.trim()) {
+        errors.jobExperience = "Experience is required.";
+      } else {
+        const duration = parseFloat(currentEntry.jobExperience);
+        // Validate grade based on gradeType
+        if (currentEntry.jobDuration === "Month") {
+          if (duration <= 0 || duration > 12) {
+            errors.jobExperience = "Month must be 1 to 12.";
+          }
+        } else if (currentEntry.jobDuration === "Year") {
+          if (duration <= 0) {
+            errors.jobExperience = "Year must at least 1.";
           }
         }
+      }
       if (!currentEntry.jobDescription?.trim())
         errors.jobDescription = "Description is required.";
 
@@ -781,7 +781,7 @@ console.log(errors)
         }));
         return prevDetails; // Stop the update
       }
-      console.log("Errors cleared for index:", index); 
+      console.log("Errors cleared for index:", index);
 
       // Clear errors for the saved entry
       setErrors((prevErrors) => ({
@@ -903,20 +903,18 @@ console.log(errors)
   const handleSubmit = async (e) => {
     // e.preventDefault(); // Prevent default form submission behavior
     // setIsLoading(true);
-   
+
     console.log("userDetails UID:", userDetails.uid);
 
     // savePortfolioDataToFirebase(userDetails, userDetails.uid);
 
+    // Save the userDetails data to Firebase under the userDetails's UID
+    await savePortfolioDataToFirebase(userDetails, userDetails.uid);
 
-      // Save the userDetails data to Firebase under the userDetails's UID
-      await savePortfolioDataToFirebase(userDetails, userDetails.uid);
+    console.log("Data Saved into Firebase");
 
-      console.log('Data Saved into Firebase');
-
-      // await new Promise((resolve) => setTimeout(resolve, 5000)); // 2 seconds delay
-      // setIsLoading(false);
-    
+    // await new Promise((resolve) => setTimeout(resolve, 5000)); // 2 seconds delay
+    // setIsLoading(false);
   };
 
   return (
@@ -1168,7 +1166,6 @@ console.log(errors)
             ))}
           </div>
         )}
-
       </div>
 
       {/* professional info */}
@@ -1215,69 +1212,76 @@ console.log(errors)
         </div>
 
         {isEditing ? (
-        <div className="grid grid-cols-2 gap-5 w-full border-2 md-max:grid-cols-1 lg-max:grid-cols-1">
-          {userDetails?.experience?.map((exp, index) => (
-            <div
-              key={index}
-              className=" grid grid-cols-2 md-max:grid-cols-1 gap-3 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
-            >
-              {cardEditingStates[index] && (
-                <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
-                  {/* Delete Button */}
-                  <button
-                    onClick={() => removeEntry("experience", index)}
-                    className="bg-red-500 text-white p-1 rounded-sm "
-                    title="delete"
-                  >
-                    <X size={15} />
-                  </button>
+          <div className="grid grid-cols-2 gap-5 w-full border-2 md-max:grid-cols-1 lg-max:grid-cols-1">
+            {userDetails?.experience?.map((exp, index) => (
+              <div
+                key={index}
+                className=" grid grid-cols-2 md-max:grid-cols-1 gap-3 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
+              >
+                {cardEditingStates[index] && (
+                  <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
+                    {/* Delete Button */}
+                    <button
+                      onClick={() => removeEntry("experience", index)}
+                      className="bg-red-500 text-white p-1 rounded-sm "
+                      title="delete"
+                    >
+                      <X size={15} />
+                    </button>
 
-                  {/* Save Button */}
-                  <button
-                    onClick={() => handleCardSave(index)}
-                    className="bg-green-500 text-white p-1 rounded-sm "
-                    title="save"
-                  >
-                    <Check size={15} />
-                  </button>
-                </div>
-              )}
-
-              {/* Company Name and Address */}
-              <div className="flex flex-col gap-1 col-span-2 relative">
-                <label className="text-sm font-medium text-foreground">
-                  Company Name
-                </label>
-                <Input
-                  type="text"
-                  value={exp.companyName || ""} // Ensuring that value is always a string
-                  onChange={(e) =>
-                    handleInputChange(e, "experience", index, "companyName")
-                  }
-                  disabled={!cardEditingStates[index]}
-                  className="border-2 text-foreground bg-background p-2"
-                  placeholder="Company Name"
-                />
-                {errors.experience?.[index]?.companyName && (
-                  <span className="text-red-500 text-xs absolute mt-16">
-                    {errors.experience[index].companyName}
-                  </span>
+                    {/* Save Button */}
+                    <button
+                      onClick={() => handleCardSave(index)}
+                      className="bg-green-500 text-white p-1 rounded-sm "
+                      title="save"
+                    >
+                      <Check size={15} />
+                    </button>
+                  </div>
                 )}
-              </div>
 
-              <div className="flex flex-col gap-1 col-span-2 relative">
-                <label className="text-sm font-medium text-foreground">
-                  Company Address
-                </label>
-                <LocationSearch
-                                  handleInputChange={(e) => handleInputChange(e, "experience", index)}
-                                  errors={errors}
-                                  // experienceErrors={experienceErrors}
-                                  fieldsToShow={["city"]}
-                                  fieldPass="address"
-                                  // index={index} // Pass index properly
-                                />
-                {/* <Input
+                {/* Company Name and Address */}
+                <div className="flex flex-col gap-1 col-span-2 relative">
+                  <label className="text-sm font-medium text-foreground">
+                    Company Name
+                  </label>
+                  <Input
+                    type="text"
+                    value={exp.companyName || ""} // Ensuring that value is always a string
+                    onChange={(e) =>
+                      handleInputChange(e, "experience", index, "companyName")
+                    }
+                    disabled={!cardEditingStates[index]}
+                    className="border-2 text-foreground bg-background p-2"
+                    placeholder="Company Name"
+                  />
+                  {errors.experience?.[index]?.companyName && (
+                    <span className="text-red-500 text-xs absolute mt-16">
+                      {errors.experience[index].companyName}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-1 col-span-2 relative">
+                  <label className="text-sm font-medium text-foreground">
+                    Company Address
+                  </label>
+                  <LocationSearch
+                    handleInputChange={(e) =>
+                      handleInputChange(
+                        e,
+                        "experience",
+                        index,
+                        "companyAddress"
+                      )
+                    }
+                    errors={errors}
+                    // experienceErrors={experienceErrors}
+                    fieldsToShow={["city"]}
+                    fieldPass="address"
+                    // index={index} // Pass index properly
+                  />
+                  {/* <Input
                   type="text"
                   value={exp.companyAddress || ""}
                   onChange={(e) =>
@@ -1287,170 +1291,179 @@ console.log(errors)
                   className="border-2 text-foreground bg-background p-2"
                   placeholder="Company Address"
                 /> */}
-                {/* {errors.experience?.[index]?.companyAddress && (
+                  {/* {errors.experience?.[index]?.companyAddress && (
                   <span className="text-red-500 text-xs absolute mt-16">
                     {errors.experience[index].companyAddress}
                   </span>
                 )} */}
-              </div>
+                </div>
 
-              {/* Job Role and Years of Experience */}
-              <div className="flex flex-col gap-1 sm-max:col-span-2 lg:col-span-2 xl:col-span-1 relative">
-                <label className="text-sm font-medium text-foreground">
-                  Job Role
-                </label>
-                <Input
-                  type="text"
-                  value={exp.jobRole || ""}
-                  onChange={(e) =>
-                    handleInputChange(e, "experience", index, "jobRole")
-                  }
-                  disabled={!cardEditingStates[index]}
-                  className="border-2 text-foreground bg-background p-2"
-                  placeholder="Job Role"
-                />
-                {errors.experience?.[index]?.jobRole && (
-                  <span className="text-red-500 text-xs absolute mt-16">
-                    {errors.experience[index].jobRole}
-                  </span>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-1 relative">
-                <label className="text-sm font-medium text-foreground">
-                  Years of Experience
-                </label>
-                {cardEditingStates[index] ? (
-                  <span className={`flex gap-2`}>
-                    <Input
-                      type="number"
-                      value={exp.jobExperience}
-                      onChange={(e) => {
-                        const { value } = e.target;
-                        handleInputChange(
-                          e,
-                          "experience",
-                          index,
-                          "jobExperience"
-                        );
-                      }}
-                      className="border-2 text-foreground bg-background p-2 w-1/4 md:w-20 lg:w-20 xl:w-18"
-                      placeholder="Grade"
-                    />
-                    <select
-                      value={exp.jobDuration}
-                      onChange={(e) =>
-                        handleInputChange(e, "experience", index, "jobDuration")
-                      }
-                      className="border-2 text-foreground bg-background p-2 w-fit"
-                    >
-                      <option value="Year">Year</option>
-                      <option value="Month">Month</option>
-                    </select>
-                  </span>
-                ) : (
+                {/* Job Role and Years of Experience */}
+                <div className="flex flex-col gap-1 sm-max:col-span-2 lg:col-span-2 xl:col-span-1 relative">
+                  <label className="text-sm font-medium text-foreground">
+                    Job Role
+                  </label>
                   <Input
                     type="text"
-                    value={`${exp.jobExperience}  ${exp.jobDuration}`}
+                    value={exp.jobRole || ""}
+                    onChange={(e) =>
+                      handleInputChange(e, "experience", index, "jobRole")
+                    }
                     disabled={!cardEditingStates[index]}
-                    className="border-2 text-foreground bg-background p-2 w-32"
-                    placeholder="Grade"
+                    className="border-2 text-foreground bg-background p-2"
+                    placeholder="Job Role"
                   />
-                )}
-
-                {errors.experience?.[index]?.jobExperience && (
-                  <span className="text-red-500 text-xs absolute mt-16">
-                    {errors.experience[index].jobExperience}
-                  </span>
-                )}
-              </div>
-
-              {/* Job Description */}
-              <div className="col-span-2 flex flex-col gap-1 relative mb-3">
-                <label className="text-sm font-medium text-foreground">
-                  Job Description
-                </label>
-                <textarea
-                  value={exp.jobDescription || ""}
-                  onChange={(e) =>
-                    handleInputChange(e, "experience", index, "jobDescription")
-                  }
-                  disabled={!cardEditingStates[index]}
-                  className="border-2 text-foreground bg-background p-2 w-full h-32 resize-none custom-scrollbar overflow-auto"
-                  placeholder="Job Description"
-                  rows={4}
-                />
-                {errors.experience?.[index]?.jobDescription && (
-                  <span className="text-red-500 text-xs absolute mt-[152px] ">
-                    {errors.experience[index].jobDescription}
-                  </span>
-                )}
-              </div>
-
-              {/* Edit Button */}
-              {isEditing && !cardEditingStates[index] && (
-                <div className="mt-3">
-                  <button
-                    onClick={() => handleCardEdit(index)}
-                    className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
-                  >
-                    <Pencil size={15} />
-                  </button>
+                  {errors.experience?.[index]?.jobRole && (
+                    <span className="text-red-500 text-xs absolute mt-16">
+                      {errors.experience[index].jobRole}
+                    </span>
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
 
+                <div className="flex flex-col gap-1 relative">
+                  <label className="text-sm font-medium text-foreground">
+                    Years of Experience
+                  </label>
+                  {cardEditingStates[index] ? (
+                    <span className={`flex gap-2`}>
+                      <Input
+                        type="number"
+                        value={exp.jobExperience}
+                        onChange={(e) => {
+                          const { value } = e.target;
+                          handleInputChange(
+                            e,
+                            "experience",
+                            index,
+                            "jobExperience"
+                          );
+                        }}
+                        className="border-2 text-foreground bg-background p-2 w-1/4 md:w-20 lg:w-20 xl:w-18"
+                        placeholder="Grade"
+                      />
+                      <select
+                        value={exp.jobDuration}
+                        onChange={(e) =>
+                          handleInputChange(
+                            e,
+                            "experience",
+                            index,
+                            "jobDuration"
+                          )
+                        }
+                        className="border-2 text-foreground bg-background p-2 w-fit"
+                      >
+                        <option value="Year">Year</option>
+                        <option value="Month">Month</option>
+                      </select>
+                    </span>
+                  ) : (
+                    <Input
+                      type="text"
+                      value={`${exp.jobExperience}  ${exp.jobDuration}`}
+                      disabled={!cardEditingStates[index]}
+                      className="border-2 text-foreground bg-background p-2 w-32"
+                      placeholder="Grade"
+                    />
+                  )}
+
+                  {errors.experience?.[index]?.jobExperience && (
+                    <span className="text-red-500 text-xs absolute mt-16">
+                      {errors.experience[index].jobExperience}
+                    </span>
+                  )}
+                </div>
+
+                {/* Job Description */}
+                <div className="col-span-2 flex flex-col gap-1 relative mb-3">
+                  <label className="text-sm font-medium text-foreground">
+                    Job Description
+                  </label>
+                  <textarea
+                    value={exp.jobDescription || ""}
+                    onChange={(e) =>
+                      handleInputChange(
+                        e,
+                        "experience",
+                        index,
+                        "jobDescription"
+                      )
+                    }
+                    disabled={!cardEditingStates[index]}
+                    className="border-2 text-foreground bg-background p-2 w-full h-32 resize-none custom-scrollbar overflow-auto"
+                    placeholder="Job Description"
+                    rows={4}
+                  />
+                  {errors.experience?.[index]?.jobDescription && (
+                    <span className="text-red-500 text-xs absolute mt-[152px] ">
+                      {errors.experience[index].jobDescription}
+                    </span>
+                  )}
+                </div>
+
+                {/* Edit Button */}
+                {isEditing && !cardEditingStates[index] && (
+                  <div className="mt-3">
+                    <button
+                      onClick={() => handleCardEdit(index)}
+                      className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
+                    >
+                      <Pencil size={15} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="flex flex-wrap sm-max:flex-col gap-5 w-full justify-evenly items-center">
-                    {userDetails?.experience?.map((exp, index) => (
-                      <div
-                        key={index}
-                        className="w-full sm:w-96 flex  border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
-                      >
-                        <div className=" w-full  group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300  hover:shadow-2xl sm:mx-auto  sm:rounded-lg ">
-                          <span className="absolute top-[14px] z-0 h-10 w-40 rounded-r-md bg-violet-500 text-button-textColor hover:bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
-                          <div className=" relative w-full z-10 justify-between flex items-end sm:max-w-md">
-                            <span className=" grid mt-3 h-10 w-40 place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
-                              <h1 className=" text-balance tracking-wide ">{exp.jobRole || "N/A"}</h1>
-                            </span>
-                            {/* <div className="flex justify-between"> */}
-                            <div className="mb-2 top-[8px] right-0">
-                              <Label className=" text-sm px-2 text-gray-500 group-hover:text-white dark:text-white dark:group-hover:text-foreground tracking-wide">
-                                {exp.companyAddress || "N/A"}
-                              </Label>
-                            </div>
-                          </div>
-                          <div className="text-forground group relative cursor-pointer overflow-hidden transition-all duration-300 ">
-                            <div className="flex flex-col gap-1">
-                              <Label className="p-2 mt-1 text-lg text-foreground tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
-                                {exp.companyName || "N/A"}
-                              </Label>
-                            </div>
-                            <div className="flex flex-col gap-1 w-fit">
-                             
-                              <Label className="px-2 text-gray-500 tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
-                                <span>Duration:</span>
-                                <span className="ml-1">{`${
-                                  exp.jobExperience || "0"
-                                } years`}</span>{" "}
-                              </Label>
-                            </div>
-                            <div className="space-y-6 mt-1 text-base leading-7 tracking-wide text-gray-600 transition-all duration-300 group-hover:text-white/90">
-                              <div className="col-span-2 flex flex-col gap-1 p-1 pb-2">
-                                <Textarea className="custom-scrollbar overflow-auto  group-hover:text-white dark:text-white dark:group-hover:text-foreground bg-transparent w-full h-32 resize-none group-hover:border-violet-600 ">
-                                  {exp.jobDescription || "N/A"}
-                                </Textarea>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+            {userDetails?.experience?.map((exp, index) => (
+              <div
+                key={index}
+                className="w-full sm:w-96 flex  border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
+              >
+                <div className=" w-full  group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300  hover:shadow-2xl sm:mx-auto  sm:rounded-lg ">
+                  <span className="absolute top-[14px] z-0 h-10 w-40 rounded-r-md bg-violet-500 text-button-textColor hover:bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
+                  <div className=" relative w-full z-10 justify-between flex items-end sm:max-w-md">
+                    <span className=" grid mt-3 h-10 w-40 place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
+                      <h1 className=" text-balance tracking-wide ">
+                        {exp.jobRole || "N/A"}
+                      </h1>
+                    </span>
+                    {/* <div className="flex justify-between"> */}
+                    <div className="mb-2 top-[8px] right-0">
+                      <Label className=" text-sm px-2 text-gray-500 group-hover:text-white dark:text-white dark:group-hover:text-foreground tracking-wide">
+                        {exp.companyAddress || "N/A"}
+                      </Label>
+                    </div>
                   </div>
-        ) }
-
+                  <div className="text-forground group relative cursor-pointer overflow-hidden transition-all duration-300 ">
+                    <div className="flex flex-col gap-1">
+                      <Label className="p-2 mt-1 text-lg text-foreground tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
+                        {exp.companyName || "N/A"}
+                      </Label>
+                    </div>
+                    <div className="flex flex-col gap-1 w-fit">
+                      <Label className="px-2 text-gray-500 tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
+                        <span>Duration:</span>
+                        <span className="ml-1">{`${
+                          exp.jobExperience || "0"
+                        } years`}</span>{" "}
+                      </Label>
+                    </div>
+                    <div className="space-y-6 mt-1 text-base leading-7 tracking-wide text-gray-600 transition-all duration-300 group-hover:text-white/90">
+                      <div className="col-span-2 flex flex-col gap-1 p-1 pb-2">
+                        <Textarea className="custom-scrollbar overflow-auto  group-hover:text-white dark:text-white dark:group-hover:text-foreground bg-transparent w-full h-32 resize-none group-hover:border-violet-600 ">
+                          {exp.jobDescription || "N/A"}
+                        </Textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* skills functionality is update*/}

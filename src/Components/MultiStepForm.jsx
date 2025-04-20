@@ -92,7 +92,7 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
 
     // Wait for state update before validating
     // setTimeout(async () => {
-      await validateStep(activeStep, name, value);
+    await validateStep(activeStep, name, value);
     // }, 100);
   };
 
@@ -146,15 +146,19 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
         (value) => value && value.size <= MAX_FILE_SIZE
       ),
 
-      grade: Yup.number()
+    grade: Yup.number()
       .typeError("Grade must be a number")
       .required("Grade is required")
       .when("gradeType", (gradeType, schema) => {
         return gradeType === "CGPA"
-          ? schema.max(10, "CGPA cannot exceed 10").min(0, "CGPA cannot be less than 0")
-          : schema.max(100, "Percentage cannot exceed 100").min(0, "Percentage cannot be less than 0");
+          ? schema
+              .max(10, "CGPA cannot exceed 10")
+              .min(0, "CGPA cannot be less than 0")
+          : schema
+              .max(100, "Percentage cannot exceed 100")
+              .min(0, "Percentage cannot be less than 0");
       }),
-    
+
     gradeType: Yup.string().required("Grade type is required"),
 
     jobExperience: Yup.number()
@@ -251,7 +255,9 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
               jobExperience: Yup.string().required(
                 "Job experience is required."
               ),
-              // companyAddress: Yup.string().required("Company address is required."),
+              companyAddress: Yup.string().required(
+                "Company address is required."
+              ),
             });
 
             try {
@@ -329,21 +335,19 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
       return true;
     } catch (error) {
       console.log("Validation Failed - Raw Error Details:", error); // 🔍 Debug
-  
+
       if (error.inner) {
         const newErrors = {};
         error.inner.forEach((err) => {
           newErrors[err.path] = err.message;
         });
-  
+
         console.log("Parsed Validation Errors:", newErrors); // 🔍 Debug before state update
         setErrors(newErrors);
       }
       return false;
     }
   };
-  
-  
 
   const handleFormSubmit = async () => {
     const isValidStep3 = await validateStep(3);
@@ -353,17 +357,15 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
     console.log("Current Errors State:", errors);
 
     if (!isValidStep3) {
-        console.log("Form validation failed. Please fix the errors.");
-        return; // 🚨 STOP form submission if Step 3 has errors
+      console.log("Form validation failed. Please fix the errors.");
+      return; // 🚨 STOP form submission if Step 3 has errors
     }
 
     console.log("Form is valid, submitting...");
     // 📝 Proceed with form submission logic here
-};
 
-  
-  
-  
+    // TODO: add form saving logic. WTF BRO
+  };
 
   const handleNextStep = async () => {
     let newErrors = { ...errors }; // Keep previous errors
@@ -817,7 +819,6 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
 
       // Update the formData state with the new URLs
       setFormData(updatedFormData);
-
 
       // **Step 6: Save to Firebase**
       await set(portfolioRef, portfolioData); // use to store unique link
