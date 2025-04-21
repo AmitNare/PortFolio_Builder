@@ -38,7 +38,8 @@ export default function About() {
         <div className="flex md-max:flex-col justify-center items-center md-max:gap-5 md:gap-5 lg:gap-10 sm:p-2 lg:p-5">
           <img
             src={about_us_img}
-            alt=""
+            alt="loading..."
+            loading="lazy"
             className="w-full md-max:max-w-lg md:max-w-96 lg:max-w-lg xl:max-w-xl aspect-video"
           />
           <span className="w-full border-l-2 border-l-slate-500 pl-2 max-w-[700px] md-max:text-sm md:text-sm lg:text-[16px] xl:text-lg">

@@ -58,6 +58,7 @@ export default function Feedback() {
         <img
           src={feedback_img}
           alt="feedback"
+          loading="lazy"
           className="w-full object-cover"
         />
       </div>

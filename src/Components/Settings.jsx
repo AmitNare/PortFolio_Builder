@@ -73,8 +73,7 @@ export default function Settings() {
         yup.object({
           gitHub: yup
             .string()
-            .url("Invalid GitHub URL")
-            .required("GitHub URL is required"),
+            .url("Invalid GitHub URL"),
           twitter: yup.string().url("Invalid Twitter URL"),
           instagram: yup.string().url("Invalid Instagram URL"),
           linkedIn: yup.string().url("Invalid LinkedIn URL"),
@@ -464,6 +463,7 @@ export default function Settings() {
                 <AvatarImage
                   src="/placeholder.svg?height=100&width=100"
                   alt="User's profile picture"
+                  loading="lazy"
                   className="object-cover"
                 />
               </Avatar>

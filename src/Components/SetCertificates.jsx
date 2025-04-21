@@ -110,6 +110,7 @@ export default function SetCertificates({ userDetails }) {
             <img
               src={current.certificateImage}
               alt={current.certificateName}
+              loading="lazy"
               className="w-full sm:w-[450px] shadow-xl border p-2 aspect-video object-cover rounded-md mx-auto"
             />
           </motion.div>
@@ -186,6 +187,7 @@ export default function SetCertificates({ userDetails }) {
                   <img
                     src={preview.certificateImage}
                     alt={preview.certificateName}
+                    loading="lazy"
                     className="w-full h-full lg:h-80 sm:rounded-t-md object-cover object-top"
                   />
                 </motion.div>

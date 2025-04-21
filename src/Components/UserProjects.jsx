@@ -7,7 +7,7 @@ import useUserAuth from "./UserAuthentication";
 import { Button } from "./ui/button";
 import DataLoader from "./DataLoader";
 import Swal from "sweetalert2"; // Import SweetAlert2
-import { PlusCircleIcon, TrashIcon } from "lucide-react";
+import { ExternalLink, PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 
 export default function UserProjects() {
@@ -137,16 +137,22 @@ export default function UserProjects() {
                     </span>
               )}
               <h2 className="text-xl font-semibold">{project.projectName}</h2>
+              <p>
+              {Array.isArray(project.languages) ? project.languages.join(", ") : project.languages}
+
+              </p>
               <p className="  text-sm h-48 custom-scrollbar overflow-auto">{project.projectDescription}</p>
               {/* <h2 className="text-xl font-semibold">{project.languages}</h2> */}
+              {project.projectUrl && 
               <a
-                href={project.projectUrl}
-                className="text-blue-600 underline"
-                target="_blank"
-                rel="noopener noreferrer"
+              href={project.projectUrl}
+              className="bg-button text-button-textColor hover:bg-button-hover w-fit px-2 py-1 rounded-md flex items-center gap-2"
+              target="_blank"
+              rel="noopener noreferrer"
               >
-                Project URL
+                View <ExternalLink/>
               </a>
+              }
 
               <span className="flex justify-between mt-2">
                 {/* <Button className=" w-2/5 ">Edit</Button> */}

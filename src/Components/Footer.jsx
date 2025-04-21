@@ -15,7 +15,7 @@ import {
   BsInstagram,
   BsTwitter,
 } from "react-icons/bs";
-import logo from '../assets/Images/logo3.webp'
+import logo from '../assets/Images/logo7.webp'
 
 export default function FooterS() {
   return (
@@ -27,6 +27,7 @@ export default function FooterS() {
               <img 
                 src={logo} 
                 alt="logo" 
+                loading="lazy"
                 className="w-full h-full object-cover scale-110 transition-transform duration-300"
               />
             </div>

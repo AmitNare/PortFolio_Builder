@@ -160,6 +160,7 @@ export default function SetHero({ userDetails }) {
         <img
           src={imageUrl}
           alt="Profile"
+          loading="lazy"
           className="w-96 object-cover rounded-full "
         />
       </div>
@@ -172,6 +173,7 @@ export default function SetHero({ userDetails }) {
             <img
               src={wave_hand}
               className="object-contain w-8 h-8 -rotate-[15deg] mx-1"
+              loading="lazy"
               alt="wave hand"
             />
             {userDetails?.features ? "our organization name is" : "my name is"}
@@ -190,6 +192,7 @@ export default function SetHero({ userDetails }) {
             <img
               src={Address}
               alt="address"
+              loading="lazy"
               className="w-6 h-6 object-contain -ml-1 "
             />
             <Label>{userDetails.address} </Label>
@@ -207,6 +210,7 @@ export default function SetHero({ userDetails }) {
               <img
                 src={whatsApp}
                 alt="WhatsApp"
+                loading="lazy"
                 className="w-8 h-8 object-contain "
               />
             </a>
@@ -246,6 +250,7 @@ export default function SetHero({ userDetails }) {
                   <img
                     src={icon}
                     alt={key}
+                    loading="lazy"
                     className="w-8 h-8 object-contain "
                   />
                 </a>

@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import useUserAuth from "./UserAuthentication";
 import DataLoader from "./DataLoader";
 import Swal from "sweetalert2"; // Import SweetAlert2
-import { PlusCircleIcon, TrashIcon } from "lucide-react";
+import { ExternalLink, PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import { AspectRatio } from "./ui/aspect-ratio";
 
@@ -152,7 +152,17 @@ export default function UserCertificates() {
                 </p>
                 <p className="text-sm h-32 custom-scrollbar overflow-auto">
                   {certificate.certificateDescription}
-                </p>{" "}
+                </p>
+                {certificate.certificateUrl && 
+                <a
+                href={certificate.certificateUrl}
+                className="bg-button text-button-textColor hover:bg-button-hover w-fit px-2 py-1 rounded-md flex items-center gap-2"
+                target="_blank"
+                rel="noopener noreferrer"
+                >
+                View <ExternalLink/>
+              </a>
+              }
                 <span className="flex justify-between">
                   {/* <Button className=" w-2/5">Edit</Button> */}
                   <TrashIcon

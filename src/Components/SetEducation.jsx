@@ -27,7 +27,7 @@ export default function SetEducation({ userDetails }) {
               <div className="min-w-56 shadow-[0px_0px_15px_rgba(0,0,0,0.09)] rounded-lg p-5 space-y-3 relative overflow-hidden">
                 <div className="w-24 h-24 bg-violet-500 rounded-full absolute -right-5 -top-7">
                   <p
-                    className={`w-12 absolute bottom-4 tracking-wide left-5 text-center text-wrap text-white text-sm ${
+                    className={`w-[51px] absolute bottom-4 tracking-wide left-5 text-center text-wrap text-white text-sm ${
                       college.gradeType === "%" ? "mb-3" : ""
                     }`}
                   >

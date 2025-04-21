@@ -1133,7 +1133,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   <div className="w-24 h-24 bg-violet-500 rounded-full absolute -right-5 -top-7">
                     <p
                       className={`w-12 absolute bottom-4 left-5 flex justify-center text-center items-center text-wrap text-white text-sm ${
-                        college.gradeType === "%" ? "mb-0 " : ""
+                        college.gradeType === "%" ? "mb-3 " : ""
                       }`}
                     >
                       {`${college.grade || "N/A"} ${

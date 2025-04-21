@@ -110,6 +110,7 @@ const FileUpload = ({
             <img
               src={imagePreviewUrl}
               alt="Preview of the uploaded file"
+              loading="lazy"
               className="h-20 w-20 object-cover rounded-lg"
             />
           )}

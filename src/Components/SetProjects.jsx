@@ -80,6 +80,7 @@ export default function SetProjects({ userDetails }) {
                 <img
                   src={active.projectImage}
                   alt={active.projectName}
+                  loading="lazy"
                   className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top"
                 />
               </motion.div>
@@ -100,9 +101,12 @@ export default function SetProjects({ userDetails }) {
                       rel="noopener noreferrer"
                       className="text-sm w-10 p-2 rounded-full font-bold bg-green-500 text-white"
                     >
-                      <img src={www_img} alt="Visit project" />
+                      <img src={www_img} alt="Visit project" loading="lazy"/>
                     </motion.a>
                   )}
+                </div>
+                {Array.isArray(active.languages) ? active.languages.join(", ") : active.languages}
+                <div>
                 </div>
                 <motion.p
                   layoutId={`description-${active.projectDescription}-${id}`}
