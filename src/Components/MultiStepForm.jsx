@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { storage } from "../../firebase"; // Adjust the import according to your setup
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { set, ref as dbRef, get, getDatabase } from "firebase/database";
+import Swal from "sweetalert2";
 
 import GetUserDetailsForm, {
   AdditionalInfo,
@@ -759,84 +760,94 @@ function MultiStepForm({ setHasPortfolio, setProfileData }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Show waiting message
+    Swal.fire({
+      title: "Generating Portfolio...",
+      text: "Please wait while we create your portfolio.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+  
     setIsLoading(true);
     handleFormSubmit();
+  
     try {
       const db = getDatabase();
       const portfolioRef = dbRef(db, `portfolioId/${user.uid}`);
-
-      // Check if the user already has a portfolio
+  
       const snapshot = await get(portfolioRef);
       if (snapshot.exists()) {
-        alert(
-          "You already have a portfolio link. You cannot create another one."
-        );
+        Swal.close();
+        Swal.fire("Oops!", "You already have a portfolio link.", "warning");
         return;
       }
-
-      // **Step 1: Upload Image and Resume**
+  
       const uploadPromises = [];
-
+  
       let imageUrl = null;
       if (formData.image) {
         const storageRef = ref(storage, `images/${formData.image.name}`);
         const uploadTask = uploadBytesResumable(storageRef, formData.image);
         uploadPromises.push(uploadTask.then(() => getDownloadURL(storageRef)));
       }
-
+  
       let resumeUrl = null;
       if (formData.resume) {
         const storageRef = ref(storage, `resume/${formData.resume.name}`);
         const uploadTask = uploadBytesResumable(storageRef, formData.resume);
         uploadPromises.push(uploadTask.then(() => getDownloadURL(storageRef)));
       }
-
-      // Wait for all uploads to complete
+  
       const urls = await Promise.all(uploadPromises);
-      imageUrl = urls[0] || null; // First URL is for the image
-      resumeUrl = urls[1] || null; // Second URL is for the resume
-
-      console.log("Uploaded Image URL:", imageUrl);
-      console.log("Uploaded Resume URL:", resumeUrl);
-
-      // **Step 4: Generate Portfolio Link**
+      imageUrl = urls[0] || null;
+      resumeUrl = urls[1] || null;
+  
       const uniqueLink = generatePortfolioLink(formData.name, formData.surname);
-
-      // **Step 5: Prepare Portfolio Data**
+  
       const portfolioData = {
         uniqueLink: uniqueLink,
         createdAt: Date.now(),
       };
-
-      // **Step 3: Update formData with the correct URLs**
+  
       const updatedFormData = {
         ...formData,
         image: imageUrl,
         resume: resumeUrl,
         portfolioLink: uniqueLink,
       };
-
-      // Update the formData state with the new URLs
+  
       setFormData(updatedFormData);
-
-      // **Step 6: Save to Firebase**
-      await set(portfolioRef, portfolioData); // use to store unique link
-      await savePortfolioDataToFirebase(updatedFormData, user.uid); // Use updatedFormData here
-
-      console.log("Portfolio data saved successfully:", portfolioData);
-      alert("Portfolio created successfully!");
-
-      // **Step 7: Update State and Navigate**
-      setProfileData(updatedFormData); // Use updatedFormData here
+  
+      await set(portfolioRef, portfolioData);
+      await savePortfolioDataToFirebase(updatedFormData, user.uid);
+  
+      setProfileData(updatedFormData);
       setUserDetails(updatedFormData);
       setHasPortfolio(true);
+  
+      // Show success message
+      await Swal.fire({
+        icon: "success",
+        title: "Portfolio Created!",
+        text: "Your portfolio was created successfully.",
+        confirmButtonText: "OK",
+      }).then(() => {
+        window.location.reload(); // Refresh the page after user clicks OK
+      });
+  
       navigate(location.pathname, { replace: true });
+  
     } catch (error) {
       console.error("Error saving portfolio data to Firebase:", error);
+      Swal.fire("Error", "Something went wrong while saving your portfolio.", "error");
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   function getSectionComponent() {
     switch (activeStep) {

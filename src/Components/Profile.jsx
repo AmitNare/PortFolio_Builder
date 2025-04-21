@@ -1156,7 +1156,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                     {/* Description Textarea */}
                     <div
                       //  className="w-full flex items-center justify-center"
-                      className="resize-none w-full mt-2 p-2 text-sm tracking-wide flex justify-center h-32 overflow-auto border border-gray-300 rounded-sm text-gray-500 custom-scrollbar"
+                      className="resize-none w-full mt-2 p-2 text-sm tracking-wide flex text-wrap justify-center h-32 overflow-auto border border-gray-300 rounded-sm text-gray-500 overflow-x-hidden custom-scrollbar"
                     >
                       {college.description}
                     </div>
@@ -1390,7 +1390,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                       )
                     }
                     disabled={!cardEditingStates[index]}
-                    className="border-2 text-foreground bg-background p-2 w-full h-32 resize-none custom-scrollbar overflow-auto"
+                    className="border-2 text-foreground bg-background p-2 w-full h-32 resize-none overflow-x-hidden custom-scrollbar overflow-auto"
                     placeholder="Job Description"
                     rows={4}
                   />

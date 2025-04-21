@@ -41,7 +41,7 @@ export default function SetProjects({ userDetails }) {
   return (
     <section className="w-full flex-col justify-evenly items-center">
       <div className="mb-6 text-center">
-        <h1 className="text-3xl font-semibold">Creations</h1>
+        <h1 className="text-3xl font-semibold">Projects</h1>
       </div>
 
       {/* Backdrop */}

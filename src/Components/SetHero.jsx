@@ -122,13 +122,16 @@ export default function SetHero({ userDetails }) {
             {userDetails?.features ? "our organization name is" : "my name is"}
           </div>
 
-          <strong className="md:text-5xl text-green-500 font-bold md-max:text-5xl lg:text-6xl xl:text-7xl">
+          <strong className="sm-max:text-center md:text-5xl text-green-500 font-bold md-max:text-5xl lg:text-6xl xl:text-7xl">
             {`${userDetails.name} ${userDetails.surname}`}
           </strong>
           <h2 className="text-2xl">
             {userDetails?.features ? "We provide " : "I am "}
             <span className="text-blue-600">{displayedText}</span>
           </h2>
+          <p className="text-sm mt-1 sm-max:text-center">
+            {userDetails.bio}
+          </p>
 
           <div className="flex items-center mt-1 md:justify-center lg:justify-normal">
             <img
@@ -140,7 +143,7 @@ export default function SetHero({ userDetails }) {
           </div>
 
           {/* Social Links Section */}
-          <div className="flex space-x-4 mt-10 ml-1 md:justify-center lg:justify-normal">
+          <div className="flex space-x-4 mt-3 ml-1 md:justify-center lg:justify-normal">
             {/* WhatsApp */}
             <a
               href={`https://wa.me/${userDetails.phoneNo.replace(/\s/g, "")}`}

@@ -38,7 +38,7 @@ export default function SetSkills({ userDetails }) {
 
   return (
     <div className="w-full md:w-3/5 flex flex-col flex-wrap justify-center items-center text-foreground bg-background p-4 mt-10">
-      <h2 className="text-3xl font-semibold mb-6">Tech Stack</h2>
+      <h2 className="text-3xl font-semibold mb-6">Skills & Tools</h2>
       <div className="flex flex-wrap items-center justify-center gap-5">
         {(userDetails.skills || []).map((skill, index) => {
           const icon = skillIcons[skill];

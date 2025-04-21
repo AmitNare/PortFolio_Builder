@@ -20,7 +20,9 @@ const portfolioSections = [
   { id: "SetCertificates", label: "Certificates" },
   { id: "SetEducation", label: "Education" },
   { id: "SetExperience", label: "Experience" },
+  { id: "SetFeatures", label: "Features" }, // ✅ Add this
 ];
+
 
 export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   const navigate = useNavigate();
@@ -132,14 +134,25 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   const navItems = userName
   ? portfolioSections.filter((section) => {
       if (!userDetails) return false;
+
       if (section.id === "SetHero") return !userDetails.hero;
       if (section.id === "SetProjects") return !!userDetails.projects;
       if (section.id === "SetCertificates") return !!userDetails.certificates;
-      if (section.id === "SetEducation") return !!userDetails.colleges;
       if (section.id === "SetExperience") return !!userDetails.experience;
+
+      // ✅ Show Features if features exist
+      if (section.id === "SetFeatures") return !!userDetails.features;
+
+      // ✅ Show Education only if features do NOT exist and education exists
+      if (section.id === "SetEducation") return !userDetails.features && !!userDetails.colleges;
+
       return false;
     })
   : sections;
+
+
+
+
 
 
   return (

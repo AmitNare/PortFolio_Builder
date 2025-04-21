@@ -24,10 +24,10 @@ export default function SetExperience({ userDetails }) {
                 className="w-full sm:w-96 flex border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
               >
                 <div className="min-w-full group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-2xl sm:mx-auto sm:max-w-sm sm:rounded-lg">
-                  <span className="absolute top-[12px] z-0 h-10 sm-max:w-44 md:w-40 rounded-r-md bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
+                  <span className="absolute top-[12px] z-0 h-12 sm-max:w-44 md:w-40 rounded-r-md bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
                   <div className="relative z-10 flex justify-between items-center pr-5 sm-max:p-0">
-                    <span className="grid mt-3 h-10 sm-max:w-44 md:w-40 place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
-                      <h1 className="w-full text-balance tracking-wide">
+                    <span className="grid mt-4 h-12 sm-max:w-44 md:w-40 place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
+                      <h1 className="w-full text-center text-balance tracking-wide">
                         {exp.jobRole || "N/A"}
                       </h1>
                     </span>

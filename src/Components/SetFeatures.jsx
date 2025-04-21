@@ -24,12 +24,12 @@ export default function SetFeatures({ userDetails }) {
           {featureArray.map((feature) => (
             <div
               key={feature.id}
-              className="w-full sm:w-96 p-5 flex flex-col items-center justify-center border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
+              className="w-full text-center sm:w-96 p-5 flex flex-col items-center justify-center border rounded-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-shadow duration-300"
             >
-              <h3 className="text-3xl font-semibold mb-3">
+              <h3 className="sm-max:text-xl text-3xl font-semibold mb-3">
                 {feature.featureName || "Untitled Feature"}
               </h3>
-              <p className="h-32 custom-scrollbar overflow-auto text-center text-gray-600 dark:text-gray-300">
+              <p className="sm-max:text-sm h-32 custom-scrollbar overflow-auto text-center text-gray-600 dark:text-gray-300">
                 {feature.featureDescription || "No description available."}
               </p>
             </div>
