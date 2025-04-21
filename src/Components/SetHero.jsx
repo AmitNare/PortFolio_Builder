@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getDatabase, ref, get } from "firebase/database";
+// import { getDatabase, ref, get } from "firebase/database";
 import whatsApp from "../assets/Images/whatsapp.png";
 import instagram from "../assets/Images/instagram.png";
 import gmail from "../assets/Images/gmail.png";
@@ -10,6 +10,16 @@ import wave_hand from "../assets/Images/wave-hand.gif";
 
 import "../App.css";
 import { Label } from "./ui/label";
+import { Button } from "./ui/button";
+import {
+  onValue,
+  getDatabase,
+  ref as dbRef,
+  get,
+  update,
+} from "firebase/database";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
+import { Download, DownloadIcon } from "lucide-react";
 
 export default function SetHero({ userDetails }) {
   const [currentRoleIndex, setCurrentRoleIndex] = useState(0);
@@ -23,8 +33,8 @@ export default function SetHero({ userDetails }) {
   useEffect(() => {
     if (userDetails?.uid) {
       const db = getDatabase();
-      const userRef = ref(db, `Users/${userDetails.uid}`);
-      const imageRef = ref(db, `portfolioId/${userDetails.uid}/image`);
+      const userRef = dbRef(db, `Users/${userDetails.uid}`);
+      const imageRef = dbRef(db, `portfolioId/${userDetails.uid}/image`);
 
       // Fetch user data for roles
       get(userRef)
@@ -49,19 +59,6 @@ export default function SetHero({ userDetails }) {
         .catch((error) => {
           console.error("Error fetching user data:", error);
         });
-
-      // Fetch image URL
-      // get(imageRef)
-      //   .then((snapshot) => {
-      //     if (snapshot.exists()) {
-      //       setImageUrl(snapshot.val()); // Assuming the imageRef stores the URL
-      //     } else {
-      //       console.error("No image data found.");
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error fetching image data:", error);
-      //   });
     }
   }, [userDetails?.uid]);
 
@@ -98,6 +95,64 @@ export default function SetHero({ userDetails }) {
     return () => clearTimeout(typingTimeout);
   }, [displayedText, isDeleting, typingSpeed, currentRoleIndex, roles]);
 
+  // download file from firebase url
+  const downloadResume = async () => {
+    if (!userDetails.resume) {
+      console.error("No Resume Found");
+      return;
+    }
+
+    try {
+      const storage = getStorage();
+
+      // Decode and extract path from URL
+      const fullUrl = userDetails.resume;
+      const decodedUrl = decodeURIComponent(fullUrl);
+      const pathStartIndex = decodedUrl.indexOf("/o/") + 3; // Start after "/o/"
+      const pathEndIndex = decodedUrl.indexOf("?alt="); // End before query parameters
+      const storagePath = decodedUrl.substring(pathStartIndex, pathEndIndex);
+
+      console.log("Extracted Storage Path:", storagePath);
+
+      // Create Firebase storage reference using extracted path
+      const resumeRef = ref(storage, storagePath);
+
+      // Get fresh download URL
+      const downloadUrl = await getDownloadURL(resumeRef);
+
+      // Trigger file download
+      const link = document.createElement("a");
+      link.target = "_blank";
+      link.href = downloadUrl;
+      link.setAttribute("download", getFileNameFromURL(userDetails?.resume));
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
+
+  function getFileNameFromURL(url) {
+    try {
+      // Extract the part after "o/" and before "?alt="
+      const match = url.match(/o\/(.*?)\?alt=/);
+
+      if (match && match[1]) {
+        // Decode the URL-encoded file path to get the actual file name
+        const filePath = decodeURIComponent(match[1]);
+
+        // Get the last part after the last "/"
+        return filePath.split("/").pop();
+      }
+
+      return null; // Return null if no match is found
+    } catch (error) {
+      console.error("Error extracting file name:", error);
+      return null;
+    }
+  }
+
   return (
     <div className="w-full flex mx-auto justify-center items-center bg-background md-max:flex-col gap-2 md:gap-16 lg:flex-row md:flex-col px-5">
       {/* Profile Image Section */}
@@ -129,9 +184,7 @@ export default function SetHero({ userDetails }) {
             {userDetails?.features ? "We provide " : "I am "}
             <span className="text-blue-600">{displayedText}</span>
           </h2>
-          <p className="text-sm mt-1 sm-max:text-center">
-            {userDetails.bio}
-          </p>
+          <p className="text-sm mt-1 sm-max:text-center">{userDetails.bio}</p>
 
           <div className="flex items-center mt-1 md:justify-center lg:justify-normal">
             <img
@@ -143,7 +196,7 @@ export default function SetHero({ userDetails }) {
           </div>
 
           {/* Social Links Section */}
-          <div className="flex space-x-4 mt-3 ml-1 md:justify-center lg:justify-normal">
+          <div className="flex gap-1 space-x-4 mt-3 ml-1 md:justify-center lg:justify-normal">
             {/* WhatsApp */}
             <a
               href={`https://wa.me/${userDetails.phoneNo.replace(/\s/g, "")}`}
@@ -198,6 +251,16 @@ export default function SetHero({ userDetails }) {
                 </a>
               );
             })}
+          </div>
+          {/* Download Resume Button */}
+          <div className="w-fit text-lg mt-2 px-3 py-1 gap-2 rounded-sm bg-button hover:bg-button-hover text-button-textColor tracking-wide flex items-center ">
+            {userDetails?.features ? <h1>Brochure</h1> : <h1>Download CV</h1>}
+            <DownloadIcon
+              size={22}
+              onClick={downloadResume}
+              title="Download Resume"
+            />
+            {/* Adjust size here */}
           </div>
         </section>
       </div>

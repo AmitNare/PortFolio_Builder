@@ -14,7 +14,12 @@ import {
 import { useUserAuth } from "./UserAuthentication";
 import { BsGithub } from "react-icons/bs";
 import { Twitter, Instagram, Linkedin, Copy } from "lucide-react";
-import { getAuth, sendEmailVerification, updateEmail, EmailAuthProvider } from 'firebase/auth';
+import {
+  getAuth,
+  sendEmailVerification,
+  updateEmail,
+  EmailAuthProvider,
+} from "firebase/auth";
 import { storage /* storage as storageRef */ } from "../../firebase"; // Adjust the import according to your setup
 import {
   ref,
@@ -190,20 +195,20 @@ export default function Settings() {
     },
   });
 
-  const reauthenticateUser  = async (password) => {
-    const user = getAuth().currentUser ;
+  const reauthenticateUser = async (password) => {
+    const user = getAuth().currentUser;
     const credential = EmailAuthProvider.credential(user.email, password);
     return await user.reauthenticateWithCredential(credential);
   };
 
   const updateUserEmail = async (newEmail, userPassword) => {
     const auth = getAuth();
-    const user = auth.currentUser ;
+    const user = auth.currentUser;
 
     if (user) {
       try {
         // Reauthenticate the user
-        await reauthenticateUser (userPassword);
+        await reauthenticateUser(userPassword);
 
         // Update the user's email first
         await updateEmail(user, newEmail);
@@ -211,7 +216,9 @@ export default function Settings() {
 
         // Now send a verification email to the new email address
         await sendEmailVerification(user);
-        console.log("Verification email sent to the new email address. Please verify your new email address.");
+        console.log(
+          "Verification email sent to the new email address. Please verify your new email address."
+        );
 
         // Wait for the user to verify the email
         const interval = setInterval(async () => {
@@ -293,13 +300,13 @@ export default function Settings() {
     try {
       // Show waiting alert
       Swal.fire({
-      title: "Uploading...",
-      text: "Please wait while your resume is being uploaded.",
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
+        title: "Uploading...",
+        text: "Please wait while your resume is being uploaded.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
 
       const storageRef = ref(storage, `resumes/${user.uid}/${file.name}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
@@ -331,8 +338,8 @@ export default function Settings() {
             ...prevDetails,
             resume: fileURL,
           }));
-// Show success alert
-Swal.fire("Success", "Resume uploaded successfully!", "success");
+          // Show success alert
+          Swal.fire("Success", "Resume uploaded successfully!", "success");
           console.log("Resume uploaded and saved successfully!");
         }
       );
@@ -342,7 +349,6 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
     }
   };
 
-  
   // download file from firebase url
   const downloadResume = async () => {
     if (!formik.values.resume) {
@@ -370,7 +376,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
 
       // Trigger download
       const link = document.createElement("a");
-      link.target ="_blank"
+      link.target = "_blank";
       link.href = downloadUrl;
       link.setAttribute("download", getFileNameFromURL(formik?.values?.resume));
       document.body.appendChild(link);
@@ -401,8 +407,6 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
     }
   }
 
-  
-
   const handleSocialLinkChange = (index, field, value) => {
     const updatedLinks = [...formik.values.socialLink];
     updatedLinks[index][field] = value;
@@ -430,7 +434,7 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
 
   return (
     <>
-    {portfolioLink && (
+      {portfolioLink && (
         <strong className="flex w-fit m-auto px-5 py-1 border-2 rounded-lg border-green-500 justify-center items-center gap-2">
           {portfolioLink}
           <button onClick={handleCopy}>
@@ -439,281 +443,253 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
         </strong>
       )}
 
-    <form
-      data-aos="fade-left"
-      className="space-y-5 max-w-2xl mx-auto p-5 rounded-md"
-      onSubmit={formik.handleSubmit}
-    >
-      
-      <div className="flex flex-col items-center space-y-4">
-        <div className="relative">
-          {profileImage ? (
-            <Avatar className="w-32 h-32">
-              <AvatarImage
-                src={profileImage}
-                alt="User's profile picture"
-                loading="lazy"
-                className="object-cover"
-              />
-            </Avatar>
-          ) : (
-            <Avatar className="w-32 h-32">
-              <AvatarImage
-                src="/placeholder.svg?height=100&width=100"
-                alt="User's profile picture"
-                className="object-cover"
-              />
-            </Avatar>
-          )}
-          <Label
-            htmlFor="profile-image"
-            className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-2 cursor-pointer"
-          >
-            <Camera className="w-5 h-5" />
-            <Input
-              id="profile-image"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
-            />
-          </Label>
-        </div>
-      </div>
-
-      <div className="grid gap-6 sm:grid-cols-2">
-        <div className="flex flex-col relative gap-1">
-          <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.name}
-            placeholder="John"
-          />
-          {formik.touched.name && formik.errors.name && (
-            <div className="absolute text-red-500 text-sm mt-16">
-              {formik.errors.name}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col relative gap-1">
-          <Label htmlFor="surname">Surname</Label>
-          <Input
-            id="surname"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.surname}
-            placeholder="Doe"
-          />
-          {formik.touched.surname && formik.errors.surname && (
-            <div className="absolute text-red-500 text-sm mt-16">
-              {formik.errors.surname}
-            </div>
-          )}
-        </div>
-
-        {/* <div className="grid gap-6 sm:grid-cols-2"> */}
-        <div className="flex flex-col relative gap-1">
-          <Label htmlFor="gender">Gender</Label>
-          <Input
-            id="gender"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.gender}
-            placeholder="John"
-            required
-          />
-          {formik.touched.gender && formik.errors.gender && (
-            <div className="absolute text-red-500 text-sm mt-16">
-              {formik.errors.gender}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col relative gap-1">
-          <Label htmlFor="phoneNo">Phone No</Label>
-          <Input
-            id="phoneNo"
-            type="tel"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.phoneNo}
-            placeholder="+1 (555) 000-0000"
-          />
-          {formik.touched.phoneNo && formik.errors.phoneNo && (
-            <div className="absolute text-red-500 text-sm mt-16">
-              {formik.errors.phoneNo}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col relative gap-1">
-          <Label htmlFor="address">Address</Label>
-          <LocationSearch
-            handleInputChange={formik.handleChange}
-            errors={formik.errors}
-            value={formik.values.address}
-            fieldsToShow={["suburb", "city", "state", "country"]}
-            fieldPass="address"
-          />
-          {formik.touched.address && formik.errors.address && (
-            <div className="absolute text-red-500 text-sm mt-16">
-              {formik.errors.address}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col relative gap-1">
-          <Label htmlFor="currentJobRole">Current Job Role</Label>
-          <Input
-            id="currentJobRole"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.currentJobRole}
-            placeholder="Manager, HR"
-          />
-          {formik.touched.currentJobRole && formik.errors.currentJobRole && (
-            <div className="absolute text-red-500 text-sm mt-16">
-              {formik.errors.currentJobRole}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col relative gap-1">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.email}
-            placeholder="johndoe@example.com"
-          />
-          {formik.touched.email && formik.errors.email && (
-            <div className="absolute text-red-500 text-sm mt-16">
-              {formik.errors.email}
-            </div>
-          )}
-        </div>
-
-        {/* <Button onClick={}>Verify</Button> */}
-      </div>
-
-      <div className="space-y-2">
-        <h2 className="text-xl font-semibold">Social Links</h2>
-        {formik.values.socialLink.map((link, index) => (
-          <div key={index} className="grid gap-6 sm:grid-cols-2 mb-4">
-            <div className="relative flex items-center space-x-2">
-              <BsGithub className="w-5 h-5 text-blue-600" />
-              <Input
-                value={link.gitHub}
-                onChange={(e) =>
-                  handleSocialLinkChange(index, "gitHub", e.target.value)
-                }
-                placeholder="GitHub URL"
-              />
-              {formik.errors.socialLink &&
-              formik.errors.socialLink[index]?.gitHub ? (
-                <div className="absolute mt-16 left-5 text-red-500 text-sm">
-                  {formik.errors.socialLink[index].gitHub}
-                </div>
-              ) : null}
-            </div>
-            <div className=" relative flex items-center space-x-2">
-              <Twitter className="w-5 h-5 text-sky-500" />
-              <Input
-                value={link.twitter}
-                onChange={(e) =>
-                  handleSocialLinkChange(index, "twitter", e.target.value)
-                }
-                placeholder="Twitter URL"
-              />
-              {formik.errors.socialLink &&
-              formik.errors.socialLink[index]?.twitter ? (
-                <div className="absolute mt-16 left-5 text-red-500 text-sm">
-                  {formik.errors.socialLink[index].twitter}
-                </div>
-              ) : null}
-            </div>
-            <div className="relative flex items-center space-x-2">
-              <Instagram className="w-5 h-5 text-pink-600" />
-              <Input
-                value={link.instagram}
-                onChange={(e) =>
-                  handleSocialLinkChange(index, "instagram", e.target.value)
-                }
-                placeholder="Instagram URL"
-              />
-              {formik.errors.socialLink &&
-              formik.errors.socialLink[index]?.instagram ? (
-                <div className="absolute mt-16 left-5 text-red-500 text-sm">
-                  {formik.errors.socialLink[index].instagram}
-                </div>
-              ) : null}
-            </div>
-            <div className="relative flex items-center space-x-2">
-              <Linkedin className="w-5 h-5 text-blue-700" />
-              <Input
-                value={link.linkedIn}
-                onChange={(e) =>
-                  handleSocialLinkChange(index, "linkedIn", e.target.value)
-                }
-                placeholder="LinkedIn URL"
-              />
-              {formik.errors.socialLink &&
-              formik.errors.socialLink[index]?.linkedIn ? (
-                <div className="absolute mt-16 left-5 text-red-500 text-sm">
-                  {formik.errors.socialLink[index].linkedIn}
-                </div>
-              ) : null}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Resume</h2>
-
-        <div className="w-full border-2 border-dashed bg-[#374151]/20 border-gray-400 rounded-xl flex flex-col items-center justify-center gap-3 p-6 transition">
-          {!formik?.values?.resume ? (
-            <>
-              <p className="flex items-center gap-2 text-base font-medium text-white">
-                Upload your Resume / CV (PDF)
-              </p>
-              <Label
-                htmlFor="resume"
-                className="bg-primary text-primary-foreground px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-primary/90 transition"
-              >
-                <Upload size={18} /> Upload
-                <Input
-                  id="resume"
-                  type="file"
-                  accept="application/pdf"
-                  className="hidden"
-                  onChange={handleResumeChange}
+      <form
+        data-aos="fade-left"
+        className="space-y-5 max-w-2xl mx-auto p-5 rounded-md"
+        onSubmit={formik.handleSubmit}
+      >
+        <div className="flex flex-col items-center space-y-4">
+          <div className="relative">
+            {profileImage ? (
+              <Avatar className="w-32 h-32">
+                <AvatarImage
+                  src={profileImage}
+                  alt="User's profile picture"
+                  loading="lazy"
+                  className="object-cover"
                 />
-              </Label>
-            </>
-          ) : (
-            <div className="flex flex-col items-center gap-3">
-              <p className="text-white text-base font-medium">
-                {getFileNameFromURL(formik?.values?.resume) || "NA"}
-              </p>
-              <div className="flex gap-3">
-                <Button
-                  type="button"
-                  onClick={downloadResume}
-                  className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-600 transition"
-                >
-                  <Download size={18} /> Download
-                </Button>
+              </Avatar>
+            ) : (
+              <Avatar className="w-32 h-32">
+                <AvatarImage
+                  src="/placeholder.svg?height=100&width=100"
+                  alt="User's profile picture"
+                  className="object-cover"
+                />
+              </Avatar>
+            )}
+            <Label
+              htmlFor="profile-image"
+              className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-2 cursor-pointer"
+            >
+              <Camera className="w-5 h-5" />
+              <Input
+                id="profile-image"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+              />
+            </Label>
+          </div>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div className="flex flex-col relative gap-1">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.name}
+              placeholder="John"
+            />
+            {formik.touched.name && formik.errors.name && (
+              <div className="absolute text-red-500 text-sm mt-16">
+                {formik.errors.name}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col relative gap-1">
+            <Label htmlFor="surname">Surname</Label>
+            <Input
+              id="surname"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.surname}
+              placeholder="Doe"
+            />
+            {formik.touched.surname && formik.errors.surname && (
+              <div className="absolute text-red-500 text-sm mt-16">
+                {formik.errors.surname}
+              </div>
+            )}
+          </div>
+
+          {/* <div className="grid gap-6 sm:grid-cols-2"> */}
+          <div className="flex flex-col relative gap-1">
+            <Label htmlFor="gender">Gender</Label>
+            <Input
+              id="gender"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.gender}
+              placeholder="John"
+              required
+            />
+            {formik.touched.gender && formik.errors.gender && (
+              <div className="absolute text-red-500 text-sm mt-16">
+                {formik.errors.gender}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col relative gap-1">
+            <Label htmlFor="phoneNo">Phone No</Label>
+            <Input
+              id="phoneNo"
+              type="tel"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.phoneNo}
+              placeholder="+1 (555) 000-0000"
+            />
+            {formik.touched.phoneNo && formik.errors.phoneNo && (
+              <div className="absolute text-red-500 text-sm mt-16">
+                {formik.errors.phoneNo}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col relative gap-1">
+            <Label htmlFor="address">Address</Label>
+            <LocationSearch
+              handleInputChange={formik.handleChange}
+              errors={formik.errors}
+              value={formik.values.address}
+              fieldsToShow={["suburb", "city", "state", "country"]}
+              fieldPass="address"
+            />
+            {formik.touched.address && formik.errors.address && (
+              <div className="absolute text-red-500 text-sm mt-16">
+                {formik.errors.address}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col relative gap-1">
+            <Label htmlFor="currentJobRole">Current Job Role</Label>
+            <Input
+              id="currentJobRole"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.currentJobRole}
+              placeholder="Manager, HR"
+            />
+            {formik.touched.currentJobRole && formik.errors.currentJobRole && (
+              <div className="absolute text-red-500 text-sm mt-16">
+                {formik.errors.currentJobRole}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col relative gap-1">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              placeholder="johndoe@example.com"
+            />
+            {formik.touched.email && formik.errors.email && (
+              <div className="absolute text-red-500 text-sm mt-16">
+                {formik.errors.email}
+              </div>
+            )}
+          </div>
+
+          {/* <Button onClick={}>Verify</Button> */}
+        </div>
+
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold">Social Links</h2>
+          {formik.values.socialLink.map((link, index) => (
+            <div key={index} className="grid gap-6 sm:grid-cols-2 mb-4">
+              <div className="relative flex items-center space-x-2">
+                <BsGithub className="w-5 h-5 text-blue-600" />
+                <Input
+                  value={link.gitHub}
+                  onChange={(e) =>
+                    handleSocialLinkChange(index, "gitHub", e.target.value)
+                  }
+                  placeholder="GitHub URL"
+                />
+                {formik.errors.socialLink &&
+                formik.errors.socialLink[index]?.gitHub ? (
+                  <div className="absolute mt-16 left-5 text-red-500 text-sm">
+                    {formik.errors.socialLink[index].gitHub}
+                  </div>
+                ) : null}
+              </div>
+              <div className=" relative flex items-center space-x-2">
+                <Twitter className="w-5 h-5 text-sky-500" />
+                <Input
+                  value={link.twitter}
+                  onChange={(e) =>
+                    handleSocialLinkChange(index, "twitter", e.target.value)
+                  }
+                  placeholder="Twitter URL"
+                />
+                {formik.errors.socialLink &&
+                formik.errors.socialLink[index]?.twitter ? (
+                  <div className="absolute mt-16 left-5 text-red-500 text-sm">
+                    {formik.errors.socialLink[index].twitter}
+                  </div>
+                ) : null}
+              </div>
+              <div className="relative flex items-center space-x-2">
+                <Instagram className="w-5 h-5 text-pink-600" />
+                <Input
+                  value={link.instagram}
+                  onChange={(e) =>
+                    handleSocialLinkChange(index, "instagram", e.target.value)
+                  }
+                  placeholder="Instagram URL"
+                />
+                {formik.errors.socialLink &&
+                formik.errors.socialLink[index]?.instagram ? (
+                  <div className="absolute mt-16 left-5 text-red-500 text-sm">
+                    {formik.errors.socialLink[index].instagram}
+                  </div>
+                ) : null}
+              </div>
+              <div className="relative flex items-center space-x-2">
+                <Linkedin className="w-5 h-5 text-blue-700" />
+                <Input
+                  value={link.linkedIn}
+                  onChange={(e) =>
+                    handleSocialLinkChange(index, "linkedIn", e.target.value)
+                  }
+                  placeholder="LinkedIn URL"
+                />
+                {formik.errors.socialLink &&
+                formik.errors.socialLink[index]?.linkedIn ? (
+                  <div className="absolute mt-16 left-5 text-red-500 text-sm">
+                    {formik.errors.socialLink[index].linkedIn}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Resume</h2>
+
+          <div className="w-full border-2 border-dashed bg-[#374151]/20 border-gray-400 rounded-xl flex flex-col items-center justify-center gap-3 p-6 transition">
+            {!formik?.values?.resume ? (
+              <>
+                <p className="flex items-center gap-2 text-base font-medium text-white">
+                  Upload your Resume / CV (PDF)
+                </p>
                 <Label
                   htmlFor="resume"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-blue-600 transition"
+                  className="bg-primary text-primary-foreground px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-primary/90 transition"
                 >
-                  <FilePenLine size={18} /> Update
+                  <Upload size={18} /> Upload
                   <Input
                     id="resume"
                     type="file"
@@ -722,31 +698,57 @@ Swal.fire("Success", "Resume uploaded successfully!", "success");
                     onChange={handleResumeChange}
                   />
                 </Label>
+              </>
+            ) : (
+              <div className="flex flex-col items-center gap-3">
+                <p className="text-white text-base font-medium">
+                  {getFileNameFromURL(formik?.values?.resume) || "NA"}
+                </p>
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    onClick={downloadResume}
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-600 transition"
+                  >
+                    <Download size={18} /> Download
+                  </Button>
+                  <Label
+                    htmlFor="resume"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-blue-600 transition"
+                  >
+                    <FilePenLine size={18} /> Update
+                    <Input
+                      id="resume"
+                      type="file"
+                      accept="application/pdf"
+                      className="hidden"
+                      onChange={handleResumeChange}
+                    />
+                  </Label>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className="flex justify-center">
-        <Button
-          size="lg"
-          type="submit"
-          className="w-2/4 md-max:w-full bg-button text-button-textColor hover:bg-button-hover relative overflow-hidden flex items-center justify-center"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          // onClick={handleSave}
-        >
-          <span className="relative z-10">Save</span>
-          <Send
-            className={` w-8 h-8 transition-transform duration-300 ${
-              isHovered ? "translate-x-0 rotate-45 " : "translate-x-full "
-            } `}
-          />
-        </Button>
-      </div>
-    </form>
+        <div className="flex justify-center">
+          <Button
+            size="lg"
+            type="submit"
+            className="w-2/4 md-max:w-full bg-button text-button-textColor hover:bg-button-hover relative overflow-hidden flex items-center justify-center"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            // onClick={handleSave}
+          >
+            <span className="relative z-10">Save</span>
+            <Send
+              className={` w-8 h-8 transition-transform duration-300 ${
+                isHovered ? "translate-x-0 rotate-45 " : "translate-x-full "
+              } `}
+            />
+          </Button>
+        </div>
+      </form>
     </>
-
   );
 }

@@ -23,7 +23,6 @@ const portfolioSections = [
   { id: "SetFeatures", label: "Features" }, // ✅ Add this
 ];
 
-
 export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -132,28 +131,24 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   }, []);
 
   const navItems = userName
-  ? portfolioSections.filter((section) => {
-      if (!userDetails) return false;
+    ? portfolioSections.filter((section) => {
+        if (!userDetails) return false;
 
-      if (section.id === "SetHero") return !userDetails.hero;
-      if (section.id === "SetProjects") return !!userDetails.projects;
-      if (section.id === "SetCertificates") return !!userDetails.certificates;
-      if (section.id === "SetExperience") return !!userDetails.experience;
+        if (section.id === "SetHero") return !userDetails.hero;
+        if (section.id === "SetProjects") return !!userDetails.projects;
+        if (section.id === "SetCertificates") return !!userDetails.certificates;
+        if (section.id === "SetExperience") return !!userDetails.experience;
 
-      // ✅ Show Features if features exist
-      if (section.id === "SetFeatures") return !!userDetails.features;
+        // ✅ Show Features if features exist
+        if (section.id === "SetFeatures") return !!userDetails.features;
 
-      // ✅ Show Education only if features do NOT exist and education exists
-      if (section.id === "SetEducation") return !userDetails.features && !!userDetails.colleges;
+        // ✅ Show Education only if features do NOT exist and education exists
+        if (section.id === "SetEducation")
+          return !userDetails.features && !!userDetails.colleges;
 
-      return false;
-    })
-  : sections;
-
-
-
-
-
+        return false;
+      })
+    : sections;
 
   return (
     <div
@@ -184,7 +179,9 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
                 <Link
                   to={`/${userName || ""}#${item.id}`}
                   className={`hover:text-[#EE4B2B] transition-colors duration-300 ${
-                    activeSection === item.id ? "text-[#EE4B2B] font-semibold underline underline-offset-4" : ""
+                    activeSection === item.id
+                      ? "text-[#EE4B2B] font-semibold underline underline-offset-4"
+                      : ""
                   }`}
                 >
                   {item.label}
@@ -267,7 +264,11 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
           }`}
         >
           <nav className="w-full text-lg font-medium bg-gray-500">
-            <X size={28} onClick={() => setOpen(false)} className="absolute top-5 right-5" />
+            <X
+              size={28}
+              onClick={() => setOpen(false)}
+              className="absolute top-5 right-5"
+            />
 
             <ul className="flex flex-col mt-20 items-center space-y-4">
               {navItems.map((item) => (
@@ -276,7 +277,9 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
                     to={`/${userName || ""}#${item.id}`}
                     onClick={() => setOpen(false)}
                     className={`${
-                      activeSection === item.id ? "text-[#EE4B2B] font-semibold underline underline-offset-4" : ""
+                      activeSection === item.id
+                        ? "text-[#EE4B2B] font-semibold underline underline-offset-4"
+                        : ""
                     }`}
                   >
                     {item.label}

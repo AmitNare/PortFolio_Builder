@@ -3,8 +3,8 @@ import { Button } from "./ui/button";
 import { Sparkles, Rocket } from "lucide-react";
 
 export default function Hero() {
-    const navigate = useNavigate();
-  
+  const navigate = useNavigate();
+
   return (
     <section className=" text-foreground min-h-[50em] h-auto flex flex-col items-center justify-center text-center bg-background mb-12">
       <div className="animate-bounce ">
@@ -18,9 +18,10 @@ export default function Hero() {
         Stand out from the crowd and leave a lasting impression.
       </p>
       <div className="flex space-x-6 mb-32">
-        <Button 
+        <Button
           onClick={() => navigate("/signin")}
-          className="bg-button text-button-textColor px-8 sm-max:px-4 py-6 sm-max:py-2 text-xl sm-max:text-lg rounded-full shadow-2xl hover:bg-button-hover hover:-translate-y-1 transition-all duration-300">
+          className="bg-button text-button-textColor px-8 sm-max:px-4 py-6 sm-max:py-2 text-xl sm-max:text-lg rounded-full shadow-2xl hover:bg-button-hover hover:-translate-y-1 transition-all duration-300"
+        >
           Get Started
         </Button>
         <Button
@@ -31,9 +32,6 @@ export default function Hero() {
           Learn More
         </Button>
       </div>
-      {/* <div className="absolute bottom-5 text-sm text-gray-300 opacity-80">
-        Trusted by thousands of professionals worldwide.
-      </div> */}
     </section>
   );
 }
