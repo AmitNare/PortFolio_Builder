@@ -13,6 +13,7 @@ import SetSkills from "./SetSkills";
 import useUserAuth from "./UserAuthentication";
 import DataLoader from "./DataLoader";
 import GlobalLoader from "./GlobalLoader";
+import { Helmet } from "react-helmet";
 
 export default function SetPortfolio() {
   const { userName } = useParams();
@@ -127,6 +128,8 @@ export default function SetPortfolio() {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
+    <>
+
     <div className="mt-10 flex flex-col justify-center items-center w-full gap-5">
       {userDetails?.sections?.filter(s => s.enabled)?.map((section) => {
         const Component = sectionComponents[section.key];
@@ -142,5 +145,7 @@ export default function SetPortfolio() {
         );
       })}
     </div>
+    </>
+
   );
 }

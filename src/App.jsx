@@ -13,6 +13,7 @@ import GlobalAuthProtector from "./Components/GlobalAuthProtector/GlobalAuthProt
 import UserAuthProtector from "./Components/UserAuthProtector/UserAuthProtector";
 import UserFeatures from "./Components/UserFeatures";
 import CustomizeSections from "./Components/CustomizeSections";
+import UserPreview from "./Components/UserPreview";
 
 export default function App() {
   const location = useLocation();
@@ -34,7 +35,7 @@ export default function App() {
           <Route path="/user/projects" element={<UserProjects />} />
           <Route path="/user/certificates" element={<UserCertificates />} />
           <Route path="/user/features" element={<UserFeatures />} />
-          <Route path="/user/preview" element={<SetPortfolio />} />
+          <Route path="/user/preview" element={<UserPreview />} />
           <Route path="/user/chatbot" element={<ChatGPT />} />
           <Route path="/user/settings" element={<Settings />} />
           <Route path="/user/CustomizeSections" element={<CustomizeSections />} />

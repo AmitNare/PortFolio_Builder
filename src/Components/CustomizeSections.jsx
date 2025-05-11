@@ -5,6 +5,7 @@ import { GripVertical, Eye, EyeOff } from "lucide-react";
 import { getDatabase, ref, set, get, child } from "firebase/database";
 import useUserAuth from "./UserAuthentication";
 import Swal from "sweetalert2";
+import { Helmet } from "react-helmet";
 
 const type = "SECTION";
 
@@ -125,6 +126,45 @@ const CustomizeSections = ({ onSave = () => {} }) => {
   };
 
   return (
+    <>
+    <Helmet>
+  <meta name="title" content="Customization | Portify" />
+  <meta
+    name="description"
+    content="Customize your portfolio layout and components with Portify. Reorder sections, change colors, and personalize your design to match your style and preferences."
+  />
+  <meta
+    name="keywords"
+    content="Portify, portfolio customization, reorder sections, personal portfolio design, no-code customization, drag and drop portfolio builder, component customization, change layout, personalize portfolio, custom design"
+  />
+
+  <meta name="site.name" content="Portify" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Customization | Portify - Personalize Your Portfolio Layout" />
+  <meta
+    property="og:description"
+    content="Easily modify and arrange your portfolio sections the way you like. Customize visuals and structure to build a portfolio that truly represents you."
+  />
+  <meta
+    property="og:image"
+    content="https://yourdomain.com/assets/portify-customization-preview.png"
+  />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="twitter:title" content="Customization | Portify - Personalize Your Portfolio Layout" />
+  <meta
+    property="twitter:description"
+    content="Use Portify’s customization features to rearrange sections and tailor your portfolio’s look and feel to your personal or professional brand."
+  />
+  <meta
+    property="twitter:image"
+    content="https://yourdomain.com/assets/portify-customization-preview.png"
+  />
+
+  <title>Customization | Portify - Modify Layout, Reorder Components & Personalize Design</title>
+</Helmet>
+
     <DndProvider backend={HTML5Backend}>
       <div data-aos="fade-left" className="lg:w-3/5 mx-auto flex flex-col p-5 space-y-4 text-center md-max:min-h-[calc(100svh-72px)]">
         <h2 className="text-xl font-bold">Customize Portfolio Sections</h2>
@@ -145,6 +185,8 @@ const CustomizeSections = ({ onSave = () => {} }) => {
         </button>
       </div>
     </DndProvider>
+    </>
+
   );
 };
 

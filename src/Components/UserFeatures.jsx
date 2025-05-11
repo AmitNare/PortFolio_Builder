@@ -8,6 +8,8 @@ import DataLoader from "./DataLoader";
 import { PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import Swal from "sweetalert2"; // Import SweetAlert2
+import not_found from '../assets/Images/not_found.svg'
+import { Helmet } from "react-helmet";
 
 export default function UserFeatures() {
   const [features, setFeatures] = useState([]);
@@ -126,6 +128,51 @@ export default function UserFeatures() {
   }
 
   return (
+    <>
+    <Helmet>
+  <meta name="title" content="Features | Portify" />
+  <meta
+    name="description"
+    content="Explore powerful features of Portify — your no-code portfolio builder. Easily manage your profile, add projects, achievements, skills, and publish a stunning personal website."
+  />
+  <meta
+    name="keywords"
+    content="Portify features, portfolio builder tools, create personal website, no-code portfolio editor, add projects and skills, resume builder, easy portfolio maker, developer portfolio, student portfolio features, personal branding tools"
+  />
+
+  <meta name="site.name" content="Portify" />
+
+  <meta property="og:type" content="website" />
+  <meta
+    property="og:title"
+    content="Features | Portify - All-in-One Portfolio Builder for Creatives and Professionals"
+  />
+  <meta
+    property="og:description"
+    content="Update and Manage Your Features for Professional Portfolio Effortlessly, Portify offers to build and manage your online portfolio without coding."
+  />
+  <meta
+    property="og:image"
+    content="https://yourdomain.com/assets/portify-features-preview.png"
+  />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta
+    property="twitter:title"
+    content="Features | Portify - Build and Manage Your Features for Professional Portfolio Effortlessly"
+  />
+  <meta
+    property="twitter:description"
+    content="Update and Manage Your Features Portify’s key features and publish your Professional website in minutes."
+  />
+  <meta
+    property="twitter:image"
+    content="https://yourdomain.com/assets/portify-features-preview.png"
+  />
+
+  <title>Features | Portify - Update and Manage Your Features for Professional Portfolio Effortlessly</title>
+</Helmet>
+
     <Dialog>
       <div
         data-aos="fade-left"
@@ -154,6 +201,12 @@ export default function UserFeatures() {
         </DialogContent>
 
         {/* AddFeatures as a card */}
+         {features.length === 0  ? (
+                  <div className="w-full flex flex-col items-center justify-center text-center mt-10 text-lg">
+                    <message> No features found. Click the <PlusCircleIcon className="inline w-5 h-5 mx-1 " /> icon above to add one! </message>
+                    <img src={not_found} alt="loading..."  className="max-w-2xl flex justify-center items-center" />
+                  </div>
+                ) : (
         <ul className="flex flex-wrap gap-4 mt-5 justify-evenly">
           {/* Show Features */}
           {features.map((feature) => {
@@ -180,7 +233,11 @@ export default function UserFeatures() {
             );
           })}
         </ul>
+          )}
+
       </div>
     </Dialog>
+    </>
+
   );
 }

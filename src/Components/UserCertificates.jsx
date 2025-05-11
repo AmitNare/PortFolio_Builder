@@ -9,6 +9,8 @@ import Swal from "sweetalert2"; // Import SweetAlert2
 import { ExternalLink, PlusCircleIcon, TrashIcon } from "lucide-react";
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import { AspectRatio } from "./ui/aspect-ratio";
+import not_found from '../assets/Images/not_found.svg'
+import { Helmet } from "react-helmet";
 
 export default function UserCertificates() {
   const [certificates, setCertificates] = useState([]);
@@ -98,6 +100,51 @@ export default function UserCertificates() {
   }
 
   return (
+    <>
+    <Helmet>
+  <meta name="title" content="Achivement | Portify" />
+  <meta
+    name="description"
+    content="Easily add or remove your certificates and achievements in Portify. Showcase your accomplishments to strengthen your professional portfolio."
+  />
+  <meta
+    name="keywords"
+    content="Portify, certificates, add achievements, manage certificates, portfolio builder, professional certifications, add certificate to portfolio, online achievements, showcase skills, student achievements, personal website certificates"
+  />
+
+  <meta name="site.name" content="Portify" />
+
+  <meta property="og:type" content="website" />
+  <meta
+    property="og:title"
+    content="Achivement | Portify - Highlight Your Achievements & Certifications"
+  />
+  <meta
+    property="og:description"
+    content="Manage and display your certificates and achievements with ease. Portify helps you build a strong and verified portfolio."
+  />
+  <meta
+    property="og:image"
+    content="https://yourdomain.com/assets/portify-certificates-preview.png"
+  />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta
+    property="twitter:title"
+    content="Certificates | Portify - Highlight Your Achievements & Certifications"
+  />
+  <meta
+    property="twitter:description"
+    content="Showcase your certifications and milestones to impress visitors and potential employers. Easily manage them in Portify."
+  />
+  <meta
+    property="twitter:image"
+    content="https://yourdomain.com/assets/portify-certificates-preview.png"
+  />
+
+  <title>Achivement | Portify - Manage and Showcase Your Certifications & Achivement</title>
+</Helmet>
+
     <Dialog>
       <div
         data-aos="fade-left"
@@ -119,6 +166,12 @@ export default function UserCertificates() {
           <AddCertificate fetchCertificates={fetchCertificates} />
         </DialogContent>
         {/* AddCertificate as a card */}
+         {certificates.length === 0  ? (
+          <div className="w-full flex flex-col items-center justify-center text-center mt-10 text-lg">
+            <message> No certificates found. Click the <PlusCircleIcon className="inline w-5 h-5 mx-1 " /> icon above to add one! </message>
+            <img src={not_found} alt="loading..."  className="max-w-2xl flex justify-center items-center" />
+          </div>
+        ) : (
         <ul className="flex flex-wrap gap-5 mt-5 justify-evenly">
           {/* Show certificates */}
           {certificates.map((certificate) => {
@@ -174,7 +227,11 @@ export default function UserCertificates() {
             );
           })}
         </ul>
+                )}
+
       </div>
     </Dialog>
+    </>
+
   );
 }

@@ -154,7 +154,7 @@ export default function SetHero({ userDetails }) {
   }
 
   return (
-    <div className="w-full flex mx-auto justify-center items-center bg-background md-max:flex-col gap-2 md:gap-16 lg:flex-row md:flex-col px-5">
+    <div className="w-full flex mx-auto justify-center items-center bg-background md-max:flex-col gap-2 md:gap-16 lg:gap-28 lg:flex-row md:flex-col px-5">
       {/* Profile Image Section */}
       <div className="w-fit sm-max:p-5">
         <img
@@ -166,9 +166,9 @@ export default function SetHero({ userDetails }) {
       </div>
 
       {/* Text Section */}
-      <div className=" pb-0 text-foreground flex flex-col items-center justify-center text-2xl my-auto md-max:max-w-96 md:w-[400px] md-max:w-80 ">
-        <section className="w-full md-max:flex md-max:flex-col md-max:items-center md-max:justify-center md:text-center lg:text-start">
-          <div className="flex md:justify-center lg:justify-normal">
+      <div className=" pb-0 text-foreground flex flex-col items-center justify-center text-2xl my-auto md-max:max-w-96 md:max-w-xl md:min-w-9 ">
+        <section className="0 w-full md-max:flex md-max:flex-col md-max:items-center md-max:justify-center md:text-center lg:text-start">
+          <div className=" flex md:justify-center lg:justify-normal">
             <span>Hello</span>
             <img
               src={wave_hand}
@@ -179,9 +179,10 @@ export default function SetHero({ userDetails }) {
             {userDetails?.features ? "our organization name is" : "my name is"}
           </div>
 
-          <strong className="sm-max:text-center md:text-5xl text-green-500 font-bold md-max:text-5xl lg:text-6xl xl:text-7xl">
+          <h1 className="w-full sm-max:text-center md:text-5xl text-green-500 font-bold md-max:text-5xl lg:text-6xl xl:text-7xl">
             {`${userDetails.name} ${userDetails.surname}`}
-          </strong>
+          </h1>
+
           <h2 className="text-2xl">
             {userDetails?.features ? "We provide " : "I am "}
             <span className="text-blue-600">{displayedText}</span>

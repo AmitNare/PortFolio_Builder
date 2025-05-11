@@ -30,6 +30,7 @@ import {
 import { ref as dbRef, get, update, getDatabase } from "firebase/database";
 // import save_changes from "../assets/Images/save_changes.png";
 import Swal from "sweetalert2";
+import { Helmet } from "react-helmet";
 
 import * as yup from "yup";
 import { useFormik } from "formik";
@@ -49,7 +50,6 @@ export default function Settings() {
 
   const validationSchema = yup.object({
     name: yup.string().required("Name is required"),
-    gender: yup.string().required("Gender is required"),
     surname: yup.string().required("Surname is required"),
     phoneNo: yup
       .string()
@@ -71,9 +71,7 @@ export default function Settings() {
       .array()
       .of(
         yup.object({
-          gitHub: yup
-            .string()
-            .url("Invalid GitHub URL"),
+          gitHub: yup.string().url("Invalid GitHub URL"),
           twitter: yup.string().url("Invalid Twitter URL"),
           instagram: yup.string().url("Invalid Instagram URL"),
           linkedIn: yup.string().url("Invalid LinkedIn URL"),
@@ -147,7 +145,6 @@ export default function Settings() {
     initialValues: {
       name: userDetails?.name || "",
       surname: userDetails?.surname || "",
-      gender: userDetails?.gender || "",
       email: userDetails?.email || "",
       phoneNo: userDetails?.phoneNo || "",
       image: userDetails?.image || "",
@@ -256,7 +253,6 @@ export default function Settings() {
       formik.setValues({
         name: userDetails.name || "",
         surname: userDetails.surname || "",
-        gender: userDetails.gender || "",
         phoneNo: userDetails.phoneNo || "",
         email: userDetails.email || "",
         image: userDetails.image || "",
@@ -433,6 +429,44 @@ export default function Settings() {
 
   return (
     <>
+      <Helmet>
+        <meta name="title" content="Settings | Portify" />
+        <meta
+          name="description"
+          content="Update your personal details and keep your portfolio information accurate and up to date."
+        />
+        <meta
+          name="keywords"
+          content="Portify, online portfolio builder, edit profile online, personal portfolio website, update personal information, resume builder, no-code portfolio editor, manage portfolio, add experience and skills, professional portfolio creator"
+        />
+
+        <meta name="site.name" content="Portfolio Builder" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Settings | Portfolio Builder" />
+        <meta
+          property="og:description"
+          content="Easily manage your personal information. Edit your name, email, and contact details to keep your portfolio current."
+        />
+        {/* <meta
+          property="og:image"
+          content="https://github.com/AmitNare/PortFolio_Builder/blob/main/src/assets/Images/logo7.webp"
+        /> */}
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:title" content="Settings | Portify Builder" />
+        <meta
+          property="twitter:description"
+          content="Access the settings page to update your personal details like name, email, and phone number. Keep your profile up to date."
+        />
+        <meta
+          property="twitter:image"
+          content="https://yourdomain.com/assets/settings-personal-info.png"
+        />
+
+        <title>Settings | Portify - Update Personal Information</title>
+      </Helmet>
+
       {portfolioLink && (
         <strong className="flex w-fit m-auto px-5 py-1 border-2 rounded-lg border-green-500 justify-center items-center gap-2">
           {portfolioLink}
@@ -513,24 +547,6 @@ export default function Settings() {
             {formik.touched.surname && formik.errors.surname && (
               <div className="absolute text-red-500 text-sm mt-16">
                 {formik.errors.surname}
-              </div>
-            )}
-          </div>
-
-          {/* <div className="grid gap-6 sm:grid-cols-2"> */}
-          <div className="flex flex-col relative gap-1">
-            <Label htmlFor="gender">Gender</Label>
-            <Input
-              id="gender"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.gender}
-              placeholder="John"
-              required
-            />
-            {formik.touched.gender && formik.errors.gender && (
-              <div className="absolute text-red-500 text-sm mt-16">
-                {formik.errors.gender}
               </div>
             )}
           </div>

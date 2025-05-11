@@ -24,6 +24,7 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import LocationSearch from "./LocationSearch";
+import { Helmet } from "react-helmet";
 
 export default function Profile({ userId, userDetails, setUserDetails }) {
   // const { userDetails,setUserDetails } = useUserAuth();
@@ -918,370 +919,418 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
   };
 
   return (
-    <div
-      data-aos="fade-left"
-      className="w-full flex flex-col h-full text-foreground bg-background p-5 md-max:p-0 md-max:mt-5 gap-10 rounded-lg "
-    >
-      {/* education info */}
-      <div className="w-full  border border-green-500 px-3 md-max:px-1 py-5 rounded-md relative">
-        <div className="flex justify-between items-center mb-3 ">
-          {isCardEditing ? (
+    <>
+      <Helmet>
+        <meta name="title" content="Profile | Portify" />
+        <meta
+          name="description"
+          content="Update your personal details education, experience, skills and keep your portfolio information accurate and up to date."
+        />
+        <meta
+          name="keywords"
+          content="Portify, online portfolio builder, edit profile online, personal portfolio website, update personal information, resume builder, no-code portfolio editor, manage portfolio, add experience and skills, professional portfolio creator"
+        />
+
+        <meta name="site.name" content="Portify" />
+
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:title"
+          content="Profile | Portify -  Manage your personal information. Edit your education, experience, and skills details"
+        />
+        <meta
+          property="og:description"
+          content="Easily manage your personal information. Edit your education, experience, and skills details to keep your portfolio current."
+        />
+        {/* <meta
+              property="og:image"
+              content="https://github.com/AmitNare/PortFolio_Builder/blob/main/src/assets/Images/logo7.webp"
+            /> */}
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          property="twitter:title"
+          content="Profile | Portify -  Manage your personal information. Edit your education, experience, and skills details"
+        />
+        <meta
+          property="twitter:description"
+          content="Access the settings page to update your personal details like name, email, and phone number. Keep your profile up to date."
+        />
+        <meta
+          property="twitter:image"
+          content="https://yourdomain.com/assets/settings-personal-info.png"
+        />
+
+        <title>
+          Profile | Portify - Manage your personal information. Edit your
+          education, experience, and skills details.
+        </title>
+      </Helmet>
+
+      <div
+        data-aos="fade-left"
+        className="w-full flex flex-col h-full text-foreground bg-background p-5 md-max:p-0 md-max:mt-5 gap-10 rounded-lg "
+      >
+        {/* education info */}
+        <div className="w-full  border border-green-500 px-3 md-max:px-1 py-5 rounded-md relative">
+          <div className="flex justify-between items-center mb-3 ">
+            {isCardEditing ? (
+              <button
+                onClick={saveCollegeChanges}
+                className={`p-1 rounded-sm absolute -top-4 right-3 ${
+                  allCollegeCardsSaved
+                    ? "bg-green-500 text-white"
+                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                }`}
+                disabled={!allCollegeCardsSaved}
+                title={"Save"}
+              >
+                <CheckSquare size={15} />
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsCardEditing(true)}
+                className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
+                title={"Edit"}
+              >
+                <Pencil size={15} />
+              </button>
+            )}
+          </div>
+          {isCardEditing && (
             <button
-              onClick={saveCollegeChanges}
-              className={`p-1 rounded-sm absolute -top-4 right-3 ${
-                allCollegeCardsSaved
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-300 text-gray-600 cursor-not-allowed"
-              }`}
-              disabled={!allCollegeCardsSaved}
-              title={"Save"}
+              onClick={() => addCollege("college")}
+              className="bg-button text-button-textColor hover:bg-button-hover px-4 py-2 rounded-md mb-3 "
             >
-              <CheckSquare size={15} />
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsCardEditing(true)}
-              className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
-              title={"Edit"}
-            >
-              <Pencil size={15} />
+              Add College
             </button>
           )}
-        </div>
-        {isCardEditing && (
-          <button
-            onClick={() => addCollege("college")}
-            className="bg-button text-button-textColor hover:bg-button-hover px-4 py-2 rounded-md mb-3 "
-          >
-            Add College
-          </button>
-        )}
 
-        <div className="absolute -top-4 left-4 bg-background px-2">
-          <h1 className="text-lg font-bold">Educational Info</h1>
-        </div>
+          <div className="absolute -top-4 left-4 bg-background px-2">
+            <h1 className="text-lg font-bold">Educational Info</h1>
+          </div>
 
-        {isCardEditing ? (
-          <div className="flex gap-5 justify-around items-center flex-wrap">
-            {userDetails?.colleges?.map((college, index) => (
-              <div
-                key={index}
-                className="w-full sm:w-96 flex flex-col flex-wrap gap-5 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md relative"
-              >
-                {collegeEditingStates[index] && (
-                  <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
-                    <button
-                      onClick={() => removeCollege("colleges", index)}
-                      className="bg-red-500 text-white p-1 rounded-sm "
-                      title="delete"
-                    >
-                      <X size={15} />
-                    </button>
+          {isCardEditing ? (
+            <div className="flex gap-5 justify-around items-center flex-wrap">
+              {userDetails?.colleges?.map((college, index) => (
+                <div
+                  key={index}
+                  className="w-full sm:w-96 flex flex-col flex-wrap gap-5 border-2 border-gray-300 p-3 rounded-md bg-background shadow-md relative"
+                >
+                  {collegeEditingStates[index] && (
+                    <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
+                      <button
+                        onClick={() => removeCollege("colleges", index)}
+                        className="bg-red-500 text-white p-1 rounded-sm "
+                        title="delete"
+                      >
+                        <X size={15} />
+                      </button>
 
-                    <button
-                      onClick={() => saveAllEducation(index)}
-                      className="bg-green-500 text-white p-1 rounded-sm "
-                      title="save"
-                    >
-                      <Check size={15} />
-                    </button>
-                  </div>
-                )}
-
-                <div className="flex gap-1 flex-col relative">
-                  <label className="text-sm font-medium text-foreground min-w-fit">
-                    College Name:
-                  </label>
-                  <Input
-                    type="text"
-                    value={college.collegeName}
-                    onChange={(e) =>
-                      handleInputChange(e, "colleges", index, "collegeName")
-                    }
-                    disabled={!collegeEditingStates[index]}
-                    className="border-2 text-foreground bg-background p-2"
-                    placeholder="College Name"
-                  />
-                  {errors.colleges?.[index]?.collegeName && (
-                    <span className="text-red-500 text-xs absolute mt-16">
-                      {errors.colleges[index].collegeName}
-                    </span>
+                      <button
+                        onClick={() => saveAllEducation(index)}
+                        className="bg-green-500 text-white p-1 rounded-sm "
+                        title="save"
+                      >
+                        <Check size={15} />
+                      </button>
+                    </div>
                   )}
-                </div>
 
-                <div className="flex gap-2 sm-max:flex-col">
-                  <div className="flex flex-col gap-1 relative">
+                  <div className="flex gap-1 flex-col relative">
                     <label className="text-sm font-medium text-foreground min-w-fit">
-                      Course:
+                      College Name:
                     </label>
                     <Input
                       type="text"
-                      value={college.course}
+                      value={college.collegeName}
                       onChange={(e) =>
-                        handleInputChange(e, "colleges", index, "course")
+                        handleInputChange(e, "colleges", index, "collegeName")
                       }
                       disabled={!collegeEditingStates[index]}
                       className="border-2 text-foreground bg-background p-2"
-                      placeholder="Course"
+                      placeholder="College Name"
                     />
-                    {errors.colleges?.[index]?.course && (
+                    {errors.colleges?.[index]?.collegeName && (
                       <span className="text-red-500 text-xs absolute mt-16">
-                        {errors.colleges[index].course}
+                        {errors.colleges[index].collegeName}
                       </span>
                     )}
                   </div>
 
-                  <div className="flex flex-col gap-1 relative ">
-                    <label className="text-sm font-medium text-foreground min-w-fit">
-                      Grade:
-                    </label>
-                    <div className="flex flex-col">
-                      <div className="flex gap-2 ">
-                        {collegeEditingStates[index] ? (
-                          <>
-                            <Input
-                              type="number"
-                              value={college.grade}
-                              onChange={(e) => {
-                                handleInputChange(
-                                  e,
-                                  "colleges",
-                                  index,
-                                  "grade"
-                                );
-                              }}
-                              className="border-2 text-foreground bg-background p-2 w-16 sm-max:w-2/5"
-                              placeholder="Grade"
-                            />
-                            <select
-                              value={college.gradeType}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  e,
-                                  "colleges",
-                                  index,
-                                  "gradeType"
-                                )
-                              }
-                              className="border-2 text-foreground bg-background p-2 w-18 sm-max:w-2/5"
-                            >
-                              <option value="%">%</option>
-                              <option value="CGPA">CGPA</option>
-                            </select>
-                          </>
-                        ) : (
-                          <Input
-                            type="text"
-                            value={`${college.grade} ${college.gradeType}`}
-                            disabled={!collegeEditingStates[index]}
-                            className="border-2 text-foreground bg-background p-2 w-32"
-                            placeholder="Grade"
-                          />
-                        )}
-                      </div>
-                      {errors.colleges?.[index]?.grade && (
-                        <span className="text-red-500 text-xs absolute mt-10">
-                          {errors.colleges[index].grade}
+                  <div className="flex gap-2 sm-max:flex-col">
+                    <div className="flex flex-col gap-1 relative">
+                      <label className="text-sm font-medium text-foreground min-w-fit">
+                        Course:
+                      </label>
+                      <Input
+                        type="text"
+                        value={college.course}
+                        onChange={(e) =>
+                          handleInputChange(e, "colleges", index, "course")
+                        }
+                        disabled={!collegeEditingStates[index]}
+                        className="border-2 text-foreground bg-background p-2"
+                        placeholder="Course"
+                      />
+                      {errors.colleges?.[index]?.course && (
+                        <span className="text-red-500 text-xs absolute mt-16">
+                          {errors.colleges[index].course}
                         </span>
                       )}
                     </div>
-                  </div>
-                </div>
 
-                <div className="flex gap-1 flex-col ralative mb-3">
-                  <label className="text-sm font-medium text-foreground min-w-fit">
-                    College Description:
-                  </label>
-                  <Textarea
-                    type="text"
-                    value={college.description}
-                    onChange={(e) =>
-                      handleInputChange(e, "colleges", index, "description")
-                    }
-                    disabled={!collegeEditingStates[index]}
-                    className="border-2 resize-none text-foreground bg-background p-2 w-full h-32 custom-scrollbar overflow-auto"
-                    placeholder="College Name"
-                  />
-                  {errors.colleges?.[index]?.description && (
-                    <span className="text-red-500 text-xs absolute mt-[153px] ">
-                      {errors.colleges[index].description}
-                    </span>
+                    <div className="flex flex-col gap-1 relative ">
+                      <label className="text-sm font-medium text-foreground min-w-fit">
+                        Grade:
+                      </label>
+                      <div className="flex flex-col">
+                        <div className="flex gap-2 ">
+                          {collegeEditingStates[index] ? (
+                            <>
+                              <Input
+                                type="number"
+                                value={college.grade}
+                                onChange={(e) => {
+                                  handleInputChange(
+                                    e,
+                                    "colleges",
+                                    index,
+                                    "grade"
+                                  );
+                                }}
+                                className="border-2 text-foreground bg-background p-2 w-16 sm-max:w-2/5"
+                                placeholder="Grade"
+                              />
+                              <select
+                                value={college.gradeType}
+                                onChange={(e) =>
+                                  handleInputChange(
+                                    e,
+                                    "colleges",
+                                    index,
+                                    "gradeType"
+                                  )
+                                }
+                                className="border-2 text-foreground bg-background p-2 w-18 sm-max:w-2/5"
+                              >
+                                <option value="%">%</option>
+                                <option value="CGPA">CGPA</option>
+                              </select>
+                            </>
+                          ) : (
+                            <Input
+                              type="text"
+                              value={`${college.grade} ${college.gradeType}`}
+                              disabled={!collegeEditingStates[index]}
+                              className="border-2 text-foreground bg-background p-2 w-32"
+                              placeholder="Grade"
+                            />
+                          )}
+                        </div>
+                        {errors.colleges?.[index]?.grade && (
+                          <span className="text-red-500 text-xs absolute mt-10">
+                            {errors.colleges[index].grade}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-1 flex-col ralative mb-3">
+                    <label className="text-sm font-medium text-foreground min-w-fit">
+                      College Description:
+                    </label>
+                    <Textarea
+                      type="text"
+                      value={college.description}
+                      onChange={(e) =>
+                        handleInputChange(e, "colleges", index, "description")
+                      }
+                      disabled={!collegeEditingStates[index]}
+                      className="border-2 resize-none text-foreground bg-background p-2 w-full h-32 custom-scrollbar overflow-auto"
+                      placeholder="College Name"
+                    />
+                    {errors.colleges?.[index]?.description && (
+                      <span className="text-red-500 text-xs absolute mt-[153px] ">
+                        {errors.colleges[index].description}
+                      </span>
+                    )}
+                  </div>
+
+                  {isCardEditing && !collegeEditingStates[index] && (
+                    <div className="mt-3">
+                      <button
+                        onClick={() => handleCollegeCardEdit(index)}
+                        className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
+                      >
+                        <Pencil size={15} />
+                      </button>
+                    </div>
                   )}
                 </div>
-
-                {isCardEditing && !collegeEditingStates[index] && (
-                  <div className="mt-3">
-                    <button
-                      onClick={() => handleCollegeCardEdit(index)}
-                      className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
-                    >
-                      <Pencil size={15} />
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-wrap gap-5 w-full justify-evenly items-center">
-            {userDetails?.colleges?.map((college, index) => (
-              <div
-                key={index}
-                className="w-full sm:w-96 flex flex-col items-center justify-center gap-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
-              >
-                <div className="w-full shadow-[0px_0px_15px_rgba(0,0,0,0.09)] rounded-lg p-9 space-y-3 relative overflow-hidden">
-                  <div className="w-24 h-24 bg-violet-500 rounded-full absolute -right-5 -top-7">
-                    <p
-                      className={`w-12 absolute bottom-4 left-5 flex justify-center text-center items-center text-wrap text-white text-sm ${
-                        college.gradeType === "%" ? "mb-3 " : ""
-                      }`}
-                    >
-                      {`${college.grade || "N/A"} ${
-                        college.gradeType || ""
-                      }`.trim()}
-                    </p>
-                  </div>
-                  <div className="fill-violet-500 w-full">
-                    <div className="w-full flex items-center justify-center">
-                      <Label className="text-2xl font-semibold tracking-wide">
-                        {college.collegeName || "N/A"}
-                      </Label>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-5 w-full justify-evenly items-center">
+              {userDetails?.colleges?.map((college, index) => (
+                <div
+                  key={index}
+                  className="w-full sm:w-96 flex flex-col items-center justify-center gap-4 border rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
+                >
+                  <div className="w-full shadow-[0px_0px_15px_rgba(0,0,0,0.09)] rounded-lg p-9 space-y-3 relative overflow-hidden">
+                    <div className="w-24 h-24 bg-violet-500 rounded-full absolute -right-5 -top-7">
+                      <p
+                        className={`w-12 absolute bottom-4 left-5 flex justify-center text-center items-center text-wrap text-white text-sm ${
+                          college.gradeType === "%" ? "mb-3 " : ""
+                        }`}
+                      >
+                        {`${college.grade || "N/A"} ${
+                          college.gradeType || ""
+                        }`.trim()}
+                      </p>
                     </div>
-                    {/* Course */}
-                    <div className="w-full flex items-center justify-center">
-                      <Label className="text-lg text-gray-500 tracking-wide">
-                        Course: {college.course || "N/A"}
-                      </Label>
-                    </div>
-                    {/* Description Textarea */}
-                    <div
-                      //  className="w-full flex items-center justify-center"
-                      className="resize-none w-full mt-2 p-2 text-sm tracking-wide flex text-wrap justify-center h-32 overflow-auto border border-gray-300 rounded-sm text-gray-500 overflow-x-hidden custom-scrollbar"
-                    >
-                      {college.description}
+                    <div className="fill-violet-500 w-full">
+                      <div className="w-full flex items-center justify-center">
+                        <Label className="text-2xl font-semibold tracking-wide">
+                          {college.collegeName || "N/A"}
+                        </Label>
+                      </div>
+                      {/* Course */}
+                      <div className="w-full flex items-center justify-center">
+                        <Label className="text-lg text-gray-500 tracking-wide">
+                          Course: {college.course || "N/A"}
+                        </Label>
+                      </div>
+                      {/* Description Textarea */}
+                      <div
+                        //  className="w-full flex items-center justify-center"
+                        className="resize-none w-full mt-2 p-2 text-sm tracking-wide flex text-wrap justify-center h-32 overflow-auto border border-gray-300 rounded-sm text-gray-500 overflow-x-hidden custom-scrollbar"
+                      >
+                        {college.description}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* professional info */}
-      <div className="w-full border border-green-500 px-3 md-max:px-1 py-5 rounded-md relative">
-        {/* Parent Container Edit/Save Buttons */}
-        <div className="flex justify-between items-center mb-3 ">
-          {isEditing ? (
-            <button
-              onClick={saveChanges}
-              className={`p-1 rounded-sm absolute -top-4 right-3 ${
-                allCardsSaved
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-300 text-gray-600 cursor-not-allowed"
-              }`}
-              disabled={!allCardsSaved}
-              title={"Save"}
-            >
-              <CheckSquare size={15} />
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
-              title={"Edit"}
-            >
-              <Pencil size={15} />
-              {/* Edit All */}
-            </button>
+              ))}
+            </div>
           )}
         </div>
 
-        {/* Add Experience Button */}
-        {isEditing && (
-          <button
-            onClick={() => addEntry("experience")}
-            className=" bg-button text-button-textColor hover:bg-button-hover px-4 py-2 rounded-md mb-3 "
-          >
-            Add Experience
-          </button>
-        )}
-
-        <div className="absolute -top-4 left-4 bg-background px-2">
-          <h1 className="text-lg font-bold">Professional Info</h1>
-        </div>
-
-        {isEditing ? (
-          <div className="grid grid-cols-2 gap-5 w-full border-2 md-max:grid-cols-1 lg-max:grid-cols-1">
-            {userDetails?.experience?.map((exp, index) => (
-              <div
-                key={index}
-                className=" grid grid-cols-2 md-max:grid-cols-1 gap-3 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
+        {/* professional info */}
+        <div className="w-full border border-green-500 px-3 md-max:px-1 py-5 rounded-md relative">
+          {/* Parent Container Edit/Save Buttons */}
+          <div className="flex justify-between items-center mb-3 ">
+            {isEditing ? (
+              <button
+                onClick={saveChanges}
+                className={`p-1 rounded-sm absolute -top-4 right-3 ${
+                  allCardsSaved
+                    ? "bg-green-500 text-white"
+                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                }`}
+                disabled={!allCardsSaved}
+                title={"Save"}
               >
-                {cardEditingStates[index] && (
-                  <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
-                    {/* Delete Button */}
-                    <button
-                      onClick={() => removeEntry("experience", index)}
-                      className="bg-red-500 text-white p-1 rounded-sm "
-                      title="delete"
-                    >
-                      <X size={15} />
-                    </button>
+                <CheckSquare size={15} />
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
+                title={"Edit"}
+              >
+                <Pencil size={15} />
+                {/* Edit All */}
+              </button>
+            )}
+          </div>
 
-                    {/* Save Button */}
-                    <button
-                      onClick={() => handleCardSave(index)}
-                      className="bg-green-500 text-white p-1 rounded-sm "
-                      title="save"
-                    >
-                      <Check size={15} />
-                    </button>
-                  </div>
-                )}
+          {/* Add Experience Button */}
+          {isEditing && (
+            <button
+              onClick={() => addEntry("experience")}
+              className=" bg-button text-button-textColor hover:bg-button-hover px-4 py-2 rounded-md mb-3 "
+            >
+              Add Experience
+            </button>
+          )}
 
-                {/* Company Name and Address */}
-                <div className="flex flex-col gap-1 col-span-2 relative">
-                  <label className="text-sm font-medium text-foreground">
-                    Company Name
-                  </label>
-                  <Input
-                    type="text"
-                    value={exp.companyName || ""} // Ensuring that value is always a string
-                    onChange={(e) =>
-                      handleInputChange(e, "experience", index, "companyName")
-                    }
-                    disabled={!cardEditingStates[index]}
-                    className="border-2 text-foreground bg-background p-2"
-                    placeholder="Company Name"
-                  />
-                  {errors.experience?.[index]?.companyName && (
-                    <span className="text-red-500 text-xs absolute mt-16">
-                      {errors.experience[index].companyName}
-                    </span>
+          <div className="absolute -top-4 left-4 bg-background px-2">
+            <h1 className="text-lg font-bold">Professional Info</h1>
+          </div>
+
+          {isEditing ? (
+            <div className="grid grid-cols-2 gap-5 w-full border-2 md-max:grid-cols-1 lg-max:grid-cols-1">
+              {userDetails?.experience?.map((exp, index) => (
+                <div
+                  key={index}
+                  className=" grid grid-cols-2 md-max:grid-cols-1 gap-3 border-2 border-gray-50 p-3 rounded-md bg-background shadow-md relative"
+                >
+                  {cardEditingStates[index] && (
+                    <div className=" absolute -top-3 right-2 bg-background px-2 flex gap-2">
+                      {/* Delete Button */}
+                      <button
+                        onClick={() => removeEntry("experience", index)}
+                        className="bg-red-500 text-white p-1 rounded-sm "
+                        title="delete"
+                      >
+                        <X size={15} />
+                      </button>
+
+                      {/* Save Button */}
+                      <button
+                        onClick={() => handleCardSave(index)}
+                        className="bg-green-500 text-white p-1 rounded-sm "
+                        title="save"
+                      >
+                        <Check size={15} />
+                      </button>
+                    </div>
                   )}
-                </div>
 
-                <div className="flex flex-col gap-1 col-span-2 relative">
-                  <label className="text-sm font-medium text-foreground">
-                    Company Address
-                  </label>
-                  <LocationSearch
-                    handleInputChange={(e) =>
-                      handleInputChange(
-                        e,
-                        "experience",
-                        index,
-                        "companyAddress"
-                      )
-                    }
-                    errors={errors}
-                    // experienceErrors={experienceErrors}
-                    fieldsToShow={["city"]}
-                    fieldPass="address"
-                    // index={index} // Pass index properly
-                  />
-                  {/* <Input
+                  {/* Company Name and Address */}
+                  <div className="flex flex-col gap-1 col-span-2 relative">
+                    <label className="text-sm font-medium text-foreground">
+                      Company Name
+                    </label>
+                    <Input
+                      type="text"
+                      value={exp.companyName || ""} // Ensuring that value is always a string
+                      onChange={(e) =>
+                        handleInputChange(e, "experience", index, "companyName")
+                      }
+                      disabled={!cardEditingStates[index]}
+                      className="border-2 text-foreground bg-background p-2"
+                      placeholder="Company Name"
+                    />
+                    {errors.experience?.[index]?.companyName && (
+                      <span className="text-red-500 text-xs absolute mt-16">
+                        {errors.experience[index].companyName}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-1 col-span-2 relative">
+                    <label className="text-sm font-medium text-foreground">
+                      Company Address
+                    </label>
+                    <LocationSearch
+                      handleInputChange={(e) =>
+                        handleInputChange(
+                          e,
+                          "experience",
+                          index,
+                          "companyAddress"
+                        )
+                      }
+                      errors={errors}
+                      // experienceErrors={experienceErrors}
+                      fieldsToShow={["city"]}
+                      fieldPass="address"
+                      // index={index} // Pass index properly
+                    />
+                    {/* <Input
                   type="text"
                   value={exp.companyAddress || ""}
                   onChange={(e) =>
@@ -1291,269 +1340,270 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
                   className="border-2 text-foreground bg-background p-2"
                   placeholder="Company Address"
                 /> */}
-                  {/* {errors.experience?.[index]?.companyAddress && (
+                    {/* {errors.experience?.[index]?.companyAddress && (
                   <span className="text-red-500 text-xs absolute mt-16">
                     {errors.experience[index].companyAddress}
                   </span>
                 )} */}
-                </div>
+                  </div>
 
-                {/* Job Role and Years of Experience */}
-                <div className="flex flex-col gap-1 sm-max:col-span-2 lg:col-span-2 xl:col-span-1 relative">
-                  <label className="text-sm font-medium text-foreground">
-                    Job Role
-                  </label>
-                  <Input
-                    type="text"
-                    value={exp.jobRole || ""}
-                    onChange={(e) =>
-                      handleInputChange(e, "experience", index, "jobRole")
-                    }
-                    disabled={!cardEditingStates[index]}
-                    className="border-2 text-foreground bg-background p-2"
-                    placeholder="Job Role"
-                  />
-                  {errors.experience?.[index]?.jobRole && (
-                    <span className="text-red-500 text-xs absolute mt-16">
-                      {errors.experience[index].jobRole}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-1 relative">
-                  <label className="text-sm font-medium text-foreground">
-                    Years of Experience
-                  </label>
-                  {cardEditingStates[index] ? (
-                    <span className={`flex gap-2`}>
-                      <Input
-                        type="number"
-                        value={exp.jobExperience}
-                        onChange={(e) => {
-                          const { value } = e.target;
-                          handleInputChange(
-                            e,
-                            "experience",
-                            index,
-                            "jobExperience"
-                          );
-                        }}
-                        className="border-2 text-foreground bg-background p-2 w-1/4 md:w-20 lg:w-20 xl:w-18"
-                        placeholder="Duration"
-                      />
-                      <select
-                        value={exp.jobDuration}
-                        onChange={(e) =>
-                          handleInputChange(
-                            e,
-                            "experience",
-                            index,
-                            "jobDuration"
-                          )
-                        }
-                        className="border-2 text-foreground bg-background p-2 w-fit"
-                      >
-                        <option value="Month">Month</option>
-                        <option value="Year">Year</option>
-                      </select>
-                    </span>
-                  ) : (
+                  {/* Job Role and Years of Experience */}
+                  <div className="flex flex-col gap-1 sm-max:col-span-2 lg:col-span-2 xl:col-span-1 relative">
+                    <label className="text-sm font-medium text-foreground">
+                      Job Role
+                    </label>
                     <Input
                       type="text"
-                      value={`${exp.jobExperience}  ${exp.jobDuration}`}
+                      value={exp.jobRole || ""}
+                      onChange={(e) =>
+                        handleInputChange(e, "experience", index, "jobRole")
+                      }
                       disabled={!cardEditingStates[index]}
-                      className="border-2 text-foreground bg-background p-2 w-32"
-                      placeholder="Grade"
+                      className="border-2 text-foreground bg-background p-2"
+                      placeholder="Job Role"
                     />
-                  )}
+                    {errors.experience?.[index]?.jobRole && (
+                      <span className="text-red-500 text-xs absolute mt-16">
+                        {errors.experience[index].jobRole}
+                      </span>
+                    )}
+                  </div>
 
-                  {errors.experience?.[index]?.jobExperience && (
-                    <span className="text-red-500 text-xs absolute mt-16">
-                      {errors.experience[index].jobExperience}
-                    </span>
+                  <div className="flex flex-col gap-1 relative">
+                    <label className="text-sm font-medium text-foreground">
+                      Years of Experience
+                    </label>
+                    {cardEditingStates[index] ? (
+                      <span className={`flex gap-2`}>
+                        <Input
+                          type="number"
+                          value={exp.jobExperience}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            handleInputChange(
+                              e,
+                              "experience",
+                              index,
+                              "jobExperience"
+                            );
+                          }}
+                          className="border-2 text-foreground bg-background p-2 w-1/4 md:w-20 lg:w-20 xl:w-18"
+                          placeholder="Duration"
+                        />
+                        <select
+                          value={exp.jobDuration}
+                          onChange={(e) =>
+                            handleInputChange(
+                              e,
+                              "experience",
+                              index,
+                              "jobDuration"
+                            )
+                          }
+                          className="border-2 text-foreground bg-background p-2 w-fit"
+                        >
+                          <option value="Month">Month</option>
+                          <option value="Year">Year</option>
+                        </select>
+                      </span>
+                    ) : (
+                      <Input
+                        type="text"
+                        value={`${exp.jobExperience}  ${exp.jobDuration}`}
+                        disabled={!cardEditingStates[index]}
+                        className="border-2 text-foreground bg-background p-2 w-32"
+                        placeholder="Grade"
+                      />
+                    )}
+
+                    {errors.experience?.[index]?.jobExperience && (
+                      <span className="text-red-500 text-xs absolute mt-16">
+                        {errors.experience[index].jobExperience}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Job Description */}
+                  <div className="col-span-2 flex flex-col gap-1 relative mb-3">
+                    <label className="text-sm font-medium text-foreground">
+                      Job Description
+                    </label>
+                    <textarea
+                      value={exp.jobDescription || ""}
+                      onChange={(e) =>
+                        handleInputChange(
+                          e,
+                          "experience",
+                          index,
+                          "jobDescription"
+                        )
+                      }
+                      disabled={!cardEditingStates[index]}
+                      className="border-2 text-foreground bg-background p-2 w-full h-32 resize-none overflow-x-hidden custom-scrollbar overflow-auto"
+                      placeholder="Job Description"
+                      rows={4}
+                    />
+                    {errors.experience?.[index]?.jobDescription && (
+                      <span className="text-red-500 text-xs absolute mt-[152px] ">
+                        {errors.experience[index].jobDescription}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Edit Button */}
+                  {isEditing && !cardEditingStates[index] && (
+                    <div className="mt-3">
+                      <button
+                        onClick={() => handleCardEdit(index)}
+                        className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
+                      >
+                        <Pencil size={15} />
+                      </button>
+                    </div>
                   )}
                 </div>
-
-                {/* Job Description */}
-                <div className="col-span-2 flex flex-col gap-1 relative mb-3">
-                  <label className="text-sm font-medium text-foreground">
-                    Job Description
-                  </label>
-                  <textarea
-                    value={exp.jobDescription || ""}
-                    onChange={(e) =>
-                      handleInputChange(
-                        e,
-                        "experience",
-                        index,
-                        "jobDescription"
-                      )
-                    }
-                    disabled={!cardEditingStates[index]}
-                    className="border-2 text-foreground bg-background p-2 w-full h-32 resize-none overflow-x-hidden custom-scrollbar overflow-auto"
-                    placeholder="Job Description"
-                    rows={4}
-                  />
-                  {errors.experience?.[index]?.jobDescription && (
-                    <span className="text-red-500 text-xs absolute mt-[152px] ">
-                      {errors.experience[index].jobDescription}
-                    </span>
-                  )}
-                </div>
-
-                {/* Edit Button */}
-                {isEditing && !cardEditingStates[index] && (
-                  <div className="mt-3">
-                    <button
-                      onClick={() => handleCardEdit(index)}
-                      className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
-                    >
-                      <Pencil size={15} />
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-wrap sm-max:flex-col gap-5 w-full justify-evenly items-center">
-            {userDetails?.experience?.map((exp, index) => (
-              <div
-                key={index}
-                className="w-full sm:w-96 flex  border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
-              >
-                <div className=" w-full  group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300  hover:shadow-2xl sm:mx-auto  sm:rounded-lg ">
-                  <span className="absolute top-[14px] z-0 h-10 w-40 rounded-r-md bg-violet-500 text-button-textColor hover:bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
-                  <div className=" relative w-full z-10 justify-between flex items-end sm:max-w-md">
-                    <span className=" grid mt-3 h-10 w-40 place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
-                      <h1 className=" text-balance tracking-wide ">
-                        {exp.jobRole || "N/A"}
-                      </h1>
-                    </span>
-                    {/* <div className="flex justify-between"> */}
-                    <div className="mb-2 top-[8px] right-0">
-                      <Label className=" text-sm px-2 text-gray-500 group-hover:text-white dark:text-white dark:group-hover:text-foreground tracking-wide">
-                        {exp.companyAddress || "N/A"}
-                      </Label>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-wrap sm-max:flex-col gap-5 w-full justify-evenly items-center">
+              {userDetails?.experience?.map((exp, index) => (
+                <div
+                  key={index}
+                  className="w-full sm:w-96 flex  border flex-col gap-2 rounded-md bg-background shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-shadow duration-300"
+                >
+                  <div className=" w-full  group relative cursor-pointer overflow-hidden rounded-md shadow-xl ring-1 ring-gray-900/5 transition-all duration-300  hover:shadow-2xl sm:mx-auto  sm:rounded-lg ">
+                    <span className="absolute top-[14px] z-0 h-10 w-40 rounded-r-md bg-violet-500 text-button-textColor hover:bg-violet-500 transition-all duration-300 group-hover:scale-[20]"></span>
+                    <div className=" relative w-full z-10 justify-between flex items-end sm:max-w-md">
+                      <span className=" grid mt-3 h-10 w-40 place-items-center justify-center rounded-r-md bg-violet-500 text-button-textColor transition-all duration-300 group-hover:bg-violet-400">
+                        <h1 className=" text-balance tracking-wide ">
+                          {exp.jobRole || "N/A"}
+                        </h1>
+                      </span>
+                      {/* <div className="flex justify-between"> */}
+                      <div className="mb-2 top-[8px] right-0">
+                        <Label className=" text-sm px-2 text-gray-500 group-hover:text-white dark:text-white dark:group-hover:text-foreground tracking-wide">
+                          {exp.companyAddress || "N/A"}
+                        </Label>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-forground group relative cursor-pointer overflow-hidden transition-all duration-300 ">
-                    <div className="flex flex-col gap-1">
-                      <Label className="p-2 mt-1 text-lg text-foreground tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
-                        {exp.companyName || "N/A"}
-                      </Label>
-                    </div>
-                    <div className="flex flex-col gap-1 w-fit">
-                      <Label className="px-2 text-gray-500 tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
-                        <span>Duration:</span>
-                        <span className="ml-1">{`${
-                          exp.jobExperience || "0"
-                        } years`}</span>{" "}
-                      </Label>
-                    </div>
-                    <div className="space-y-6 mt-1 text-base leading-7 tracking-wide text-gray-600 transition-all duration-300 group-hover:text-white/90">
-                      <div className="col-span-2 flex flex-col gap-1 p-1 pb-2">
-                        <Textarea className="custom-scrollbar overflow-auto  group-hover:text-white dark:text-white dark:group-hover:text-foreground bg-transparent w-full h-32 resize-none group-hover:border-violet-600 ">
-                          {exp.jobDescription || "N/A"}
-                        </Textarea>
+                    <div className="text-forground group relative cursor-pointer overflow-hidden transition-all duration-300 ">
+                      <div className="flex flex-col gap-1">
+                        <Label className="p-2 mt-1 text-lg text-foreground tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
+                          {exp.companyName || "N/A"}
+                        </Label>
+                      </div>
+                      <div className="flex flex-col gap-1 w-fit">
+                        <Label className="px-2 text-gray-500 tracking-wide group-hover:text-white dark:text-white dark:group-hover:text-foreground">
+                          <span>Duration:</span>
+                          <span className="ml-1">{`${
+                            exp.jobExperience || "0"
+                          } years`}</span>{" "}
+                        </Label>
+                      </div>
+                      <div className="space-y-6 mt-1 text-base leading-7 tracking-wide text-gray-600 transition-all duration-300 group-hover:text-white/90">
+                        <div className="col-span-2 flex flex-col gap-1 p-1 pb-2">
+                          <Textarea className="custom-scrollbar overflow-auto  group-hover:text-white dark:text-white dark:group-hover:text-foreground bg-transparent w-full h-32 resize-none group-hover:border-violet-600 ">
+                            {exp.jobDescription || "N/A"}
+                          </Textarea>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* skills functionality is update*/}
-      <div className="mb-5 border border-green-500 p-3 rounded-md relative">
-        <div className="absolute -top-4 left-4 bg-background px-2">
-          <h1 className="text-lg font-bold">Skills</h1>
-        </div>
-        <div className="flex justify-between mb-2 ">
-          {isSkillEdit ? (
-            <button
-              onClick={saveSkillChanges}
-              className="bg-green-500 text-white p-1 rounded-sm absolute -top-3 right-3"
-              title="save"
-            >
-              <CheckSquare size={15} />
-            </button>
-          ) : (
-            <button
-              onClick={toggleEdit}
-              className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
-              title={"Edit"}
-            >
-              <Pencil size={15} />
-            </button>
+              ))}
+            </div>
           )}
         </div>
-        {isSkillEdit ? (
-          <>
-            <input
-              type="text"
-              placeholder="Search or add a skill"
-              value={searchTerm.skills || ""}
-              onChange={(e) => handleSearchChange(e, "skills")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && searchTerm.skills.trim()) {
-                  addSelection(
-                    "skills",
-                    searchTerm.skills.trim().toLowerCase()
-                  );
-                  e.preventDefault();
-                }
-              }}
-              className="w-full px-2 border h-10 rounded-md mb-1 mt-4 bg-transparent"
-            />
-            <div className="flex flex-wrap gap-2 mb-1 mt-2">
-              {searchTerm.skills &&
-                skillOptions
-                  .filter((skill) =>
-                    skill
-                      .toLowerCase()
-                      .includes(searchTerm.skills.toLowerCase())
-                  )
-                  .map((skill, i) => (
-                    <button
-                      key={`skill-option-${i}`}
-                      onClick={() => addSelection("skills", skill)}
-                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg"
-                    >
-                      {skill}
-                    </button>
-                  ))}
-            </div>
+
+        {/* skills functionality is update*/}
+        <div className="mb-5 border border-green-500 p-3 rounded-md relative">
+          <div className="absolute -top-4 left-4 bg-background px-2">
+            <h1 className="text-lg font-bold">Skills</h1>
+          </div>
+          <div className="flex justify-between mb-2 ">
+            {isSkillEdit ? (
+              <button
+                onClick={saveSkillChanges}
+                className="bg-green-500 text-white p-1 rounded-sm absolute -top-3 right-3"
+                title="save"
+              >
+                <CheckSquare size={15} />
+              </button>
+            ) : (
+              <button
+                onClick={toggleEdit}
+                className="bg-slate-500 text-white p-1 rounded-sm absolute -top-3 right-3"
+                title={"Edit"}
+              >
+                <Pencil size={15} />
+              </button>
+            )}
+          </div>
+          {isSkillEdit ? (
+            <>
+              <input
+                type="text"
+                placeholder="Search or add a skill"
+                value={searchTerm.skills || ""}
+                onChange={(e) => handleSearchChange(e, "skills")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchTerm.skills.trim()) {
+                    addSelection(
+                      "skills",
+                      searchTerm.skills.trim().toLowerCase()
+                    );
+                    e.preventDefault();
+                  }
+                }}
+                className="w-full px-2 border h-10 rounded-md mb-1 mt-4 bg-transparent"
+              />
+              <div className="flex flex-wrap gap-2 mb-1 mt-2">
+                {searchTerm.skills &&
+                  skillOptions
+                    .filter((skill) =>
+                      skill
+                        .toLowerCase()
+                        .includes(searchTerm.skills.toLowerCase())
+                    )
+                    .map((skill, i) => (
+                      <button
+                        key={`skill-option-${i}`}
+                        onClick={() => addSelection("skills", skill)}
+                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg"
+                      >
+                        {skill}
+                      </button>
+                    ))}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {userDetails?.skills?.map((skill, index) => (
+                  <div
+                    key={`skill-${index}`}
+                    className="px-3 py-1 bg-blue-500 text-white rounded-lg flex items-center gap-2"
+                  >
+                    {skill}
+                    <TrashIcon
+                      className="w-4 h-4 cursor-pointer"
+                      onClick={() => removeSkillEntry(index)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
             <div className="flex flex-wrap gap-2">
               {userDetails?.skills?.map((skill, index) => (
                 <div
                   key={`skill-${index}`}
-                  className="px-3 py-1 bg-blue-500 text-white rounded-lg flex items-center gap-2"
+                  className="px-3 py-1 mt-4 bg-blue-500 text-white rounded-lg flex items-center gap-2"
                 >
                   {skill}
-                  <TrashIcon
-                    className="w-4 h-4 cursor-pointer"
-                    onClick={() => removeSkillEntry(index)}
-                  />
                 </div>
               ))}
             </div>
-          </>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            {userDetails?.skills?.map((skill, index) => (
-              <div
-                key={`skill-${index}`}
-                className="px-3 py-1 mt-4 bg-blue-500 text-white rounded-lg flex items-center gap-2"
-              >
-                {skill}
-              </div>
-            ))}
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

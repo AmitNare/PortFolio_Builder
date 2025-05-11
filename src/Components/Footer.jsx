@@ -15,7 +15,7 @@ import {
   BsInstagram,
   BsTwitter,
 } from "react-icons/bs";
-import logo from '../assets/Images/logo7.webp'
+import logo from '../../public/favicon/logo.png'
 
 export default function FooterS() {
   return (
@@ -23,12 +23,12 @@ export default function FooterS() {
       <div className="w-full mb-16 ">
         <div className="grid w-full justify-between sm:flex sm:justify-between md:flex md:grid-cols-1">
           <span className="flex my-2">
-            <div className="w-12 h-12 rounded-full border-2 overflow-hidden">
+            <div className="w-12 h-12 rounded-md border-2 overflow-hidden">
               <img 
                 src={logo} 
                 alt="logo" 
                 loading="lazy"
-                className="w-full h-full object-cover scale-110 transition-transform duration-300"
+                className="w-full h-full object-cover  transition-transform duration-300"
               />
             </div>
             <h1 className="text-4xl font-bold text-foreground">Portify</h1>

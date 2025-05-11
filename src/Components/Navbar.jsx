@@ -4,7 +4,8 @@ import { Moon, Sun, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useUserAuth from "./UserAuthentication";
-import logo from "../assets/Images/logo7.webp";
+// import logo from "../assets/Images/logo7.webp";
+import logo from "../../public/favicon/logo.png"
 import { getDatabase, ref, onValue } from "firebase/database";
 
 const sections = [
@@ -163,7 +164,7 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
               src={logo}
               alt="logo"
               loading="lazy"
-              className="w-full h-full object-cover scale-110 transition-transform duration-300"
+              className="w-full h-full object-cover transition-transform duration-300"
             />
           </div>
           <h1 className="text-2xl mt-1 text-foreground font-proxemic">

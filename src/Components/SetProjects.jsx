@@ -33,7 +33,7 @@ export default function SetProjects({ userDetails }) {
 
   const hasProjects = projectArray.length > 0;
 
-   // Don't render the section if no projects exist
+  // Don't render the section if no projects exist
   if (!hasProjects) {
     return null;
   }
@@ -101,13 +101,14 @@ export default function SetProjects({ userDetails }) {
                       rel="noopener noreferrer"
                       className="text-sm w-10 p-2 rounded-full font-bold bg-green-500 text-white"
                     >
-                      <img src={www_img} alt="Visit project" loading="lazy"/>
+                      <img src={www_img} alt="Visit project" loading="lazy" />
                     </motion.a>
                   )}
                 </div>
-                {Array.isArray(active.languages) ? active.languages.join(", ") : active.languages}
-                <div>
-                </div>
+                {Array.isArray(active.languages)
+                  ? active.languages.join(", ")
+                  : active.languages}
+                <div></div>
                 <motion.p
                   layoutId={`description-${active.projectDescription}-${id}`}
                   className="text-neutral-600 dark:text-neutral-400 mt-2"
@@ -121,25 +122,25 @@ export default function SetProjects({ userDetails }) {
       </AnimatePresence>
 
       {/* Project Grid or Fallback */}
-        <ul className="flex justify-center flex-wrap gap-10 sm-max:gap-4">
-          {projectArray.map((project) => (
-            <motion.div
-              layoutId={`card-${project.projectName}-${id}`}
-              key={project.id}
-              onClick={() => setActive(project)}
-              className="border rounded-lg shadow-lg p-2 cursor-pointer"
-            >
-              <motion.div layoutId={`image-${project.projectName}-${id}`}>
-                <img
-                  src={project.projectImage}
-                  alt={project.projectName}
-                  loading="lazy"
-                  className="w-96 aspect-video object-cover rounded-md"
-                />
-              </motion.div>
+      <ul className="flex justify-center flex-wrap gap-10 sm-max:gap-4">
+        {projectArray.map((project) => (
+          <motion.div
+            layoutId={`card-${project.projectName}-${id}`}
+            key={project.id}
+            onClick={() => setActive(project)}
+            className="border rounded-lg shadow-lg p-2 cursor-pointer"
+          >
+            <motion.div layoutId={`image-${project.projectName}-${id}`}>
+              <img
+                src={project.projectImage}
+                alt={project.projectName}
+                loading="lazy"
+                className="w-96 aspect-video object-cover rounded-md"
+              />
             </motion.div>
-          ))}
-        </ul>
+          </motion.div>
+        ))}
+      </ul>
     </section>
   );
 }

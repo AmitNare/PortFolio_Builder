@@ -16,7 +16,7 @@ import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Link, useNavigate } from "react-router-dom";
 import Theme from "./Theme";
-import logo from "../assets/Images/logo7.webp";
+import logo from "../../public/favicon/logo.png";
 
 export default function UserHeader({ toggleTheme, isDarkTheme, name }) {
   const navigate = useNavigate();
