@@ -448,10 +448,10 @@ export default function Settings() {
           property="og:description"
           content="Easily manage your personal information. Edit your name, email, and contact details to keep your portfolio current."
         />
-        {/* <meta
+        <meta
           property="og:image"
-          content="https://github.com/AmitNare/PortFolio_Builder/blob/main/src/assets/Images/logo7.webp"
-        /> */}
+          content="https://github.com/AmitNare/PortFolio_Builder/blob/main/public/favicon/website-image.png?raw=true"
+        />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta property="twitter:title" content="Settings | Portify Builder" />
@@ -461,7 +461,7 @@ export default function Settings() {
         />
         <meta
           property="twitter:image"
-          content="https://yourdomain.com/assets/settings-personal-info.png"
+          content="https://github.com/AmitNare/PortFolio_Builder/blob/main/public/favicon/website-image.png?raw=true"
         />
 
         <title>Settings | Portify - Update Personal Information</title>

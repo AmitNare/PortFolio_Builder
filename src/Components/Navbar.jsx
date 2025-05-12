@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useUserAuth from "./UserAuthentication";
 // import logo from "../assets/Images/logo7.webp";
-import logo from "../../public/favicon/logo.png"
+import logo from "../../public/favicon/logo.png";
 import { getDatabase, ref, onValue } from "firebase/database";
 
 const sections = [
@@ -77,10 +77,16 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
   // Smooth scroll on hash change
   useEffect(() => {
     if (location.hash) {
-      const element = document.querySelector(location.hash);
+      const hash = location.hash.replace("#", "");
+      const element = document.getElementById(hash);
       if (element) {
+        // Scroll smoothly to the element
         element.scrollIntoView({ behavior: "smooth", block: "start" });
+        // Explicitly set active section
+        setActiveSection(hash);
       }
+    } else {
+      setActiveSection("Hero"); // fallback to top
     }
   }, [location]);
 
@@ -158,7 +164,7 @@ export default function Navbar({ toggleTheme, isDarkTheme, isPortfolioPage }) {
     >
       <header className="relative flex h-full w-full px-12 items-center justify-between gap-2 2md-min:gap-4 rounded-xl bg-transparent md:px-5 lg:px-20">
         {/* Logo */}
-        <span className="flex my-2 items-center gap-1 sm-max:ml-4 2md-min:ml-4">
+        <span className="flex my-2 items-center gap-3 sm-max:ml-4 2md-min:ml-4">
           <div className="w-12 h-12 rounded-md overflow-hidden">
             <img
               src={logo}

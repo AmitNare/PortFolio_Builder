@@ -69,7 +69,10 @@ export default function Feedback() {
         <p className="text-center text-gray-600 dark:text-gray-400">
           We value your feedback to improve our services.
         </p>
-        <form onSubmit={handleSubmit(sendFeedback)} className=" flex flex-col space-y-4 gap-2">
+        <form
+          onSubmit={handleSubmit(sendFeedback)}
+          className=" flex flex-col space-y-4 gap-2"
+        >
           <span className="relative">
             <Input
               {...register("name")}
@@ -124,7 +127,11 @@ export default function Feedback() {
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="w-full bg-button tracking-wider text-button-textColor hover:bg-button-hover"
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Submitting..." : "Submit Feedback"}
           </Button>
         </form>

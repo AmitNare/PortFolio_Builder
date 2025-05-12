@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import useUserAuth from './UserAuthentication';
-import DataLoader from './DataLoader';
+import React, { useState, useEffect } from "react";
+import useUserAuth from "./UserAuthentication";
+import DataLoader from "./DataLoader";
 
-export default function UserDashboard({userDetails}) {
+export default function UserDashboard({ userDetails }) {
   // const { userDetails } = useUserAuth();
 
   // Add a loading state

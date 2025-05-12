@@ -12,7 +12,9 @@ export default function SetSkills({ userDetails }) {
 
       for (const skill of userDetails.skills) {
         try {
-          const res = await fetch(`https://api.iconify.design/search?query=${skill}`);
+          const res = await fetch(
+            `https://api.iconify.design/search?query=${skill}`
+          );
           const data = await res.json();
 
           iconsMap[skill] =
@@ -31,10 +33,10 @@ export default function SetSkills({ userDetails }) {
     fetchIcons();
   }, [JSON.stringify(userDetails.skills)]); // ensures effect only runs on change
 
-   // Don't render the section if no skills  exist
- if (!userDetails.skills ) {
-  return null;
-}
+  // Don't render the section if no skills  exist
+  if (!userDetails.skills) {
+    return null;
+  }
 
   return (
     <div className="w-full md:w-3/5 flex flex-col flex-wrap justify-center items-center text-foreground bg-background p-4 mt-10">

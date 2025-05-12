@@ -942,10 +942,10 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
           property="og:description"
           content="Easily manage your personal information. Edit your education, experience, and skills details to keep your portfolio current."
         />
-        {/* <meta
-              property="og:image"
-              content="https://github.com/AmitNare/PortFolio_Builder/blob/main/src/assets/Images/logo7.webp"
-            /> */}
+        <meta
+          property="og:image"
+          content="https://github.com/AmitNare/PortFolio_Builder/blob/main/public/favicon/website-image.png?raw=true"
+        />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta
@@ -958,7 +958,7 @@ export default function Profile({ userId, userDetails, setUserDetails }) {
         />
         <meta
           property="twitter:image"
-          content="https://yourdomain.com/assets/settings-personal-info.png"
+          content="https://github.com/AmitNare/PortFolio_Builder/blob/main/public/favicon/website-image.png?raw=true"
         />
 
         <title>

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button } from './ui/button';
-import { Sun, Moon } from 'lucide-react';
+import React from "react";
+import { Button } from "./ui/button";
+import { Sun, Moon } from "lucide-react";
 
 export default function Theme({ isDarkTheme, toggleTheme }) {
   return (

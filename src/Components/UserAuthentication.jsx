@@ -124,7 +124,6 @@ export function UserAuthContextProvider({ children }) {
         setUser(currentUser);
         setUserRole(role);
         setUserDetails(details); // Store user details in state
-
       } else {
         setUser(null);
         setUserRole(null);
@@ -136,7 +135,12 @@ export function UserAuthContextProvider({ children }) {
     return () => unsubscribe();
   }, []);
 
-  if (isLoading) return <div><GlobalLoader/></div>; // Prevents unwanted redirects during state changes
+  if (isLoading)
+    return (
+      <div>
+        <GlobalLoader />
+      </div>
+    ); // Prevents unwanted redirects during state changes
 
   return (
     <userAuthentication.Provider

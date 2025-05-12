@@ -55,7 +55,13 @@ const SectionItem = ({ section, index, moveSection, toggleVisibility }) => {
 
 const CustomizeSections = ({ onSave = () => {} }) => {
   const [sections, setSections] = useState([
-    { key: "SetHero", label: "Hero", enabled: true, fixed: true, alwaysVisible: true },
+    {
+      key: "SetHero",
+      label: "Hero",
+      enabled: true,
+      fixed: true,
+      alwaysVisible: true,
+    },
     { key: "SetSkills", label: "Skills", enabled: true },
     { key: "SetProjects", label: "Projects", enabled: true },
     { key: "SetFeatures", label: "Features", enabled: true },
@@ -76,7 +82,13 @@ const CustomizeSections = ({ onSave = () => {} }) => {
           const savedSections = snapshot.val();
 
           // Ensure Hero is always on top and fixed
-          const hero = { key: "SetHero", label: "Hero", enabled: true, fixed: true, alwaysVisible: true };
+          const hero = {
+            key: "SetHero",
+            label: "Hero",
+            enabled: true,
+            fixed: true,
+            alwaysVisible: true,
+          };
           const filtered = savedSections.filter((s) => s.key !== "SetHero");
           setSections([hero, ...filtered]);
         }
@@ -127,66 +139,77 @@ const CustomizeSections = ({ onSave = () => {} }) => {
 
   return (
     <>
-    <Helmet>
-  <meta name="title" content="Customization | Portify" />
-  <meta
-    name="description"
-    content="Customize your portfolio layout and components with Portify. Reorder sections, change colors, and personalize your design to match your style and preferences."
-  />
-  <meta
-    name="keywords"
-    content="Portify, portfolio customization, reorder sections, personal portfolio design, no-code customization, drag and drop portfolio builder, component customization, change layout, personalize portfolio, custom design"
-  />
+      <Helmet>
+        <meta name="title" content="Customization | Portify" />
+        <meta
+          name="description"
+          content="Customize your portfolio layout and components with Portify. Reorder sections, change colors, and personalize your design to match your style and preferences."
+        />
+        <meta
+          name="keywords"
+          content="Portify, portfolio customization, reorder sections, personal portfolio design, no-code customization, drag and drop portfolio builder, component customization, change layout, personalize portfolio, custom design"
+        />
 
-  <meta name="site.name" content="Portify" />
+        <meta name="site.name" content="Portify" />
 
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Customization | Portify - Personalize Your Portfolio Layout" />
-  <meta
-    property="og:description"
-    content="Easily modify and arrange your portfolio sections the way you like. Customize visuals and structure to build a portfolio that truly represents you."
-  />
-  <meta
-    property="og:image"
-    content="https://yourdomain.com/assets/portify-customization-preview.png"
-  />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:title"
+          content="Customization | Portify - Personalize Your Portfolio Layout"
+        />
+        <meta
+          property="og:description"
+          content="Easily modify and arrange your portfolio sections the way you like. Customize visuals and structure to build a portfolio that truly represents you."
+        />
+        <meta
+          property="og:image"
+          content="https://github.com/AmitNare/PortFolio_Builder/blob/main/public/favicon/website-image.png?raw=true"
+        />
 
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:title" content="Customization | Portify - Personalize Your Portfolio Layout" />
-  <meta
-    property="twitter:description"
-    content="Use Portify’s customization features to rearrange sections and tailor your portfolio’s look and feel to your personal or professional brand."
-  />
-  <meta
-    property="twitter:image"
-    content="https://yourdomain.com/assets/portify-customization-preview.png"
-  />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          property="twitter:title"
+          content="Customization | Portify - Personalize Your Portfolio Layout"
+        />
+        <meta
+          property="twitter:description"
+          content="Use Portify’s customization features to rearrange sections and tailor your portfolio’s look and feel to your personal or professional brand."
+        />
+        <meta
+          property="twitter:image"
+          content="https://github.com/AmitNare/PortFolio_Builder/blob/main/public/favicon/website-image.png?raw=true"
+        />
 
-  <title>Customization | Portify - Modify Layout, Reorder Components & Personalize Design</title>
-</Helmet>
+        <title>
+          Customization | Portify - Modify Layout, Reorder Components &
+          Personalize Design
+        </title>
+      </Helmet>
 
-    <DndProvider backend={HTML5Backend}>
-      <div data-aos="fade-left" className="lg:w-3/5 mx-auto flex flex-col p-5 space-y-4 text-center md-max:min-h-[calc(100svh-72px)]">
-        <h2 className="text-xl font-bold">Customize Portfolio Sections</h2>
-        {sections.map((section, index) => (
-          <SectionItem
-            key={section.key}
-            index={index}
-            section={section}
-            moveSection={moveSection}
-            toggleVisibility={toggleVisibility}
-          />
-        ))}
-        <button
-          onClick={handleSave}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
+      <DndProvider backend={HTML5Backend}>
+        <div
+          data-aos="fade-left"
+          className="lg:w-3/5 mx-auto flex flex-col p-5 space-y-4 text-center md-max:min-h-[calc(100svh-72px)]"
         >
-          Save Order
-        </button>
-      </div>
-    </DndProvider>
+          <h2 className="text-xl font-bold">Customize Portfolio Sections</h2>
+          {sections.map((section, index) => (
+            <SectionItem
+              key={section.key}
+              index={index}
+              section={section}
+              moveSection={moveSection}
+              toggleVisibility={toggleVisibility}
+            />
+          ))}
+          <button
+            onClick={handleSave}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
+          >
+            Save Order
+          </button>
+        </div>
+      </DndProvider>
     </>
-
   );
 };
 

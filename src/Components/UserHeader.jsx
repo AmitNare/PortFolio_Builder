@@ -23,7 +23,10 @@ export default function UserHeader({ toggleTheme, isDarkTheme, name }) {
 
   return (
     <>
-      <div data-aos="fade-down"  className="flex w-full flex-col items-center justify-between bg-lightBg dark:bg-darkBg">
+      <div
+        data-aos="fade-down"
+        className="flex w-full flex-col items-center justify-between bg-lightBg dark:bg-darkBg"
+      >
         <header className="bg-background sticky w-[99%] md-max:w-full mt-2 md-max:m-0 flex h-16 bg-white-400/10 rounded-lg md-max:rounded-none backdrop-blur-lg bg-opacity-70 items-center justify-between gap-4 border md-max:border-b-slate-700 px-4 md:px-10">
           {/* <h1 className="text-4xl font-bold text-foreground">{name}</h1> */}
 

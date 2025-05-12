@@ -14,6 +14,8 @@ import UserAuthProtector from "./Components/UserAuthProtector/UserAuthProtector"
 import UserFeatures from "./Components/UserFeatures";
 import CustomizeSections from "./Components/CustomizeSections";
 import UserPreview from "./Components/UserPreview";
+import PrivacyPolicy from "./Components/PrivacyPolicy";
+import TermsAndConditions from "./Components/Terms&Condition";
 
 export default function App() {
   const location = useLocation();
@@ -28,6 +30,8 @@ export default function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/reset/password" element={<ForgotPassword />} />
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicy/>} />
+        <Route path="/Terms&Condition" element={<TermsAndConditions/>} />
 
         {/* User Dashboard */}
         <Route path="/user" element={<UserAuthProtector />}>

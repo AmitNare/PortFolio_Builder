@@ -123,29 +123,29 @@ export default function SetPortfolio() {
 
   // Loading & error
   if (loading) {
-      return <GlobalLoader />;
-    }
+    return <GlobalLoader />;
+  }
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <>
-
-    <div className="mt-10 flex flex-col justify-center items-center w-full gap-5">
-      {userDetails?.sections?.filter(s => s.enabled)?.map((section) => {
-        const Component = sectionComponents[section.key];
-        if (!Component) return null;
-        return (
-          <section
-            key={section.key}
-            id={section.key}
-            className="w-full flex flex-col justify-center items-center"
-          >
-            <Component userDetails={userDetails} />
-          </section>
-        );
-      })}
-    </div>
+      <div className="mt-10 flex flex-col justify-center items-center w-full gap-5">
+        {userDetails?.sections
+          ?.filter((s) => s.enabled)
+          ?.map((section) => {
+            const Component = sectionComponents[section.key];
+            if (!Component) return null;
+            return (
+              <section
+                key={section.key}
+                id={section.key}
+                className="w-full flex flex-col justify-center items-center"
+              >
+                <Component userDetails={userDetails} />
+              </section>
+            );
+          })}
+      </div>
     </>
-
   );
 }
