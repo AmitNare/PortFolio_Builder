@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
     <meta name="title" content="Portify | Portfolio Builder" />
@@ -18,12 +17,12 @@
     />
 
     <!-- Open Graph Tags -->
-    <meta property="og:title" content="Portify | Portfolio Builder " />
+    <meta property="og:title" content="Portify | Portfolio Builder" />
     <meta name="site.name" content="Portify" />
     <meta property="og:url" content="https://portifybuilder.netlify.app" />
     <meta
       property="og:description"
-      content="Easily manage your personal information. Edit your name, email, and contact details to keep your portfolio current. "
+      content="Easily manage your personal information. Edit your name, email, and contact details to keep your portfolio current."
     />
     <meta property="og:type" content="website" />
     <meta
@@ -31,7 +30,7 @@
       content="https://github.com/AmitNare/PortFolio_Builder/blob/main/public/favicon/website-image.png?raw=true"
     />
 
-    <!-- Twitter Hash Tags -->
+    <!-- Twitter Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Portify | Portfolio Builder" />
     <meta
@@ -43,6 +42,7 @@
       content="https://github.com/AmitNare/PortFolio_Builder/blob/main/public/favicon/website-image.png?raw=true"
     />
 
+    <!-- Title -->
     <title>
       Portify | Portfolio Builder - Build, Edit, Share & Shine Online
     </title>
@@ -60,11 +60,15 @@
       sizes="32x32"
       href="/favicon/favicon-32x32.png"
     />
-    <link type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
-    <link rel="manifest" href="/manifest.json" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon/favicon-16x16.png"
+    />
     <link rel="manifest" href="/favicon/site.webmanifest" />
 
-    <!-- Rubik font family -->
+    <!-- Rubik Font -->
     <link
       href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap"
       rel="stylesheet"
@@ -73,13 +77,52 @@
 
     <!-- AOS Animation -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Portify",
+        "url": "https://portifybuilder.netlify.app",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://portifybuilder.netlify.app/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Portify | Portfolio Builder",
+        "description": "Build and manage your online portfolio effortlessly. Update personal info, skills, and showcase your work easily with Portify.",
+        "url": "https://portifybuilder.netlify.app"
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Portify",
+        "url": "https://portifybuilder.netlify.app",
+        "logo": "https://github.com/AmitNare/PortFolio_Builder/blob/main/public/favicon/logo.png?raw=true",
+        "sameAs": [
+          "https://github.com/AmitNare",
+          "https://www.linkedin.com/in/amit-nare"
+        ]
+      }
+    </script>
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
 
-    <!-- google location API -->
+    <!-- Google Maps API -->
     <script
       type="text/javascript"
       async
@@ -87,13 +130,13 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTQrHY-tuQj3dAqsTjqmAlTIvwa29pYQQ&libraries=places"
     ></script>
 
-    <!-- AOS Animation -->
+    <!-- AOS Animation Script -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
       AOS.init({
         offset: 0,
         duration: 500,
-        once: true,
+        once: true
       });
     </script>
   </body>
